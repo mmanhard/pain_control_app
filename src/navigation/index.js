@@ -6,6 +6,8 @@ import {
   Link
 } from "react-router-dom";
 
+import Home from "../pages/Home";
+
 export default class Navigation extends React.Component {
   render() {
     return (
@@ -42,10 +44,6 @@ export default class Navigation extends React.Component {
       </Router>
     );
   }
-}
-
-function Home() {
-  return <h2>Home</h2>;
 }
 
 function About() {
