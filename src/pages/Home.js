@@ -1,7 +1,10 @@
 import React from "react";
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import API from '../api';
+import actions from '../actions';
 
-export default class Navigation extends React.Component {
+class Navigation extends React.Component {
   constructor(props) {
     super(props);
 
@@ -28,6 +31,9 @@ export default class Navigation extends React.Component {
     return (
       <div>
         <h2>HOME</h2>
+        <h3>{this.props.count}</h3>
+        <h3>Count</h3>
+        <button onClick={this.props.add}>ADD</button>
         <form onSubmit={this._handleSubmit}>
           <label>
             First Name:
@@ -75,3 +81,16 @@ export default class Navigation extends React.Component {
     )
   }
 }
+
+const mapStateToProps = state => ({
+  count: state.users.count,
+});
+
+const mapDispatchToProps = dispatch => ({
+  ...bindActionCreators(actions, dispatch),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Navigation)

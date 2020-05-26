@@ -2,6 +2,16 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import Navigation from './navigation';
+import { Provider } from "react-redux";
+import configureStore from "./store";
+
+const store = configureStore();
 
 const appRoot = document.getElementById('app');
-ReactDOM.render(<Navigation />, appRoot);
+const app = (
+  <Provider store={store}>
+    <Navigation />
+  </Provider>
+);
+
+ReactDOM.render(app, appRoot);
