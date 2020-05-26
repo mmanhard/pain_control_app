@@ -12,7 +12,8 @@ class Navigation extends React.Component {
       first_name: '',
       last_name: '',
       email: '',
-      password: ''
+      password: '',
+      token: 'NO TOKEN'
     };
   }
 
@@ -24,16 +25,15 @@ class Navigation extends React.Component {
   _handleSubmit = (event) => {
     event.preventDefault();
 
-    API.register( this.state );
+    this.props.register(this.state);
   }
 
   render() {
     return (
       <div>
         <h2>HOME</h2>
-        <h3>{this.props.count}</h3>
-        <h3>Count</h3>
-        <button onClick={this.props.add}>ADD</button>
+        <h3>First Name: {this.props.userInfo?.first_name}</h3>
+        <h3>Token: {this.props.token}</h3>
         <form onSubmit={this._handleSubmit}>
           <label>
             First Name:
@@ -77,13 +77,15 @@ class Navigation extends React.Component {
           <br />
           <input type="submit" value="Register" />
         </form>
+        <button onClick={() => {this.props.logout()}}>Log Out</button>
       </div>
     )
   }
 }
 
 const mapStateToProps = state => ({
-  count: state.users.count,
+  userInfo: state.users.userInfo,
+  token: state.users.token
 });
 
 const mapDispatchToProps = dispatch => ({

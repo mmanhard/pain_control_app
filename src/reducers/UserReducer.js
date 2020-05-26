@@ -1,14 +1,23 @@
+import actions from '../actions'
+
 const initialState = {
-  count: 0
+  userInfo: null,
+  token: null,
+  isLogin: false
 };
 
 export default (state = initialState, action) => {
-  switch (action.type) {
-    case 'ADD':
+  const { type, payload } = action;
+  switch (type) {
+    case actions.userActions.USER_REGISTER_SUCCESS:
       return {
         ...state,
-        count: state.count + 1
-      }
+        userInfo: payload.data.user_info,
+        token: payload.data.auth_token,
+        isLogin: true
+      };
+    case actions.userActions.LOG_OUT:
+      return initialState;
     default:
       return state;
   }

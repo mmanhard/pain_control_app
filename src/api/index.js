@@ -1,16 +1,16 @@
 import axios from 'axios';
-import {HOST, defaultHeaders, userPath} from '../common/AppConst';
+import {HOST, defaultHeaders, paths} from '../common/AppConst';
+
+const userPath = paths.user;
+const authPath = paths.auth;
 
 const register = (data) => {
-  return _post(userPath, data);
+  return _post(authPath + 'register/', data);
 };
 
-// export const signIn = (data) => {
-//   const url = `${HOST}/auth/sign_in`;
-//   return Axios.post(url, data, {
-//     headers: {...defaultHeader}
-//   });
-// };
+const logout = () => {
+  return _post(authPath + 'logout/', null)
+}
 
 const getUsers = () => {
   return _get(userPath);
@@ -27,10 +27,10 @@ const apiHandler = axios.create({
   headers: {...defaultHeaders}
 });
 
-const _get = (path, params) => {
+const _get = async (path, params) => {
   return apiHandler.get(path, params)
     .then(function (response) {
-      console.log(response);
+      return response;
     })
     .catch(function (error) {
       console.log(error);
@@ -38,9 +38,17 @@ const _get = (path, params) => {
 }
 
 const _post = (path, data) => {
-  return apiHandler.post(path, data)
+  const token = localStorage.getItem('token');
+  let Authorization = `Bearer ${token}`;
+  console.log('Auth', Authorization);
+  return apiHandler.post(path, data, {
+    headers: {
+      ...defaultHeaders,
+      Authorization,
+    }
+  })
     .then(function (response) {
-      console.log(response);
+      return response;
     })
     .catch(function (error) {
       console.log(error);
@@ -49,6 +57,7 @@ const _post = (path, data) => {
 
 export default {
   register,
+  logout,
   getUsers,
   getUserData
 }
