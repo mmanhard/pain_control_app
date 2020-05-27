@@ -1,10 +1,9 @@
 import React from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import API from '../api';
 import actions from '../actions';
 
-class Navigation extends React.Component {
+class Home extends React.Component {
   constructor(props) {
     super(props);
 
@@ -15,6 +14,12 @@ class Navigation extends React.Component {
       password: '',
       token: 'NO TOKEN'
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.loginSuccess) {
+      this.props.history.push('/dashboard');
+    }
   }
 
   _handleInputChange = (event) => {
@@ -37,9 +42,7 @@ class Navigation extends React.Component {
   render() {
     return (
       <div>
-        <h2>HOME</h2>
-        <h3>First Name: {this.props.userInfo?.first_name}</h3>
-        <h3>Token: {this.props.token}</h3>
+        <h2>Register / Login</h2>
         <form onSubmit={this._handleRegister}>
           <label>
             First Name:
@@ -84,7 +87,6 @@ class Navigation extends React.Component {
           <input type="submit" value="Register" />
         </form>
         <button onClick={this._handleLogin}>Log In</button>
-        <button onClick={this.props.logout}>Log Out</button>
       </div>
     )
   }
@@ -92,7 +94,8 @@ class Navigation extends React.Component {
 
 const mapStateToProps = state => ({
   userInfo: state.users.userInfo,
-  token: state.users.token
+  token: state.users.token,
+  loginSuccess: state.users.loginSuccess
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -102,4 +105,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Navigation)
+)(Home);
