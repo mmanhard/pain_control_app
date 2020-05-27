@@ -15,17 +15,30 @@ class Navigation extends React.Component {
       <Router>
         <div>
           <Switch>
-            <Route path="/" component={Pages.Home} exact={true} />
-            <Route path="/dashboard">
-              { this.props.isLogin
-              ? <Pages.Dashboard />
-              : <Redirect to="/" /> }
+            <Route path="/" exact={true}>
+              <Pages.Home />
             </Route>
+            <PrivateRoute path="/dashboard" isLogin={this.props.isLogin}>
+              <Pages.Dashboard />
+            </PrivateRoute>
           </Switch>
         </div>
       </Router>
     );
   }
+}
+
+function PrivateRoute({ isLogin, children, ...rest }) {
+  return (
+    <Route
+      {...rest}
+      render={() =>
+        isLogin
+        ? children
+        : <Redirect to={"/"} />
+      }
+    />
+  );
 }
 
 const mapStateToProps = state => ({

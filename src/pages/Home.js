@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { withRouter } from 'react-router';
 import actions from '../actions';
 
 class Home extends React.Component {
@@ -14,6 +15,12 @@ class Home extends React.Component {
       password: '',
       token: 'NO TOKEN'
     };
+  }
+
+  componentDidMount() {
+    if (this.props.loginSuccess) {
+      this.props.history.push('/dashboard');
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -105,4 +112,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Home);
+)(withRouter(Home));
