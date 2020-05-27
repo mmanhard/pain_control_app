@@ -22,10 +22,16 @@ class Navigation extends React.Component {
     this.setState({ [target.name]: target.value });
   }
 
-  _handleSubmit = (event) => {
+  _handleRegister = (event) => {
     event.preventDefault();
 
     this.props.register(this.state);
+  }
+
+  _handleLogin = (event) => {
+    event.preventDefault();
+
+    this.props.login(this.state);
   }
 
   render() {
@@ -34,7 +40,7 @@ class Navigation extends React.Component {
         <h2>HOME</h2>
         <h3>First Name: {this.props.userInfo?.first_name}</h3>
         <h3>Token: {this.props.token}</h3>
-        <form onSubmit={this._handleSubmit}>
+        <form onSubmit={this._handleRegister}>
           <label>
             First Name:
             <input
@@ -77,7 +83,8 @@ class Navigation extends React.Component {
           <br />
           <input type="submit" value="Register" />
         </form>
-        <button onClick={() => {this.props.logout()}}>Log Out</button>
+        <button onClick={this._handleLogin}>Log In</button>
+        <button onClick={this.props.logout}>Log Out</button>
       </div>
     )
   }

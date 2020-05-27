@@ -8,6 +8,10 @@ const register = (data) => {
   return _post(authPath + 'register/', data);
 };
 
+const login = (data) => {
+  return _post(authPath + 'login/', data)
+}
+
 const logout = () => {
   return _post(authPath + 'logout/', null)
 }
@@ -57,6 +61,7 @@ const _post = (path, data) => {
 
 export default {
   register,
+  login,
   logout,
   getUsers,
   getUserData

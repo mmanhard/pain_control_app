@@ -41,6 +41,31 @@ const register = (params) => {
   };
 };
 
+const login = (params) => {
+  return async dispatch => {
+    dispatch({
+      type: userActions.USER_LOGIN_REQUEST
+    });
+    try {
+      const response = await API.login(params);
+
+      if (response.data.auth_token) {
+        localStorage.setItem('token', response.data.auth_token);
+        dispatch({
+          type: userActions.USER_LOGIN_SUCCESS,
+          payload: { data: { ...response.data } }
+        });
+      } else {
+        dispatch({
+          type: userActions.USER_LOGIN_FAIL
+        });
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  };
+};
+
 const logout = () => {
   return async dispatch => {
     try {
@@ -58,5 +83,6 @@ const logout = () => {
 export {
   userActions,
   register,
+  login,
   logout
 }

@@ -16,6 +16,13 @@ export default (state = initialState, action) => {
         token: payload.data.auth_token,
         isLogin: true
       };
+    case actions.userActions.USER_LOGIN_SUCCESS:
+      return {
+        ...state,
+        userInfo: payload.data.user_info,
+        token: payload.data.auth_token,
+        isLogin: true
+      };
     case actions.userActions.LOG_OUT:
       return initialState;
     default:
