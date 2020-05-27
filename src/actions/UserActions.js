@@ -13,16 +13,28 @@ const userActions = {
   USER_LOGIN_SUCCESS: USER_PREFIX + '_LOGIN' + '_SUCCESS',
   USER_LOGIN_FAIL: USER_PREFIX + '_LOGIN' + '_FAIL',
 
+  GET_USER_REQUEST: 'GET_' + USER_PREFIX + '_REQUEST',
+  GET_USER_SUCCESS: 'GET_' + USER_PREFIX + '_SUCCESS',
+  GET_USER_FAIL: 'GET_' + USER_PREFIX + '_FAIL',
+
+  GET_USER_BODY_PART_REQUEST: 'GET_' + USER_PREFIX + '_BODY_PART' + '_REQUEST',
+  GET_USER_BODY_PART_SUCCESS: 'GET_' + USER_PREFIX + '_BODY_PART' + '_SUCCESS',
+  GET_USER_BODY_PART_FAIL: 'GET_' + USER_PREFIX + '_BODY_PART' + '_FAIL',
+
+  ADD_USER_BODY_PART_REQUEST: 'ADD_' + USER_PREFIX + '_BODY_PART' + '_REQUEST',
+  ADD_USER_BODY_PART_SUCCESS: 'ADD_' + USER_PREFIX + '_BODY_PART' + '_SUCCESS',
+  ADD_USER_BODY_PART_FAIL: 'ADD_' + USER_PREFIX + '_BODY_PART' + '_FAIL',
+
   LOG_OUT: 'LOG_OUT',
 };
 
-const register = (params) => {
+const register = (data) => {
   return async dispatch => {
     dispatch({
       type: userActions.USER_REGISTER_REQUEST
     });
     try {
-      const response = await API.register(params);
+      const response = await API.register(data);
 
       if (response.data.auth_token) {
         localStorage.setItem('token', response.data.auth_token);
@@ -41,13 +53,13 @@ const register = (params) => {
   };
 };
 
-const login = (params) => {
+const login = (data) => {
   return async dispatch => {
     dispatch({
       type: userActions.USER_LOGIN_REQUEST
     });
     try {
-      const response = await API.login(params);
+      const response = await API.login(data);
 
       if (response.data.auth_token) {
         localStorage.setItem('token', response.data.auth_token);
@@ -80,9 +92,65 @@ const logout = () => {
   };
 };
 
+const getUserData = (params) => {
+  return async dispatch => {
+    dispatch({
+      type: userActions.GET_USER_REQUEST
+    });
+    try {
+      const response = await API.getUserData(params);
+
+      dispatch({
+        type: userActions.GET_USER_SUCCESS,
+        payload: { data: { ...response.data } }
+      });
+    } catch (err) {
+      console.log(err)
+    }
+  };
+}
+
+const getBodyParts = (params) => {
+  return async dispatch => {
+    dispatch({
+      type: userActions.GET_USER_BODY_PART_REQUEST
+    });
+    try {
+      const response = await API.getBodyParts(params);
+      dispatch({
+        type: userActions.GET_USER_BODY_PART_SUCCESS,
+        payload: { data: { ...response.data } }
+      });
+    } catch (err) {
+      console.log('Hello');
+    }
+  };
+}
+
+const addBodyPart = (data) => {
+  return async dispatch => {
+    dispatch({
+      type: userActions.ADD_USER_BODY_PART_REQUEST
+    });
+    try {
+      const response = await API.addBodyPart(data);
+
+      dispatch({
+        type: userActions.ADD_USER_BODY_PART_SUCCESS,
+        payload: { data: { ...response.data } }
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+}
+
 export {
   userActions,
   register,
   login,
-  logout
+  logout,
+  getUserData,
+  getBodyParts,
+  addBodyPart
 }

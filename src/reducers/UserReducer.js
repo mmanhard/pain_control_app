@@ -2,9 +2,9 @@ import actions from '../actions'
 
 const initialState = {
   userInfo: null,
-  token: null,
   isLogin: false,
-  loginSuccess: false
+  loginSuccess: false,
+  bodyParts: null
 };
 
 export default (state = initialState, action) => {
@@ -14,7 +14,6 @@ export default (state = initialState, action) => {
       return {
         ...state,
         userInfo: payload.data.user_info,
-        token: payload.data.auth_token,
         isLogin: true,
         loginSuccess: true
       };
@@ -22,12 +21,20 @@ export default (state = initialState, action) => {
       return {
         ...state,
         userInfo: payload.data.user_info,
-        token: payload.data.auth_token,
         isLogin: true,
         loginSuccess: true
       };
+    case actions.userActions.GET_USER_SUCCESS:
+      return {
+        ...state,
+        userInfo: payload.data.user_info,
+      };
+    case actions.userActions.GET_USER_BODY_PART_SUCCESS:
+      return {
+        ...state,
+        bodyParts: payload.data.body_parts,
+      };
     case actions.userActions.LOG_OUT:
-      console.log("Logged Out");
       return initialState;
     default:
       return state;

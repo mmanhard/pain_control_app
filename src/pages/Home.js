@@ -12,8 +12,7 @@ class Home extends React.Component {
       first_name: '',
       last_name: '',
       email: '',
-      password: '',
-      token: 'NO TOKEN'
+      password: ''
     };
   }
 
@@ -101,7 +100,6 @@ class Home extends React.Component {
 
 const mapStateToProps = state => ({
   userInfo: state.users.userInfo,
-  token: state.users.token,
   loginSuccess: state.users.loginSuccess
 });
 

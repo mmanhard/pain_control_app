@@ -3,26 +3,37 @@ import {HOST, defaultHeaders, paths} from '../common/AppConst';
 
 const userPath = paths.user;
 const authPath = paths.auth;
+const bodypartPath = paths.bodyPart;
 
 const register = (data) => {
-  return _post(authPath + 'register/', data);
+  const path = `${authPath}register/`;
+  return _post(path, data);
 };
 
 const login = (data) => {
-  return _post(authPath + 'login/', data)
+  const path = `${authPath}login/`;
+  return _post(path, data);
 }
 
 const logout = () => {
-  return _post(authPath + 'logout/', null)
+  const path = `${authPath}logout/`;
+  return _post(path, null);
 }
 
-const getUsers = () => {
-  return _get(userPath);
+const getUserData = (params) => {
+  const path = `${userPath}${params.id}/`;
+  return _get(path);
 };
 
-const getUserData = (id) => {
-  const path = `${userPath}${id}`;
+const getBodyParts = (params) => {
+  const path = `${userPath}${params.id}${bodypartPath}`;
   return _get(path);
+};
+
+const addBodyPart = (data) => {
+  console.log(data);
+  const path = `${userPath}${data.id}${bodypartPath}`;
+  return _post(path, data);
 };
 
 const apiHandler = axios.create({
@@ -31,20 +42,26 @@ const apiHandler = axios.create({
   headers: {...defaultHeaders}
 });
 
-const _get = async (path, params) => {
-  return apiHandler.get(path, params)
+const _get = async (path) => {
+  const token = localStorage.getItem('token');
+  let Authorization = `Bearer ${token}`;
+  return apiHandler.get(path, {
+    headers: {
+      ...defaultHeaders,
+      Authorization,
+    }
+  })
     .then(function (response) {
       return response;
     })
     .catch(function (error) {
-      console.log(error);
+      return error;
     });
 }
 
-const _post = (path, data) => {
+const _post = async (path, data) => {
   const token = localStorage.getItem('token');
   let Authorization = `Bearer ${token}`;
-  console.log('Auth', Authorization);
   return apiHandler.post(path, data, {
     headers: {
       ...defaultHeaders,
@@ -55,7 +72,7 @@ const _post = (path, data) => {
       return response;
     })
     .catch(function (error) {
-      console.log(error);
+      return error;
     });
 }
 
@@ -63,6 +80,7 @@ export default {
   register,
   login,
   logout,
-  getUsers,
-  getUserData
+  getUserData,
+  getBodyParts,
+  addBodyPart,
 }
