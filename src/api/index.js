@@ -55,7 +55,7 @@ const _get = async (path) => {
       return response;
     })
     .catch(function (error) {
-      return error;
+      return { ...error.response, fail: true};
     });
 }
 
@@ -72,7 +72,7 @@ const _post = async (path, data) => {
       return response;
     })
     .catch(function (error) {
-      return error;
+      return { ...error.response, fail: true};
     });
 }
 

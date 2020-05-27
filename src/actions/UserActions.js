@@ -48,7 +48,7 @@ const register = (data) => {
         });
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   };
 };
@@ -73,7 +73,7 @@ const login = (data) => {
         });
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   };
 };
@@ -87,7 +87,7 @@ const logout = () => {
         type: userActions.LOG_OUT
       });
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   };
 };
@@ -100,12 +100,18 @@ const getUserData = (params) => {
     try {
       const response = await API.getUserData(params);
 
-      dispatch({
-        type: userActions.GET_USER_SUCCESS,
-        payload: { data: { ...response.data } }
-      });
+      if (!response.fail) {
+        dispatch({
+          type: userActions.GET_USER_SUCCESS,
+          payload: { data: { ...response.data } }
+        });
+      } else {
+        dispatch({
+          type: userActions.GET_USER_FAIL,
+        });
+      }
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   };
 }
@@ -117,12 +123,19 @@ const getBodyParts = (params) => {
     });
     try {
       const response = await API.getBodyParts(params);
-      dispatch({
-        type: userActions.GET_USER_BODY_PART_SUCCESS,
-        payload: { data: { ...response.data } }
-      });
+
+      if (!response.fail) {
+        dispatch({
+          type: userActions.GET_USER_BODY_PART_SUCCESS,
+          payload: { data: { ...response.data } }
+        });
+      } else {
+        dispatch({
+          type: userActions.GET_USER_BODY_PART_FAIL,
+        });
+      }
     } catch (err) {
-      console.log('Hello');
+      console.log(err);
     }
   };
 }
@@ -135,10 +148,16 @@ const addBodyPart = (data) => {
     try {
       const response = await API.addBodyPart(data);
 
-      dispatch({
-        type: userActions.ADD_USER_BODY_PART_SUCCESS,
-        payload: { data: { ...response.data } }
-      });
+      if (!response.fail) {
+        dispatch({
+          type: userActions.ADD_USER_BODY_PART_SUCCESS,
+          payload: { data: { ...response.data } }
+        });
+      } else {
+        dispatch({
+          type: userActions.ADD_USER_BODY_PART_FAIL,
+        });
+      }
     } catch (err) {
       console.log(err);
     }
