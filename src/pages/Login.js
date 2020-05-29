@@ -12,19 +12,24 @@ class Login extends React.Component {
       first_name: '',
       last_name: '',
       email: '',
-      password: ''
+      password: '',
+      didRegister: false
     };
   }
 
   componentDidMount() {
     if (this.props.loginSuccess) {
-      this.props.history.push('/dashboard');
+      this.props.history.replace('/dashboard');
     }
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.loginSuccess) {
-      this.props.history.push('/dashboard');
+      if (this.state.didRegister) {
+        this.props.history.replace('/onboarding');
+      } else {
+        this.props.history.replace('/dashboard');
+      }
     }
   }
 
@@ -36,6 +41,7 @@ class Login extends React.Component {
   _handleRegister = (event) => {
     event.preventDefault();
 
+    this.setState({ didRegister: true });
     this.props.register(this.state);
   }
 
@@ -99,8 +105,7 @@ class Login extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  userInfo: state.users.userInfo,
-  loginSuccess: state.users.loginSuccess
+  loginSuccess: state.users.loginSuccess,
 });
 
 const mapDispatchToProps = dispatch => ({

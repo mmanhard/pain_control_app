@@ -4,6 +4,7 @@ const initialState = {
   userInfo: null,
   isLogin: false,
   loginSuccess: false,
+  userUpdate: false,
   bodyParts: null
 };
 
@@ -27,7 +28,13 @@ export default (state = initialState, action) => {
     case actions.userActions.GET_USER_SUCCESS:
       return {
         ...state,
+        userUpdate: false,
         userInfo: payload.data.user_info,
+      };
+    case actions.userActions.UPDATE_USER_SUCCESS:
+      return {
+        ...state,
+        userUpdate: true,
       };
     case actions.userActions.GET_USER_BODY_PART_SUCCESS:
       return {

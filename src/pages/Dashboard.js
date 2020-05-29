@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { withRouter } from 'react-router';
 import actions from '../actions';
 
 class Dashboard extends React.Component {
@@ -13,6 +14,18 @@ class Dashboard extends React.Component {
     };
   }
 
+  componentDidMount() {
+    if (this.props.userUpdate) {
+      this.props.getUserData(this.props.userInfo);
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.userUpdate) {
+      this.props.getUserData(this.props.userInfo);
+    }
+  }
+
   _handleInputChange = (event) => {
     const target = event.target;
     this.setState({ [target.name]: target.value });
@@ -21,7 +34,7 @@ class Dashboard extends React.Component {
   _handleAddBodyPart = (event) => {
     event.preventDefault();
 
-    this.props.addBodyPart({ name: this.state.name, type: this.state.type, id: this.props.userInfo.id });
+    this.props.addBodyPart(this.props.userInfo, { name: this.state.name, type: this.state.type});
   }
 
   _handleLogout = () => {
@@ -33,7 +46,14 @@ class Dashboard extends React.Component {
     return (
       <div>
         <h2>Dashboard</h2>
+        <h3>User ID: {this.props.userInfo?.id}</h3>
         <h3>Name: {`${userInfo?.first_name} ${userInfo?.last_name}`}</h3>
+        <h3>{userInfo?.email && `Email: ${userInfo?.email}`}</h3>
+        <h3>{userInfo?.phone && `Phone Number: ${userInfo?.phone}`}</h3>
+        <h3>{userInfo?.birthday && `Birthday: ${userInfo?.birthday}`}</h3>
+        <h3>{userInfo?.hometown && `Hometown: ${userInfo?.hometown}`}</h3>
+        <h3>{userInfo?.medical_history && `Medical History: ${userInfo?.medical_history}`}</h3>
+
         { this.props.bodyParts && <h3>Number of Body Parts: {this.props.bodyParts.length}</h3>}
         <form onSubmit={this._handleAddBodyPart}>
           <label>
@@ -58,8 +78,8 @@ class Dashboard extends React.Component {
           <br />
           <input type="submit" value="Add Body Part" />
         </form>
-        <button onClick={() => this.props.getUserData({ id: this.props.userInfo.id })}>Get User Data</button>
-        <button onClick={() => this.props.getBodyParts({ id: this.props.userInfo.id })}>Get Body Parts</button>
+        <button onClick={() => this.props.getUserData(userInfo)}>Get User Data</button>
+        <button onClick={() => this.props.getBodyParts(userInfo)}>Get Body Parts</button>
         <button onClick={this._handleLogout}>Log Out</button>
       </div>
     )
@@ -68,6 +88,7 @@ class Dashboard extends React.Component {
 
 const mapStateToProps = state => ({
   userInfo: state.users.userInfo,
+  userUpdate: state.users.userUpdate,
   bodyParts: state.users.bodyParts,
   loginSuccess: state.users.loginSuccess
 });
@@ -79,4 +100,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Dashboard);
+)(withRouter(Dashboard));

@@ -20,19 +20,24 @@ const logout = () => {
   return _post(path, null);
 }
 
-const getUserData = (params) => {
-  const path = `${userPath}${params.id}/`;
+const getUserData = (userInfo, params) => {
+  const path = `${userPath}${userInfo.id}/`;
   return _get(path);
 };
 
-const getBodyParts = (params) => {
-  const path = `${userPath}${params.id}${bodypartPath}`;
+const updateUser = (userInfo, data) => {
+  const path = `${userPath}${userInfo.id}/`;
+  return _patch(path, data);
+};
+
+const getBodyParts = (userInfo, params) => {
+  const path = `${userPath}${userInfo.id}${bodypartPath}`;
   return _get(path);
 };
 
-const addBodyPart = (data) => {
+const addBodyPart = (userInfo,data) => {
   console.log(data);
-  const path = `${userPath}${data.id}${bodypartPath}`;
+  const path = `${userPath}${userInfo.id}${bodypartPath}`;
   return _post(path, data);
 };
 
@@ -76,11 +81,29 @@ const _post = async (path, data) => {
     });
 }
 
+const _patch = async (path, data) => {
+  const token = localStorage.getItem('token');
+  let Authorization = `Bearer ${token}`;
+  return apiHandler.patch(path, data, {
+    headers: {
+      ...defaultHeaders,
+      Authorization,
+    }
+  })
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      return { ...error.response, fail: true};
+    });
+}
+
 export default {
   register,
   login,
   logout,
   getUserData,
+  updateUser,
   getBodyParts,
   addBodyPart,
 }

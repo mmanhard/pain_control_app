@@ -17,6 +17,10 @@ const userActions = {
   GET_USER_SUCCESS: 'GET_' + USER_PREFIX + '_SUCCESS',
   GET_USER_FAIL: 'GET_' + USER_PREFIX + '_FAIL',
 
+  UPDATE_USER_REQUEST: 'UPDATE_' + USER_PREFIX + '_REQUEST',
+  UPDATE_USER_SUCCESS: 'UPDATE_' + USER_PREFIX + '_SUCCESS',
+  UPDATE_USER_FAIL: 'UPDATE_' + USER_PREFIX + '_FAIL',
+
   GET_USER_BODY_PART_REQUEST: 'GET_' + USER_PREFIX + '_BODY_PART' + '_REQUEST',
   GET_USER_BODY_PART_SUCCESS: 'GET_' + USER_PREFIX + '_BODY_PART' + '_SUCCESS',
   GET_USER_BODY_PART_FAIL: 'GET_' + USER_PREFIX + '_BODY_PART' + '_FAIL',
@@ -92,13 +96,13 @@ const logout = () => {
   };
 };
 
-const getUserData = (params) => {
+const getUserData = (userInfo, params) => {
   return async dispatch => {
     dispatch({
       type: userActions.GET_USER_REQUEST
     });
     try {
-      const response = await API.getUserData(params);
+      const response = await API.getUserData(userInfo, params);
 
       if (!response.fail) {
         dispatch({
@@ -116,13 +120,37 @@ const getUserData = (params) => {
   };
 }
 
-const getBodyParts = (params) => {
+const updateUser = (userInfo, data) => {
+  return async dispatch => {
+    dispatch({
+      type: userActions.UPDATE_USER_REQUEST
+    });
+    try {
+      const response = await API.updateUser(userInfo, data);
+
+      if (!response.fail) {
+        dispatch({
+          type: userActions.UPDATE_USER_SUCCESS,
+          payload: { data: { ...response.data } }
+        });
+      } else {
+        dispatch({
+          type: userActions.UPDATE_USER_FAIL,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+}
+
+const getBodyParts = (userInfo, params) => {
   return async dispatch => {
     dispatch({
       type: userActions.GET_USER_BODY_PART_REQUEST
     });
     try {
-      const response = await API.getBodyParts(params);
+      const response = await API.getBodyParts(userInfo, params);
 
       if (!response.fail) {
         dispatch({
@@ -140,13 +168,13 @@ const getBodyParts = (params) => {
   };
 }
 
-const addBodyPart = (data) => {
+const addBodyPart = (userInfo, data) => {
   return async dispatch => {
     dispatch({
       type: userActions.ADD_USER_BODY_PART_REQUEST
     });
     try {
-      const response = await API.addBodyPart(data);
+      const response = await API.addBodyPart(userInfo, data);
 
       if (!response.fail) {
         dispatch({
@@ -170,6 +198,7 @@ export {
   login,
   logout,
   getUserData,
+  updateUser,
   getBodyParts,
   addBodyPart
 }
