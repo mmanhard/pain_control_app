@@ -16,7 +16,7 @@ class Navigation extends React.Component {
         <div>
           <Switch>
             <Route path="/" exact={true}>
-              <Pages.Home />
+              <Pages.Login />
             </Route>
             <PrivateRoute path="/dashboard" isLogin={this.props.isLogin}>
               <Pages.Dashboard />

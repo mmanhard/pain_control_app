@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import actions from '../actions';
 
-class Home extends React.Component {
+class Login extends React.Component {
   constructor(props) {
     super(props);
 
@@ -110,4 +110,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(Home));
+)(withRouter(Login));
