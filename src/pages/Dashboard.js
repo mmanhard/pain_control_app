@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import actions from '../actions';
+import Navbar from '../components/Navbar';
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -49,14 +50,11 @@ class Dashboard extends React.Component {
     this.props.addBodyPart(this.props.userInfo, { name: this.state.name, type: this.state.type});
   }
 
-  _handleLogout = () => {
-    this.props.logout();
-  };
-
   render() {
-    const { userInfo, token } = this.props;
+    const { userInfo, token, logout } = this.props;
     return (
       <div>
+        <Navbar userInfo={userInfo} logout={logout}/>
         <h2>Dashboard</h2>
         <h3>User ID: {this.props.userInfo?.id}</h3>
         <h3>Name: {`${userInfo?.first_name} ${userInfo?.last_name}`}</h3>
@@ -90,7 +88,6 @@ class Dashboard extends React.Component {
           <br />
           <input type="submit" value="Add Body Part" />
         </form>
-        <button onClick={this._handleLogout}>Log Out</button>
       </div>
     )
   }
