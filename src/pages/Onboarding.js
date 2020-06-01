@@ -4,6 +4,32 @@ import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import actions from '../actions';
 
+const lrb = ['left', 'right', 'both'];
+const ulb = ['upper', 'lower', 'both'];
+
+const defaultBodyParts = [
+  {
+    'name': 'Shoulder',
+    'locations': lrb,
+    'type': 'Joint'
+  },
+  {
+    'name': 'Elbow',
+    'locations': lrb,
+    'type': 'Joint'
+  },
+  {
+    'name': 'Wrist',
+    'locations': lrb,
+    'type': 'Joint'
+  },
+  {
+    'name': 'Back',
+    'locations': ulb,
+    'type': 'Region'
+  }
+]
+
 class Onboarding extends React.Component {
   constructor(props) {
     super(props);
@@ -14,6 +40,11 @@ class Onboarding extends React.Component {
       hometown: '',
       medicalHistory: ''
     };
+
+    let bodyPart;
+    for (bodyPart of defaultBodyParts) {
+      this.state[bodyPart.name] = null;
+    }
   }
 
   _handleInputChange = (event) => {
@@ -21,7 +52,7 @@ class Onboarding extends React.Component {
     this.setState({ [target.name]: target.value });
   }
 
-  _handleSubmit = (event) => {
+  _handleSubmitInfo = (event) => {
     event.preventDefault();
 
     let userUpdates = {};
@@ -30,6 +61,20 @@ class Onboarding extends React.Component {
     if (this.state.hometown.length > 0) userUpdates.hometown = this.state.hometown;
     if (this.state.medicalHistory.length > 0) userUpdates.medical_history = this.state.medicalHistory;
     this.props.updateUser(this.props.userInfo, userUpdates);
+    this._onNext();
+  }
+
+  _handleSubmitBodyParts = (event) => {
+    event.preventDefault();
+
+    let bodyPart;
+    for (bodyPart of defaultBodyParts) {
+      if (this.state[bodyPart.name]) {
+        const { name, type } = bodyPart;
+        const data = { name, type, location: this.state[bodyPart.name]}
+        this.props.addBodyPart(this.props.userInfo, data);
+      }
+    }
     this._onNext();
   }
 
@@ -42,7 +87,7 @@ class Onboarding extends React.Component {
       <div>
         <h2>Onboarding</h2>
         <h3>User ID: {this.props.userInfo?.id}</h3>
-        <form onSubmit={this._handleSubmit}>
+        <form onSubmit={this._handleSubmitInfo}>
           <label>
             Phone Number:
             <input
@@ -83,8 +128,25 @@ class Onboarding extends React.Component {
             />
           </label>
           <br />
-          <input type="submit" value="Submit" />
+          <input type="submit" value="Submit Add'l Info" />
         </form>
+
+        <form onSubmit={this._handleSubmitBodyParts}>
+          {defaultBodyParts.map((part) => {
+            return (<div key={part.name}>
+              <h4>{part.name}</h4>
+              {part.locations
+              ? part.locations.map((loc) => {
+                return (<div key={`${part}${loc}`}>
+                  <input type="radio" name={part.name} value={loc} onChange={this._handleInputChange}/> {`${part.name}${loc}`}
+                </div>);
+              })
+              : "goodbye"}
+            </div>);
+          })}
+          <input type="submit" value="Submit Parts" />
+        </form>
+
         <button onClick={this._onNext}>Skip</button>
       </div>
     )
