@@ -15,14 +15,26 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
+    const { userInfo } = this.props;
+
     if (this.props.userUpdate) {
-      this.props.getUserData(this.props.userInfo);
+      this.props.getUserData(userInfo);
+    }
+
+    if (this.props.bodyPartUpdate) {
+      this.props.getBodyParts(userInfo);
     }
   }
 
   componentDidUpdate(prevProps) {
+    const { userInfo } = this.props;
+
     if (this.props.userUpdate) {
-      this.props.getUserData(this.props.userInfo);
+      this.props.getUserData(userInfo);
+    }
+
+    if (this.props.bodyPartUpdate) {
+      this.props.getBodyParts(userInfo);
     }
   }
 
@@ -78,8 +90,6 @@ class Dashboard extends React.Component {
           <br />
           <input type="submit" value="Add Body Part" />
         </form>
-        <button onClick={() => this.props.getUserData(userInfo)}>Get User Data</button>
-        <button onClick={() => this.props.getBodyParts(userInfo)}>Get Body Parts</button>
         <button onClick={this._handleLogout}>Log Out</button>
       </div>
     )
@@ -89,6 +99,7 @@ class Dashboard extends React.Component {
 const mapStateToProps = state => ({
   userInfo: state.users.userInfo,
   userUpdate: state.users.userUpdate,
+  bodyPartUpdate: state.users.bodyPartUpdate,
   bodyParts: state.users.bodyParts,
   loginSuccess: state.users.loginSuccess
 });
