@@ -28,7 +28,13 @@ const defaultBodyParts = [
     'locations': ulb,
     'type': 'Region'
   }
-]
+];
+
+const screenTypes = {
+  addInfo: 'addInfo',
+  addParts: 'addParts',
+  addNotes: 'addNotes'
+}
 
 class Onboarding extends React.Component {
   constructor(props) {
@@ -38,7 +44,8 @@ class Onboarding extends React.Component {
       phone: '',
       birthday: '',
       hometown: '',
-      medicalHistory: ''
+      medicalHistory: '',
+      screenType: screenTypes.addInfo
     };
 
     let bodyPart;
@@ -59,9 +66,19 @@ class Onboarding extends React.Component {
     if (this.state.phone.length > 0) userUpdates.phone = this.state.phone;
     if (this.state.birthday.length > 0) userUpdates.birthday = this.state.birthday;
     if (this.state.hometown.length > 0) userUpdates.hometown = this.state.hometown;
-    if (this.state.medicalHistory.length > 0) userUpdates.medical_history = this.state.medicalHistory;
     this.props.updateUser(this.props.userInfo, userUpdates);
-    this._onNext();
+
+    this._switchScreen();
+  }
+
+  _handleSubmitNotes = (event) => {
+    event.preventDefault();
+
+    if (this.state.medicalHistory.length > 0) {
+      this.props.updateUser(this.props.userInfo, { medical_history: this.state.medicalHistory });
+    }
+
+    this._switchScreen();
   }
 
   _handleSubmitBodyParts = (event) => {
@@ -75,19 +92,41 @@ class Onboarding extends React.Component {
         this.props.addBodyPart(this.props.userInfo, data);
       }
     }
-    this._onNext();
+
+    this._switchScreen();
   }
 
-  _onNext = () => {
-    this.props.history.replace('/dashboard');
+  _switchScreen = (backward = false) => {
+    switch (this.state.screenType) {
+      case (screenTypes.addInfo):
+        if (!backward) {
+          this.setState({ screenType: screenTypes.addParts});
+        }
+        break;
+      case (screenTypes.addParts):
+        if (backward) {
+          this.setState({ screenType: screenTypes.addInfo});
+        } else {
+          this.setState({ screenType: screenTypes.addNotes});
+        }
+        break;
+      case (screenTypes.addNotes):
+        if (backward) {
+          this.setState({ screenType: screenTypes.addParts});
+        } else {
+          this.props.history.replace('/dashboard');
+        }
+        break;
+    }
   }
 
   render() {
+    const { screenType } = this.state;
     return (
       <div>
         <h2>Onboarding</h2>
         <h3>User ID: {this.props.userInfo?.id}</h3>
-        <form onSubmit={this._handleSubmitInfo}>
+        {screenType === screenTypes.addInfo && <form onSubmit={this._handleSubmitInfo}>
           <label>
             Phone Number:
             <input
@@ -118,20 +157,10 @@ class Onboarding extends React.Component {
             />
           </label>
           <br />
-          <label>
-            Medical History:
-            <input
-              name="medicalHistory"
-              type="text"
-              value={this.state.medicalHistory}
-              onChange={this._handleInputChange}
-            />
-          </label>
-          <br />
           <input type="submit" value="Submit Add'l Info" />
-        </form>
+        </form>}
 
-        <form onSubmit={this._handleSubmitBodyParts}>
+        {screenType === screenTypes.addParts && <form onSubmit={this._handleSubmitBodyParts}>
           {defaultBodyParts.map((part) => {
             return (<div key={part.name}>
               <h4>{part.name}</h4>
@@ -145,9 +174,15 @@ class Onboarding extends React.Component {
             </div>);
           })}
           <input type="submit" value="Submit Parts" />
-        </form>
+        </form>}
 
-        <button onClick={this._onNext}>Skip</button>
+        {screenType === screenTypes.addNotes && <form onSubmit={this._handleSubmitNotes}>
+          <textarea rows="4" cols="50" name="medicalHistory" onChange={this._handleInputChange}></textarea>
+          <input type="submit" value="Submit Notes" />
+        </form>}
+
+        <button onClick={() => { this._switchScreen(true) }}>Go Back</button>
+        <button onClick={() => { this._switchScreen() }}>Skip</button>
       </div>
     )
   }
