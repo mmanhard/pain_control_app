@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import actions from '../actions';
+import Navbar from '../components/Navbar';
 
 class PainPoints extends React.Component {
   constructor(props) {
@@ -12,8 +13,11 @@ class PainPoints extends React.Component {
   }
 
   render() {
+    const { userInfo, logout } = this.props;
+    
     return (
       <div>
+        <Navbar userInfo={userInfo} logout={logout}/>
         <h2>PainPoints</h2>
       </div>
     )
@@ -21,6 +25,7 @@ class PainPoints extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  userInfo: state.users.userInfo,
 });
 
 const mapDispatchToProps = dispatch => ({
