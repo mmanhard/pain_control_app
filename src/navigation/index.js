@@ -3,7 +3,8 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect
+  Redirect,
+  useParams
 } from "react-router-dom";
 import { connect } from 'react-redux';
 
@@ -28,7 +29,7 @@ class Navigation extends React.Component {
               <Pages.Entries />
             </PrivateRoute>
             <PrivateRoute path="/entries/:entryID" isLogin={this.props.isLogin}>
-              <Pages.EntryDetail />
+              <Entry />
             </PrivateRoute>
             <PrivateRoute path="/add_entry" isLogin={this.props.isLogin} exact={true}>
               <Pages.AddEntry />
@@ -60,6 +61,16 @@ function PrivateRoute({ isLogin, children, ...rest }) {
       }
     />
   );
+}
+
+function Entry() {
+  let { entryID } = useParams();
+  return <Pages.EntryDetail entryInfo={ { id: entryID } } />;
+}
+
+function PainPoint() {
+  let { pointID } = useParams();
+  return <Pages.PainPointDetail bodyPartInfo={ { id: pointID } } />;
 }
 
 const mapStateToProps = state => ({

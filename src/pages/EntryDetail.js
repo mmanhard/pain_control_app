@@ -14,7 +14,7 @@ class EntryDetail extends React.Component {
 
   render() {
     const { userInfo, logout } = this.props;
-    
+
     return (
       <div>
         <Navbar userInfo={userInfo} logout={logout}/>
