@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import actions from '../actions';
+import { withRouter } from 'react-router';
 import Navbar from '../components/Navbar';
 
 class AddEntry extends React.Component {
@@ -42,7 +43,8 @@ class AddEntry extends React.Component {
       }
     });
 
-    this.props.addEntry(userInfo, entry)
+    this.props.addEntry(userInfo, entry);
+    this.props.history.replace('/dashboard');
   }
 
   render() {
@@ -84,4 +86,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(AddEntry);
+)(withRouter(AddEntry));
