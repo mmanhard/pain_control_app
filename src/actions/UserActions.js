@@ -29,6 +29,14 @@ const userActions = {
   ADD_USER_BODY_PART_SUCCESS: 'ADD_' + USER_PREFIX + '_BODY_PART' + '_SUCCESS',
   ADD_USER_BODY_PART_FAIL: 'ADD_' + USER_PREFIX + '_BODY_PART' + '_FAIL',
 
+  GET_USER_ENTRY_REQUEST: 'GET_' + USER_PREFIX + '_ENTRY' + '_REQUEST',
+  GET_USER_ENTRY_SUCCESS: 'GET_' + USER_PREFIX + '_ENTRY' + '_SUCCESS',
+  GET_USER_ENTRY_FAIL: 'GET_' + USER_PREFIX + '_ENTRY' + '_FAIL',
+
+  ADD_USER_ENTRY_REQUEST: 'ADD_' + USER_PREFIX + '_ENTRY' + '_REQUEST',
+  ADD_USER_ENTRY_SUCCESS: 'ADD_' + USER_PREFIX + '_ENTRY' + '_SUCCESS',
+  ADD_USER_ENTRY_FAIL: 'ADD_' + USER_PREFIX + '_ENTRY' + '_FAIL',
+
   LOG_OUT: 'LOG_OUT',
 };
 
@@ -192,6 +200,54 @@ const addBodyPart = (userInfo, data) => {
   };
 }
 
+const getEntries = (userInfo, params) => {
+  return async dispatch => {
+    dispatch({
+      type: userActions.GET_USER_ENTRY_REQUEST
+    });
+    try {
+      const response = await API.getEntries(userInfo, params);
+
+      if (!response.fail) {
+        dispatch({
+          type: userActions.GET_USER_ENTRY_SUCCESS,
+          payload: { data: { ...response.data } }
+        });
+      } else {
+        dispatch({
+          type: userActions.GET_USER_ENTRY_FAIL,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+}
+
+const addEntry = (userInfo, data) => {
+  return async dispatch => {
+    dispatch({
+      type: userActions.ADD_USER_ENTRY_REQUEST
+    });
+    try {
+      const response = await API.addEntry(userInfo, data);
+
+      if (!response.fail) {
+        dispatch({
+          type: userActions.ADD_USER_ENTRY_SUCCESS,
+          payload: { data: { ...response.data } }
+        });
+      } else {
+        dispatch({
+          type: userActions.ADD_USER_ENTRY_FAIL,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+}
+
 export {
   userActions,
   register,
@@ -200,5 +256,7 @@ export {
   getUserData,
   updateUser,
   getBodyParts,
-  addBodyPart
+  addBodyPart,
+  getEntries,
+  addEntry
 }

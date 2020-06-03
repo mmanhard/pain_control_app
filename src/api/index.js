@@ -4,6 +4,7 @@ import {HOST, defaultHeaders, paths} from '../common/AppConst';
 const userPath = paths.user;
 const authPath = paths.auth;
 const bodypartPath = paths.bodyPart;
+const entryPath = paths.entry;
 
 const register = (data) => {
   const path = `${authPath}register/`;
@@ -35,9 +36,18 @@ const getBodyParts = (userInfo, params) => {
   return _get(path);
 };
 
-const addBodyPart = (userInfo,data) => {
-  console.log(data);
+const addBodyPart = (userInfo, data) => {
   const path = `${userPath}${userInfo.id}${bodypartPath}`;
+  return _post(path, data);
+};
+
+const getEntries = (userInfo, params) => {
+  const path = `${userPath}${userInfo.id}${entryPath}`;
+  return _get(path);
+};
+
+const addEntry = (userInfo, data) => {
+  const path = `${userPath}${userInfo.id}${entryPath}`;
   return _post(path, data);
 };
 
@@ -106,4 +116,6 @@ export default {
   updateUser,
   getBodyParts,
   addBodyPart,
+  getEntries,
+  addEntry
 }

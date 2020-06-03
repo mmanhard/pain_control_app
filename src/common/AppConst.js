@@ -2,7 +2,8 @@ export const HOST = 'http://127.0.0.1:5000';
 export const paths = {
   user: '/users/',
   auth: '/auth/',
-  bodyPart: '/body_parts/'
+  bodyPart: '/body_parts/',
+  entry: '/entries/'
 };
 
 export const defaultHeaders = {
