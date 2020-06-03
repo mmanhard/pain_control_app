@@ -51,6 +51,9 @@ class Navbar extends React.Component {
             <button onClick={this._toggleDropdown}>DROPDOWN</button>
           </li>
           {dropdownVisible && this._renderDropdown()}
+          <li>
+            <a href="/add_entry">+</a>
+          </li>
         </ul>
       </div>
     );
