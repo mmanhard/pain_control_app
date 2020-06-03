@@ -6,11 +6,45 @@ import {
   Redirect,
   useParams
 } from "react-router-dom";
+import actions from '../actions';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import Pages from "../pages";
 
 class Navigation extends React.Component {
+  componentDidMount() {
+    const { userInfo } = this.props;
+
+    if (this.props.userUpdate) {
+      this.props.getUserData(userInfo);
+    }
+
+    if (this.props.entryUpdate) {
+      this.props.getEntries(userInfo);
+    }
+
+    if (this.props.bodyPartUpdate) {
+      this.props.getBodyParts(userInfo);
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { userInfo } = this.props;
+
+    if (this.props.userUpdate) {
+      this.props.getUserData(userInfo);
+    }
+
+    if (this.props.entryUpdate) {
+      this.props.getEntries(userInfo);
+    }
+
+    if (this.props.bodyPartUpdate) {
+      this.props.getBodyParts(userInfo);
+    }
+  }
+
   render() {
     return (
       <Router>
@@ -74,9 +108,18 @@ function PainPoint() {
 }
 
 const mapStateToProps = state => ({
-  isLogin: state.users.isLogin
+  isLogin: state.users.isLogin,
+  userInfo: state.users.userInfo,
+  userUpdate: state.users.userUpdate,
+  entryUpdate: state.users.entryUpdate,
+  bodyPartUpdate: state.users.bodyPartUpdate
+});
+
+const mapDispatchToProps = dispatch => ({
+  ...bindActionCreators(actions, dispatch),
 });
 
 export default connect(
   mapStateToProps,
+  mapDispatchToProps
 )(Navigation);

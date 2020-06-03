@@ -13,30 +13,6 @@ class AddEntry extends React.Component {
     };
   }
 
-  componentDidMount() {
-    const { userInfo } = this.props;
-
-    if (this.props.userUpdate) {
-      this.props.getUserData(userInfo);
-    }
-
-    if (this.props.bodyPartUpdate) {
-      this.props.getBodyParts(userInfo);
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    const { userInfo } = this.props;
-
-    if (this.props.userUpdate) {
-      this.props.getUserData(userInfo);
-    }
-
-    if (this.props.bodyPartUpdate) {
-      this.props.getBodyParts(userInfo);
-    }
-  }
-
   _handleInputChange = (event) => {
     const target = event.target;
     this.setState({ [target.name]: target.value });

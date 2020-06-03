@@ -12,30 +12,6 @@ class Entries extends React.Component {
     };
   }
 
-  componentDidMount() {
-    const { userInfo } = this.props;
-
-    if (this.props.userUpdate) {
-      this.props.getUserData(userInfo);
-    }
-
-    if (this.props.entryUpdate) {
-      this.props.getEntries(userInfo);
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    const { userInfo } = this.props;
-
-    if (this.props.userUpdate) {
-      this.props.getUserData(userInfo);
-    }
-
-    if (this.props.entryUpdate) {
-      this.props.getEntries(userInfo);
-    }
-  }
-
   render() {
     const { userInfo, bodyParts, entries, logout } = this.props;
 
