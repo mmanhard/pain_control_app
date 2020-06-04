@@ -5,14 +5,26 @@ import { withRouter } from 'react-router';
 import actions from '../actions';
 import Navbar from '../components/Navbar';
 
+const statTypes = {
+  avg: 'avg',
+  max: 'high',
+  min: 'low',
+  stddev: 'stddev'
+}
+
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       name: '',
-      type: 'Joint'
+      type: 'Joint',
+      statType: statTypes.max
     };
+  }
+
+  componentDidMount() {
+    console.log(this.props.bodyParts);
   }
 
   _handleInputChange = (event) => {
@@ -20,14 +32,12 @@ class Dashboard extends React.Component {
     this.setState({ [target.name]: target.value });
   }
 
-  _handleAddBodyPart = (event) => {
-    event.preventDefault();
+  _changeStatType = (event) => {
 
-    this.props.addBodyPart(this.props.userInfo, { name: this.state.name, type: this.state.type});
   }
 
   render() {
-    const { userInfo, token, logout } = this.props;
+    const { userInfo, bodyParts, token, logout } = this.props;
     return (
       <div>
         <Navbar userInfo={userInfo} logout={logout}/>
@@ -40,29 +50,23 @@ class Dashboard extends React.Component {
         <h3>{userInfo?.hometown && `Hometown: ${userInfo?.hometown}`}</h3>
         <h3>{userInfo?.medical_history && `Medical History: ${userInfo?.medical_history}`}</h3>
 
-        { this.props.bodyParts && <h3>Number of Body Parts: {this.props.bodyParts.length}</h3>}
-        <form onSubmit={this._handleAddBodyPart}>
-          <label>
-            Joint Name:
-            <input
-              name="name"
-              type="text"
-              value={this.state.name}
-              onChange={this._handleInputChange}
-            />
-          </label>
-          <br />
-          <label>
-            Joint Type:
-            <input
-              name="type"
-              type="text"
-              value={this.state.type}
-              onChange={this._handleInputChange}
-            />
-          </label>
-          <br />
-          <input type="submit" value="Add Body Part" />
+        { this.props.bodyParts && <h3>Number of Body Parts: {this.props.bodyParts.length}</h3> }
+
+        { bodyParts.map((part) => {
+            if (part.stats?.num_entries > 0) {
+              return (
+                <div key={part.id}>
+                  {(part.location && `${part.location} `)}
+                  {`${part.name} ${part.stats[this.state.statType]}`}
+                </div>
+              );
+            }
+        })}
+
+        <form>
+        <input name="statType" value={statTypes.avg} type="radio" onChange={this._handleInputChange}/> Avg
+        <input name="statType" value={statTypes.max} type="radio" onChange={this._handleInputChange}/> Max
+        <input name="statType" value={statTypes.min} type="radio" onChange={this._handleInputChange}/> Min
         </form>
       </div>
     )
