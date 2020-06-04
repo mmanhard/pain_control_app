@@ -4,8 +4,8 @@ import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import actions from '../actions';
 
-const lrb = ['left', 'right', 'both'];
-const ulb = ['upper', 'lower', 'both'];
+const lrb = ['Left', 'Right', 'Both'];
+const ulb = ['Upper', 'Lower', 'Both'];
 
 const defaultBodyParts = [
   {
