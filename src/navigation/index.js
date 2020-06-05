@@ -10,7 +10,7 @@ import actions from '../actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import Pages from "../pages";
+import Pages from "Pages";
 
 class Navigation extends React.Component {
   componentDidMount() {

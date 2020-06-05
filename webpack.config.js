@@ -9,6 +9,18 @@ module.exports = {
     filename: "bundle.js",
     publicPath: '/'
   },
+  resolve: {
+    alias: {
+      Actions: path.resolve(__dirname, 'src/actions/'),
+      API: path.resolve(__dirname, 'src/api/'),
+      Common: path.resolve(__dirname, 'src/common/'),
+      Components: path.resolve(__dirname, 'src/components/'),
+      Navigation: path.resolve(__dirname, 'src/navigation/'),
+      Pages: path.resolve(__dirname, 'src/pages/'),
+      Reducers: path.resolve(__dirname, 'src/reducers/'),
+      Store: path.resolve(__dirname, 'src/store/'),
+    }
+  },
   module: {
     rules: [
       {

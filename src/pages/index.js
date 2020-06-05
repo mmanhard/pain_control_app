@@ -1,12 +1,12 @@
-import Login from "./Login";
-import Dashboard from "./Dashboard";
-import Onboarding from "./Onboarding";
-import Entries from "./Entries";
-import EntryDetail from "./EntryDetail";
-import AddEntry from "./AddEntry";
-import PainPoints from "./PainPoints";
-import PainPointDetail from "./PainPointDetail";
-import Settings from "./Settings";
+import Login from "Pages/Login";
+import Dashboard from "Pages/Dashboard";
+import Onboarding from "Pages/Onboarding";
+import Entries from "Pages/Entries";
+import EntryDetail from "Pages/EntryDetail";
+import AddEntry from "Pages/AddEntry";
+import PainPoints from "Pages/PainPoints";
+import PainPointDetail from "Pages/PainPointDetail";
+import Settings from "Pages/Settings";
 
 
 export default {
