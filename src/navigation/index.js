@@ -48,7 +48,7 @@ class Navigation extends React.Component {
   render() {
     return (
       <Router>
-        <div>
+        <div style={{{fontFamily: 'Raleway'}}}>
           <Switch>
             <Route path="/" exact={true}>
               <Pages.Login />
