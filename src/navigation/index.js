@@ -11,6 +11,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import Pages from "Pages";
+import AppFonts from 'Common/AppFonts';
 
 class Navigation extends React.Component {
   componentDidMount() {
@@ -48,7 +49,7 @@ class Navigation extends React.Component {
   render() {
     return (
       <Router>
-        <div style={{fontFamily: 'Raleway'}}>
+        <div style={AppFonts.Raleway.bold}>
           <Switch>
             <Route path="/" exact={true}>
               <Pages.Login />
