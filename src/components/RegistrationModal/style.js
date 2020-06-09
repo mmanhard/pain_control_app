@@ -33,17 +33,18 @@ export default {
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     borderBottom: `1px solid ${AppColors.blue}`
   },
   txtInput: {
     ...AppFonts.Raleway.bold,
     flex: 1,
+    width: 10,
     paddingLeft: 10,
     border: 'none',
     backgroundColor: 'transparent',
   },
-  loginBtn: {
+  registerBtn: {
     ...AppStyles.largeBtn,
     backgroundColor: AppColors.blue,
     color: AppColors.white,

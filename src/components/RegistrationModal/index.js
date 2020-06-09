@@ -2,6 +2,11 @@ import React from "react";
 
 import styles from './style';
 import AppColors from 'Common/AppColors';
+
+import NameIcon from 'Icons/icons8-name.png';
+import EmailIcon from 'Icons/icons8-email.png';
+import KeyIcon from 'Icons/icons8-key.png';
+
 import Icon from 'Icons/temp_ico.png';
 import Modal from 'Components/Modal'
 
@@ -31,7 +36,7 @@ class RegistrationModal extends React.Component {
       >
         <div style={styles.formContainer}>
           <div style={styles.txtInputContainer}>
-            <img src={Icon} style={{height: 24, margin: 'auto'}} />
+            <img src={NameIcon} style={{width: 24, height: 24, margin: 'auto'}} />
             <input
               name="first_name"
               style={styles.txtInput}
@@ -40,9 +45,6 @@ class RegistrationModal extends React.Component {
               value={this.state.first_name}
               onChange={handleInputChange}
             />
-          </div>
-          <div style={styles.txtInputContainer}>
-            <img src={Icon} style={{height: 24, margin: 'auto'}} />
             <input
               name="last_name"
               style={styles.txtInput}
@@ -53,7 +55,7 @@ class RegistrationModal extends React.Component {
             />
           </div>
           <div style={styles.txtInputContainer}>
-            <img src={Icon} style={{height: 24, margin: 'auto'}} />
+            <img src={EmailIcon} style={{height: 24, margin: 'auto'}} />
             <input
               name="email"
               style={styles.txtInput}
@@ -64,7 +66,7 @@ class RegistrationModal extends React.Component {
             />
           </div>
           <div style={styles.txtInputContainer}>
-            <img src={Icon} style={{height: 24, margin: 'auto' }} />
+            <img src={KeyIcon} style={{height: 24, margin: 'auto' }} />
             <input
               name="password"
               style={styles.txtInput}

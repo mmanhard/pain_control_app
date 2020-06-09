@@ -6,7 +6,9 @@ import { withRouter } from 'react-router';
 import styles from './style';
 import actions from 'Actions';
 import AppColors from 'Common/AppColors';
-import Icon from 'Icons/temp_ico.png';
+
+import EmailIcon from 'Icons/icons8-email.png';
+import KeyIcon from 'Icons/icons8-key.png';
 import RegistrationModal from 'Components/RegistrationModal';
 
 class Login extends React.Component {
@@ -77,7 +79,7 @@ class Login extends React.Component {
             </div>
             <div style={styles.loginContainer}>
               <div style={styles.txtInputContainer}>
-                <img src={Icon} style={{height: 24, margin: 'auto'}} />
+                <img src={EmailIcon} style={{height: 24, margin: 'auto'}} />
                 <input
                   name="email"
                   style={styles.txtInput}
@@ -88,7 +90,7 @@ class Login extends React.Component {
                 />
               </div>
               <div style={styles.txtInputContainer}>
-                <img src={Icon} style={{height: 24, margin: 'auto' }} />
+                <img src={KeyIcon} style={{height: 24, margin: 'auto' }} />
                 <input
                   name="password"
                   style={styles.txtInput}
