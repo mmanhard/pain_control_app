@@ -8,10 +8,9 @@ export default {
     display: 'flex',
     flexDirection: 'column',
     position: 'absolute',
-    right: 0,
-    top: 0,
-    bottom: 0,
+    margin: 'auto',
     width: 400,
+    height: 425,
     fontSize: AppFonts.size.xSmall,
     color: AppColors.lightGrey,
     backgroundColor: AppColors.white,
@@ -20,9 +19,9 @@ export default {
     borderWidth: 0.25,
     borderColor: AppColors.blue,
   },
-  loginContainer: {
+  formContainer: {
     flex: 1,
-    padding: '20px 80px 50px 80px',
+    padding: '20px 60px 50px 60px',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -44,7 +43,7 @@ export default {
     border: 'none',
     backgroundColor: 'transparent',
   },
-  registerBtn: {
+  loginBtn: {
     ...AppStyles.largeBtn,
     backgroundColor: AppColors.blue,
     color: AppColors.white,

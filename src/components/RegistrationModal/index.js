@@ -29,7 +29,7 @@ class RegistrationModal extends React.Component {
         ref={this.modalRef}
         contentStyle={styles.container}
       >
-        <div style={styles.loginContainer}>
+        <div style={styles.formContainer}>
           <div style={styles.txtInputContainer}>
             <img src={Icon} style={{height: 24, margin: 'auto'}} />
             <input
@@ -74,7 +74,7 @@ class RegistrationModal extends React.Component {
               onChange={handleInputChange}
             />
           </div>
-          <button style={styles.loginBtn} onClick={handleRegister}>Register</button>
+          <button style={styles.registerBtn} onClick={handleRegister}>Register</button>
         </div>
       </Modal>
     )
