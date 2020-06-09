@@ -19,6 +19,7 @@ module.exports = {
       Pages: path.resolve(__dirname, 'src/pages/'),
       Reducers: path.resolve(__dirname, 'src/reducers/'),
       Store: path.resolve(__dirname, 'src/store/'),
+      Icons: path.resolve(__dirname, 'assets/icons/'),
     }
   },
   module: {
@@ -33,7 +34,13 @@ module.exports = {
             plugins: ["@babel/plugin-proposal-class-properties"]
           }
         }
-      }
+      },
+      {
+        test: /\.(png|svg|jpg|gif)$/,
+        use: [
+          'file-loader',
+        ],
+      },
     ]
   },
   devtool: 'cheap-module-eval-source-map',

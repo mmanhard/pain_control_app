@@ -17,6 +17,7 @@
     "axios": "^0.19.2",
     "babel-loader": "^8.1.0",
     "core-js": "^3.6.5",
+    "file-loader": "^6.0.0",
     "live-server": "^1.2.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
