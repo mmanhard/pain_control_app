@@ -17,6 +17,19 @@ const Raleway = {
   },
 }
 
+const size = {
+  tiny: 8,
+  xSmall: 10,
+  small: 12,
+  medSmall: 14,
+  medium: 16,
+  medLarge: 21,
+  large: 28,
+  xLarge: 32,
+  xxLarge: 40
+}
+
 export default {
-  Raleway
+  Raleway,
+  size
 }
