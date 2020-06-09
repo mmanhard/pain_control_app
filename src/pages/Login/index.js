@@ -7,6 +7,7 @@ import styles from './style';
 import actions from 'Actions';
 import AppColors from 'Common/AppColors';
 import Icon from 'Icons/temp_ico.png';
+import Modal from 'Components/Modal'
 
 class Login extends React.Component {
   constructor(props) {
@@ -17,8 +18,10 @@ class Login extends React.Component {
       last_name: '',
       email: '',
       password: '',
-      didRegister: false
+      didRegister: false,
     };
+
+    this.modalRef = React.createRef();
   }
 
   componentDidMount() {
@@ -55,6 +58,11 @@ class Login extends React.Component {
     this.props.login(this.state);
   }
 
+  _open = () => {
+    this.modalRef.current.open();
+    console.log('Called');
+  }
+
   render() {
     return (
       <div style={styles.container}>
@@ -66,7 +74,7 @@ class Login extends React.Component {
           <div style={styles.formContainer}>
             <div style={styles.noLoginContainer}>
               <p style={{marginRight: 10 }}>Don't have an account?</p>
-              <button style={styles.registerBtn}>Register</button>
+              <button style={styles.registerBtn} onClick={this._open}>Register</button>
             </div>
             <div style={styles.loginContainer}>
               <div style={styles.txtInputContainer}>
@@ -74,7 +82,7 @@ class Login extends React.Component {
                 <input
                   name="email"
                   style={styles.txtInput}
-                  placeholder='email'
+                  placeholder='Email'
                   type="text"
                   value={this.state.email}
                   onChange={this._handleInputChange}
@@ -85,7 +93,7 @@ class Login extends React.Component {
                 <input
                   name="password"
                   style={styles.txtInput}
-                  placeholder='password'
+                  placeholder='Password'
                   type="password"
                   value={this.state.password}
                   onChange={this._handleInputChange}
@@ -96,50 +104,58 @@ class Login extends React.Component {
             </div>
           </div>
         </div>
-        {/*<h2>Register / Login</h2>
-        <form onSubmit={this._handleRegister}>
-          <label>
-            First Name:
-            <input
-              name="first_name"
-              type="text"
-              value={this.state.first_name}
-              onChange={this._handleInputChange}
-            />
-          </label>
-          <br />
-          <label>
-            Last Name:
-            <input
-              name="last_name"
-              type="text"
-              value={this.state.last_name}
-              onChange={this._handleInputChange}
-            />
-          </label>
-          <br />
-          <label>
-            Email:
-            <input
-              name="email"
-              type="text"
-              value={this.state.email}
-              onChange={this._handleInputChange}
-            />
-          </label>
-          <br />
-          <label>
-            Password:
-            <input
-              name="password"
-              type="password"
-              value={this.state.password}
-              onChange={this._handleInputChange}
-            />
-          </label>
-          <br />
-          <input type="submit" value="Register" />
-        </form>*/}
+        <Modal
+          ref={this.modalRef}
+          contentStyle={styles.formModalContainer}
+        >
+          <div style={styles.loginContainer}>
+            <div style={styles.txtInputContainer}>
+              <img src={Icon} style={{height: 24, margin: 'auto'}} />
+              <input
+                name="first_name"
+                style={styles.txtInput}
+                placeholder='First Name'
+                type="text"
+                value={this.state.first_name}
+                onChange={this._handleInputChange}
+              />
+            </div>
+            <div style={styles.txtInputContainer}>
+              <img src={Icon} style={{height: 24, margin: 'auto'}} />
+              <input
+                name="last_name"
+                style={styles.txtInput}
+                placeholder='Last Name'
+                type="text"
+                value={this.state.last_name}
+                onChange={this._handleInputChange}
+              />
+            </div>
+            <div style={styles.txtInputContainer}>
+              <img src={Icon} style={{height: 24, margin: 'auto'}} />
+              <input
+                name="email"
+                style={styles.txtInput}
+                placeholder='Email'
+                type="text"
+                value={this.state.email}
+                onChange={this._handleInputChange}
+              />
+            </div>
+            <div style={styles.txtInputContainer}>
+              <img src={Icon} style={{height: 24, margin: 'auto' }} />
+              <input
+                name="password"
+                style={styles.txtInput}
+                placeholder='Password'
+                type="password"
+                value={this.state.password}
+                onChange={this._handleInputChange}
+              />
+            </div>
+            <button style={styles.loginBtn} onClick={this._handleRegister}>Register</button>
+          </div>
+        </Modal>
       </div>
     )
   }
