@@ -2,7 +2,11 @@ import React from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
-import actions from '../actions';
+
+import styles from './style';
+import actions from 'Actions';
+import AppColors from 'Common/AppColors';
+import Icon from 'Icons/temp_ico.png';
 
 class Login extends React.Component {
   constructor(props) {
@@ -53,8 +57,46 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div>
-        <h2>Register / Login</h2>
+      <div style={styles.container}>
+        <div style={styles.contentContainer}>
+          <div style={{ marginLeft: 50, marginTop: 50}}>
+            <p style={styles.titleTxt}>pain</p>
+            <p style={styles.titleTxt}>control</p>
+          </div>
+          <div style={styles.formContainer}>
+            <div style={styles.noLoginContainer}>
+              <p style={{marginRight: 10 }}>Don't have an account?</p>
+              <button style={styles.registerBtn}>Register</button>
+            </div>
+            <div style={styles.loginContainer}>
+              <div style={styles.txtInputContainer}>
+                <img src={Icon} style={{height: 24, margin: 'auto'}} />
+                <input
+                  name="email"
+                  style={styles.txtInput}
+                  placeholder='email'
+                  type="text"
+                  value={this.state.email}
+                  onChange={this._handleInputChange}
+                />
+              </div>
+              <div style={styles.txtInputContainer}>
+                <img src={Icon} style={{height: 24, margin: 'auto' }} />
+                <input
+                  name="password"
+                  style={styles.txtInput}
+                  placeholder='password'
+                  type="password"
+                  value={this.state.password}
+                  onChange={this._handleInputChange}
+                />
+              </div>
+              <button style={styles.loginBtn} onClick={this._handleLogin}>Log In</button>
+              <p style={{textDecoration: 'underline'}}>Forgot password?</p>
+            </div>
+          </div>
+        </div>
+        {/*<h2>Register / Login</h2>
         <form onSubmit={this._handleRegister}>
           <label>
             First Name:
@@ -97,8 +139,7 @@ class Login extends React.Component {
           </label>
           <br />
           <input type="submit" value="Register" />
-        </form>
-        <button onClick={this._handleLogin}>Log In</button>
+        </form>*/}
       </div>
     )
   }
