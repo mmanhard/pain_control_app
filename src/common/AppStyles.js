@@ -1,4 +1,6 @@
 import AppFonts from 'Common/AppFonts';
+import AppColors from 'Common/AppColors';
+import AppStyles from 'Common/AppStyles';
 
 export default {
   fill: {
@@ -12,6 +14,19 @@ export default {
     display: 'flex',
     alignItems: "center",
     justifyContent: "center",
+  },
+  closeBtn: {
+    ...AppFonts.Raleway.xBold,
+    display: 'flex',
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: AppFonts.size.xLarge,
+    backgroundColor: AppColors.blue,
+    border: 'none',
+    boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
+    height: 40,
+    width: 40,
+    borderRadius: 20,
   },
   largeBtn: {
     ...AppFonts.Raleway.bold,

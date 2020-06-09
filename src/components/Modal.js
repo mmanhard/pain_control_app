@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactModal from 'react-modal';
+import AppColors from 'Common/AppColors';
+import AppStyles from 'Common/AppStyles';
 
 import Icon from 'Icons/temp_ico.png';
 
@@ -49,9 +51,7 @@ class Modal extends React.Component {
           style={{ overlay: {backgroundColor: 'rgba(0, 0, 0, 0.6)'}, content: {...contentStyle} }}
           contentLabel="Example Modal"
         >
-          <button style={{position: 'relative', zIndex: 1, height: 36, width: 36}} onClick={this.close}>
-            <img src={Icon} style={{height: 24, width: 24}} />
-          </button>
+          <button style={{ zIndex: 1, ...AppStyles.closeBtn}} onClick={this.close}><span style={{marginBottom: 5, marginLeft: 1}}>x</span></button>
           {children}
         </ReactModal>
       </div>
