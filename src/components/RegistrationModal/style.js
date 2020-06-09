@@ -5,19 +5,6 @@ import AppFonts from 'Common/AppFonts';
 
 export default {
   container: {
-    ...AppStyles.fill,
-    ...AppStyles.center,
-    backgroundColor: AppColors.lilac,
-  },
-  contentContainer: {
-    ...AppStyles.fill,
-    margin: 100,
-    backgroundColor: AppColors.blue,
-    boxShadow: AppStyles.typBoxShadow,
-    minHeight: 320,
-    minWidth: 625
-  },
-  formContainer: {
     display: 'flex',
     flexDirection: 'column',
     position: 'absolute',
@@ -32,19 +19,6 @@ export default {
     borderStyle: 'solid',
     borderWidth: 0.25,
     borderColor: AppColors.blue,
-  },
-  noLoginContainer: {
-    padding: 10,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center'
-  },
-  titleTxt: {
-    margin: 0,
-    ...AppFonts.Raleway.bold,
-    color: AppColors.white,
-    fontSize: AppFonts.size.xxLarge
   },
   loginContainer: {
     flex: 1,
@@ -70,14 +44,9 @@ export default {
     border: 'none',
     backgroundColor: 'transparent',
   },
-  loginBtn: {
+  registerBtn: {
     ...AppStyles.largeBtn,
     backgroundColor: AppColors.blue,
     color: AppColors.white,
   },
-  registerBtn: {
-    ...AppStyles.largeBtn,
-    backgroundColor: AppColors.lilac,
-    color: AppColors.blue,
-  }
 }

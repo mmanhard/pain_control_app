@@ -7,7 +7,7 @@ import styles from './style';
 import actions from 'Actions';
 import AppColors from 'Common/AppColors';
 import Icon from 'Icons/temp_ico.png';
-import Modal from 'Components/Modal'
+import RegistrationModal from 'Components/RegistrationModal';
 
 class Login extends React.Component {
   constructor(props) {
@@ -60,7 +60,6 @@ class Login extends React.Component {
 
   _open = () => {
     this.modalRef.current.open();
-    console.log('Called');
   }
 
   render() {
@@ -104,58 +103,12 @@ class Login extends React.Component {
             </div>
           </div>
         </div>
-        <Modal
+        <RegistrationModal
           ref={this.modalRef}
           contentStyle={styles.formModalContainer}
-        >
-          <div style={styles.loginContainer}>
-            <div style={styles.txtInputContainer}>
-              <img src={Icon} style={{height: 24, margin: 'auto'}} />
-              <input
-                name="first_name"
-                style={styles.txtInput}
-                placeholder='First Name'
-                type="text"
-                value={this.state.first_name}
-                onChange={this._handleInputChange}
-              />
-            </div>
-            <div style={styles.txtInputContainer}>
-              <img src={Icon} style={{height: 24, margin: 'auto'}} />
-              <input
-                name="last_name"
-                style={styles.txtInput}
-                placeholder='Last Name'
-                type="text"
-                value={this.state.last_name}
-                onChange={this._handleInputChange}
-              />
-            </div>
-            <div style={styles.txtInputContainer}>
-              <img src={Icon} style={{height: 24, margin: 'auto'}} />
-              <input
-                name="email"
-                style={styles.txtInput}
-                placeholder='Email'
-                type="text"
-                value={this.state.email}
-                onChange={this._handleInputChange}
-              />
-            </div>
-            <div style={styles.txtInputContainer}>
-              <img src={Icon} style={{height: 24, margin: 'auto' }} />
-              <input
-                name="password"
-                style={styles.txtInput}
-                placeholder='Password'
-                type="password"
-                value={this.state.password}
-                onChange={this._handleInputChange}
-              />
-            </div>
-            <button style={styles.loginBtn} onClick={this._handleRegister}>Register</button>
-          </div>
-        </Modal>
+          handleInputChange={this._handleInputChange}
+          handleRegister={this._handleRegister}
+        />
       </div>
     )
   }
