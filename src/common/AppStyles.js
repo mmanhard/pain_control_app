@@ -15,6 +15,14 @@ export default {
     alignItems: "center",
     justifyContent: "center",
   },
+  typContentContainer: {
+    backgroundColor: AppColors.white,
+    borderTopLeftRadius: 40,
+    borderStyle: 'solid',
+    borderWidth: 0.25,
+    borderColor: AppColors.blue,
+    boxShadow: `0px 4px 4px rgba(0,0,0,0.25)`,
+  },
   closeBtn: {
     ...AppFonts.Raleway.xBold,
     display: 'flex',

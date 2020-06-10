@@ -6,10 +6,10 @@ import { withRouter } from 'react-router';
 import styles from './style';
 import actions from 'Actions';
 import AppColors from 'Common/AppColors';
+import RegistrationModal from 'Components/RegistrationModal';
 
 import EmailIcon from 'Icons/icons8-email.png';
 import KeyIcon from 'Icons/icons8-key.png';
-import RegistrationModal from 'Components/RegistrationModal';
 
 class Login extends React.Component {
   constructor(props) {

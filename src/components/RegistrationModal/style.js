@@ -13,11 +13,7 @@ export default {
     height: 425,
     fontSize: AppFonts.size.xSmall,
     color: AppColors.lightGrey,
-    backgroundColor: AppColors.white,
-    borderTopLeftRadius: 40,
-    borderStyle: 'solid',
-    borderWidth: 0.25,
-    borderColor: AppColors.blue,
+    ...AppStyles.typContentContainer
   },
   formContainer: {
     flex: 1,
