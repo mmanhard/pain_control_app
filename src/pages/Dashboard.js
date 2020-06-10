@@ -2,8 +2,8 @@ import React from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
-import actions from '../actions';
-import Navbar from '../components/Navbar';
+import actions from 'Actions';
+import Navbar from 'Components/Navbar';
 
 const statTypes = {
   avg: 'avg',
@@ -52,7 +52,7 @@ class Dashboard extends React.Component {
 
         { this.props.bodyParts && <h3>Number of Body Parts: {this.props.bodyParts.length}</h3> }
 
-        { bodyParts.map((part) => {
+        { this.props.bodyParts && bodyParts.map((part) => {
             if (part.stats?.num_entries > 0) {
               return (
                 <div key={part.id}>
@@ -64,9 +64,9 @@ class Dashboard extends React.Component {
         })}
 
         <form>
-        <input name="statType" value={statTypes.avg} type="radio" onChange={this._handleInputChange}/> Avg
-        <input name="statType" value={statTypes.max} type="radio" onChange={this._handleInputChange}/> Max
-        <input name="statType" value={statTypes.min} type="radio" onChange={this._handleInputChange}/> Min
+          <input name="statType" value={statTypes.avg} type="radio" onChange={this._handleInputChange}/> Avg
+          <input name="statType" value={statTypes.max} type="radio" onChange={this._handleInputChange}/> Max
+          <input name="statType" value={statTypes.min} type="radio" onChange={this._handleInputChange}/> Min
         </form>
       </div>
     )
