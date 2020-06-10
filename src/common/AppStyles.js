@@ -45,5 +45,13 @@ export default {
     width: 120,
     borderRadius: 10,
   },
+  subtleBtn: {
+    ...AppFonts.Raleway.bold,
+    fontSize: AppFonts.size.small,
+    color: AppColors.lightGrey,
+    border: 'none',
+    background: 'transparent',
+    textDecoration: 'underline',
+  },
   typBoxShadow: `0px 4px 4px rgba(0,0,0,0.25)`,
 }

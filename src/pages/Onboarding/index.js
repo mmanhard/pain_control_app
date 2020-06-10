@@ -2,30 +2,36 @@ import React from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
-import actions from '../actions';
 
-const lrb = ['Left', 'Right', 'Both'];
-const ulb = ['Upper', 'Lower', 'Both'];
+import styles from './style';
+import actions from 'Actions';
+
+import PhoneIcon from 'Icons/icons8-phone.png';
+import BirthdayIcon from 'Icons/icons8-birthday.png';
+import HomeIcon from 'Icons/icons8-home.png';
+
+const lr = ['L', 'R'];
+const ul = ['Up', 'Lo'];
 
 const defaultBodyParts = [
   {
     'name': 'Shoulder',
-    'locations': lrb,
+    'locations': lr,
     'type': 'Joint'
   },
   {
     'name': 'Elbow',
-    'locations': lrb,
+    'locations': lr,
     'type': 'Joint'
   },
   {
     'name': 'Wrist',
-    'locations': lrb,
+    'locations': lr,
     'type': 'Joint'
   },
   {
     'name': 'Back',
-    'locations': ulb,
+    'locations': ul,
     'type': 'Region'
   }
 ];
@@ -120,47 +126,55 @@ class Onboarding extends React.Component {
     }
   }
 
-  render() {
-    const { screenType } = this.state;
+  _renderAddInfo = () => {
     return (
-      <div>
-        <h2>Onboarding</h2>
-        <h3>User ID: {this.props.userInfo?.id}</h3>
-        {screenType === screenTypes.addInfo && <form onSubmit={this._handleSubmitInfo}>
-          <label>
-            Phone Number:
+      <div style={styles.contentContainer}>
+        <div style={styles.infoContainer}>
+          <div style={styles.txtInputContainer}>
+            <img src={PhoneIcon} style={{height: 24, margin: 'auto' }} />
             <input
               name="phone"
+              style={styles.txtInput}
+              placeholder='Phone Number'
               type="text"
               value={this.state.phone}
               onChange={this._handleInputChange}
             />
-          </label>
-          <br />
-          <label>
-            Birthday:
+          </div>
+          <div style={styles.txtInputContainer}>
+            <img src={BirthdayIcon} style={{height: 24, margin: 'auto' }} />
             <input
               name="birthday"
+              style={styles.txtInput}
+              placeholder='--/--/--'
               type="text"
               value={this.state.birthday}
               onChange={this._handleInputChange}
             />
-          </label>
-          <br />
-          <label>
-            Hometown:
+          </div>
+          <div style={styles.txtInputContainer}>
+            <img src={HomeIcon} style={{height: 24, margin: 'auto' }} />
             <input
               name="hometown"
+              style={styles.txtInput}
+              placeholder='Hometown'
               type="text"
               value={this.state.hometown}
               onChange={this._handleInputChange}
             />
-          </label>
-          <br />
-          <input type="submit" value="Submit Add'l Info" />
-        </form>}
+          </div>
+          <button style={styles.continueBtn} onClick={this._handleSubmitInfo}>Continue</button>
+          <button style={styles.skipBtn} onClick={() => { this._switchScreen() }}>Skip</button>
+        </div>
+      </div>
+    );
+  }
 
-        {screenType === screenTypes.addParts && <form onSubmit={this._handleSubmitBodyParts}>
+  _renderAddParts = () => {
+    return (
+      <div style={styles.contentContainer}>
+        <button style={styles.backBtn} onClick={() => { this._switchScreen(true) }}><span style={{marginBottom: 5, marginLeft: 1}}>x</span></button>
+        <div style={styles.infoContainer}>
           {defaultBodyParts.map((part) => {
             return (<div key={part.name}>
               <h4>{part.name}</h4>
@@ -173,16 +187,51 @@ class Onboarding extends React.Component {
               : "goodbye"}
             </div>);
           })}
-          <input type="submit" value="Submit Parts" />
-        </form>}
+          <button style={styles.continueBtn} onClick={this._handleSubmitBodyParts}>Continue</button>
+          <button style={styles.skipBtn} onClick={() => { this._switchScreen() }}>Skip</button>
+        </div>
+      </div>
+    );
+  }
 
-        {screenType === screenTypes.addNotes && <form onSubmit={this._handleSubmitNotes}>
-          <textarea rows="4" cols="50" name="medicalHistory" onChange={this._handleInputChange}></textarea>
-          <input type="submit" value="Submit Notes" />
-        </form>}
+  _renderAddNotes = () => {
+    return (
+      <div style={styles.contentContainer}>
+        <button style={styles.backBtn} onClick={() => { this._switchScreen(true) }}><span style={{marginBottom: 5, marginLeft: 1}}>x</span></button>
+        <div style={styles.infoContainer}>
+          <textarea rows="8" cols="40" name="medicalHistory" style={styles.medHistoryInput} onChange={this._handleInputChange}></textarea>
+          <button style={styles.continueBtn} onClick={this._handleSubmitNotes}>Finish!</button>
+          <button style={styles.skipBtn} onClick={() => { this._switchScreen() }}>Skip</button>
+        </div>
+      </div>
+    );
+  }
 
-        <button onClick={() => { this._switchScreen(true) }}>Go Back</button>
-        <button onClick={() => { this._switchScreen() }}>Skip</button>
+  render() {
+    const { screenType } = this.state;
+    return (
+      <div style={styles.container}>
+        <div style={styles.titleContainer}>
+          {screenType === screenTypes.addInfo && (<div>
+            <p style={styles.titleTxt}>Welcome to Pain Control, {this.props.userInfo?.first_name}!</p>
+            <p style={styles.subtitleTxt}>Tell us a little more about yourself.</p>
+            </div>
+          )}
+          {screenType === screenTypes.addParts && (<div>
+            <p style={styles.titleTxt}>Where are your aches and pains?</p>
+            <p style={styles.subtitleTxt}>We'll start to manage them right now.</p>
+            </div>
+          )}
+          {screenType === screenTypes.addNotes && (<div>
+            <p style={styles.titleTxt}>Almost done!</p>
+            <p style={styles.subtitleTxt}>Let's get a brief summary of your medical history.</p>
+            </div>
+          )}
+        </div>
+
+        {screenType === screenTypes.addInfo && this._renderAddInfo()}
+        {screenType === screenTypes.addParts && this._renderAddParts()}
+        {screenType === screenTypes.addNotes && this._renderAddNotes()}
       </div>
     )
   }
