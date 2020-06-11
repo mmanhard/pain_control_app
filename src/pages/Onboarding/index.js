@@ -99,7 +99,7 @@ class Onboarding extends React.Component {
       birthday: '',
       hometown: '',
       medicalHistory: '',
-      screenType: screenTypes.addParts,
+      screenType: screenTypes.addInfo,
       selectOtherBodyParts: false,
       otherBodyParts: []
     };
@@ -117,6 +117,21 @@ class Onboarding extends React.Component {
     const target = event.target;
     this.setState({ [target.name]: target.value });
   }
+
+  _handlePhoneChange = (event) => {
+    const target = event.target;
+    let input = target.value .replace(/\D/g, '');
+    input = input.substring(0, 10);
+    if (input.length > 6) {
+      input = '(' + input.slice(0, 3) + ') ' + input.slice(3, 6) + '-' + input.slice(6);
+    } else if (input.length > 3) {
+      input = '(' + input.slice(0, 3) + ') ' + input.slice(3);
+    } else {
+      input = input;
+    }
+
+    this.setState({ phone: input });
+  };
 
   _handleSubmitInfo = (event) => {
     event.preventDefault();
@@ -248,7 +263,7 @@ class Onboarding extends React.Component {
               placeholder='Phone Number'
               type="text"
               value={this.state.phone}
-              onChange={this._handleInputChange}
+              onChange={this._handlePhoneChange}
             />
           </div>
           <div style={styles.txtInputContainer}>
