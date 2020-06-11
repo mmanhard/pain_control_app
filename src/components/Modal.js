@@ -4,7 +4,7 @@ import ReactModal from 'react-modal';
 import AppColors from 'Common/AppColors';
 import AppStyles from 'Common/AppStyles';
 
-import Icon from 'Icons/temp_ico.png';
+import XIcon from 'Icons/icons8-x.png';
 
 const customStyles = {
   overlay: {
@@ -51,7 +51,7 @@ class Modal extends React.Component {
           style={{ overlay: {backgroundColor: 'rgba(0, 0, 0, 0.6)'}, content: {...contentStyle} }}
           contentLabel="Example Modal"
         >
-          <button style={{ zIndex: 1, ...AppStyles.closeBtn}} onClick={this.close}><span style={{marginBottom: 5, marginLeft: 1}}>x</span></button>
+          <button style={{ zIndex: 1, ...AppStyles.closeBtn}} onClick={this.close}><img src={XIcon} style={{height: 20, margin: 'auto' }} /></button>
           {children}
         </ReactModal>
       </div>
