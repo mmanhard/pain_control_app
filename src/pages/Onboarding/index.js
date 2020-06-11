@@ -6,6 +6,7 @@ import { withRouter } from 'react-router';
 import styles from './style';
 import actions from 'Actions';
 
+import BackIcon from 'Icons/icons8-back.png';
 import PhoneIcon from 'Icons/icons8-phone.png';
 import BirthdayIcon from 'Icons/icons8-birthday.png';
 import HomeIcon from 'Icons/icons8-home.png';
@@ -13,7 +14,9 @@ import HomeIcon from 'Icons/icons8-home.png';
 const lr = ['L', 'R'];
 const ul = ['Up', 'Lo'];
 
-const defaultBodyParts = [
+const maxBodyPartNameLength = 12;
+
+const defaultUpperJoints = [
   {
     'name': 'Shoulder',
     'locations': lr,
@@ -30,11 +33,56 @@ const defaultBodyParts = [
     'type': 'Joint'
   },
   {
-    'name': 'Back',
-    'locations': ul,
+    'name': 'Hand',
+    'locations': lr,
+    'type': 'Joint'
+  }
+];
+
+const defaultLowerJoints = [
+  {
+    'name': 'Hip',
+    'locations': lr,
+    'type': 'Joint'
+  },
+  {
+    'name': 'Knee',
+    'locations': lr,
+    'type': 'Joint'
+  },
+  {
+    'name': 'Ankle',
+    'locations': lr,
+    'type': 'Joint'
+  },
+  {
+    'name': 'Foot',
+    'locations': lr,
     'type': 'Region'
   }
 ];
+
+const defaultRegions = [
+  {
+    'name': 'Neck',
+    'type': 'Region'
+  },
+  {
+    'name': 'Back',
+    'locations': ul,
+    'type': 'Region'
+  },
+  {
+    'name': 'Head',
+    'type': 'Region'
+  },
+];
+
+const defaultBodyParts = [
+  ...defaultUpperJoints,
+  ...defaultLowerJoints,
+  ...defaultRegions
+]
 
 const screenTypes = {
   addInfo: 'addInfo',
@@ -51,12 +99,17 @@ class Onboarding extends React.Component {
       birthday: '',
       hometown: '',
       medicalHistory: '',
-      screenType: screenTypes.addInfo
+      screenType: screenTypes.addParts,
+      selectOtherBodyParts: false,
+      otherBodyParts: []
     };
 
     let bodyPart;
     for (bodyPart of defaultBodyParts) {
-      this.state[bodyPart.name] = null;
+      this.state[bodyPart.name] = {
+        selected: false,
+        locations: []
+      };
     }
   }
 
@@ -77,26 +130,83 @@ class Onboarding extends React.Component {
     this._switchScreen();
   }
 
-  _handleSubmitNotes = (event) => {
+  _handleSubmitBodyParts = (event) => {
+    const { otherBodyParts } = this.state;
     event.preventDefault();
 
-    if (this.state.medicalHistory.length > 0) {
-      this.props.updateUser(this.props.userInfo, { medical_history: this.state.medicalHistory });
+    let bodyPart;
+    for (bodyPart of defaultBodyParts) {
+      const { name, type, locations } = bodyPart;
+      const { selected, locations: selectedLocations } = this.state[bodyPart.name];
+
+      if (selected) {
+        const data = { name, type };
+
+        // If body part has possible locations, check that some are added and send request.
+        if (locations) {
+          if (selectedLocations.length > 0) {
+            let loc;
+            for (loc of selectedLocations) {
+              const data = { name, type, location: loc };
+              this.props.addBodyPart(this.props.userInfo, data);
+            }
+          } else {
+            alert(`Need to add locations for ${name}!`);
+            return;
+          }
+        } else {
+          const data = { name, type }
+          this.props.addBodyPart(this.props.userInfo, data);
+        }
+      }
+    }
+
+    for (bodyPart of otherBodyParts) {
+      const { name, type } = bodyPart;
+      const data = { name, type }
+      this.props.addBodyPart(this.props.userInfo, data);
     }
 
     this._switchScreen();
   }
 
-  _handleSubmitBodyParts = (event) => {
+  _handleAddOther = () => {
+    const { selectOtherBodyParts, otherBodyParts } = this.state;
+    if (!selectOtherBodyParts) {
+      this.setState( { selectOtherBodyParts: true })
+    }
+    if (otherBodyParts.length >= 3) {
+      alert('Can\'t add any more. Don\'t worry! You can always add more later.');
+      return;
+    }
+    const newBodyPart = { name: '', type: 'Other'};
+    otherBodyParts.push(newBodyPart);
+    this.setState( { otherBodyParts } );
+  }
+
+  _handleOtherChange = (event, i) => {
+    const target = event.target;
+    if (target.value.length <= maxBodyPartNameLength) {
+      const { otherBodyParts } = this.state;
+      otherBodyParts[i].name = target.value;
+      this.setState({ otherBodyParts });
+    }
+  }
+
+  _handleRemoveOther = (i) => {
+    const { otherBodyParts } = this.state;
+    otherBodyParts.splice(i, 1);
+    this.setState({ otherBodyParts });
+    if (otherBodyParts.length <= 0) {
+      this.setState({ selectOtherBodyParts: false });
+    }
+  }
+
+  _handleSubmitNotes = (event) => {
     event.preventDefault();
 
-    let bodyPart;
-    for (bodyPart of defaultBodyParts) {
-      if (this.state[bodyPart.name]) {
-        const { name, type } = bodyPart;
-        const data = { name, type, location: this.state[bodyPart.name]}
-        this.props.addBodyPart(this.props.userInfo, data);
-      }
+    if (this.state.medicalHistory.length > 0) {
+      this.props.updateUser(this.props.userInfo, { medical_history: this.state.medicalHistory });
     }
 
     this._switchScreen();
@@ -130,7 +240,7 @@ class Onboarding extends React.Component {
     return (
       <div style={styles.contentContainer}>
         <div style={styles.infoContainer}>
-          <div style={styles.txtInputContainer}>
+          <div style={{...styles.txtInputContainer, marginTop: 40 }}>
             <img src={PhoneIcon} style={{height: 24, margin: 'auto' }} />
             <input
               name="phone"
@@ -170,23 +280,95 @@ class Onboarding extends React.Component {
     );
   }
 
+  _selectBodyPart = (part) => {
+    const oldPartState = this.state[part.name];
+    this.setState({ [part.name]: { ...oldPartState, selected: !oldPartState.selected }});
+  }
+
+  _selectBodyPartLocation = (part, loc) => {
+    const oldPartState = this.state[part.name];
+    let locations = oldPartState.locations;
+    const index = locations.indexOf(loc);
+    if (index === -1) {
+      locations.push(loc);
+    } else {
+      locations.splice(index, 1);
+    }
+    this.setState({ [part.name]: { ...oldPartState, locations: locations }});
+  }
+
+  _renderPartsRow = (parts, offset = 0, addPartButton = false) => {
+    const { selectOtherBodyParts } = this.state;
+    return (
+      <div style={styles.partsContainer(offset)}>
+        {parts.map((part) => {
+          const selected = this.state[part.name].selected
+          return (
+            <div key={part.name} style={styles.partContainer}>
+              <button
+                style={styles.partButton(selected)}
+                onClick={() => this._selectBodyPart(part)}
+                >
+                {part.name}
+              </button>
+
+              <div>
+                {selected && part.locations
+                  ? part.locations.map((loc) => {
+                    const selected = this.state[part.name].locations.indexOf(loc) !== -1;
+                    return (
+                      <button
+                        key={`${loc} ${part.name}`}
+                        style={styles.locButton(selected)}
+                        onClick={() => this._selectBodyPartLocation(part, loc)}
+                        >
+                        {loc}
+                      </button>
+                    );
+                  })
+                  : <div style={{ height: 32 }}></div>}
+              </div>
+
+            </div>);
+        })}
+        {addPartButton && <div style={styles.partContainer}>
+          <button
+            style={styles.partButton(selectOtherBodyParts)}
+            onClick={this._handleAddOther}
+            >
+            {selectOtherBodyParts ? 'Add More' : 'Other'}
+          </button>
+        </div>}
+      </div>
+    );
+  }
+
   _renderAddParts = () => {
+    const { selectOtherBodyParts, otherBodyParts } = this.state;
     return (
       <div style={styles.contentContainer}>
-        <button style={styles.backBtn} onClick={() => { this._switchScreen(true) }}><span style={{marginBottom: 5, marginLeft: 1}}>x</span></button>
-        <div style={styles.infoContainer}>
-          {defaultBodyParts.map((part) => {
-            return (<div key={part.name}>
-              <h4>{part.name}</h4>
-              {part.locations
-              ? part.locations.map((loc) => {
-                return (<div key={`${part}${loc}`}>
-                  <input type="radio" name={part.name} value={loc} onChange={this._handleInputChange}/> {`${part.name}${loc}`}
-                </div>);
-              })
-              : "goodbye"}
-            </div>);
-          })}
+        <button style={styles.backBtn} onClick={() => { this._switchScreen(true) }}><img src={BackIcon} style={{height: 32, margin: 'auto' }} /></button>
+        <div style={{ ...styles.infoContainer}}>
+          {this._renderPartsRow(defaultUpperJoints, 30)}
+          {this._renderPartsRow(defaultLowerJoints, -30)}
+          {this._renderPartsRow(defaultRegions, 30, true)}
+          {selectOtherBodyParts && <div style={styles.addMoreContainer}>
+            {otherBodyParts.map((part, i) => {
+              return (
+                <div key={`otherPart${i}`} style={styles.otherPartContainer}>
+                  <input
+                    name={`otherPart${i}`}
+                    style={{ ...styles.txtInput, textAlign: 'center', width: '80%' }}
+                    placeholder='Add Here'
+                    type="text"
+                    value={part.name}
+                    onChange={(event) => this._handleOtherChange(event, i)}
+                  />
+                  <button style={styles.removePartBtn} onClick={() => {this._handleRemoveOther(i)}}><span>x</span></button>
+                </div>
+              );
+            })}
+          </div>}
           <button style={styles.continueBtn} onClick={this._handleSubmitBodyParts}>Continue</button>
           <button style={styles.skipBtn} onClick={() => { this._switchScreen() }}>Skip</button>
         </div>
@@ -197,9 +379,14 @@ class Onboarding extends React.Component {
   _renderAddNotes = () => {
     return (
       <div style={styles.contentContainer}>
-        <button style={styles.backBtn} onClick={() => { this._switchScreen(true) }}><span style={{marginBottom: 5, marginLeft: 1}}>x</span></button>
+        <button style={styles.backBtn} onClick={() => { this._switchScreen(true) }}><img src={BackIcon} style={{height: 32}} /></button>
         <div style={styles.infoContainer}>
-          <textarea rows="8" cols="40" name="medicalHistory" style={styles.medHistoryInput} onChange={this._handleInputChange}></textarea>
+          <textarea rows="14" cols="65" maxLength="500"
+            name="medicalHistory"
+            placeholder={'Please enter your medical history here!'}
+            style={styles.medHistoryInput}
+            onChange={this._handleInputChange} />
+          <p style={styles.counterText}>{this.state.medicalHistory.length}/500</p>
           <button style={styles.continueBtn} onClick={this._handleSubmitNotes}>Finish!</button>
           <button style={styles.skipBtn} onClick={() => { this._switchScreen() }}>Skip</button>
         </div>
@@ -232,6 +419,7 @@ class Onboarding extends React.Component {
         {screenType === screenTypes.addInfo && this._renderAddInfo()}
         {screenType === screenTypes.addParts && this._renderAddParts()}
         {screenType === screenTypes.addNotes && this._renderAddNotes()}
+
       </div>
     )
   }
