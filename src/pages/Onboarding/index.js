@@ -2,9 +2,11 @@ import React from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
+import DatePicker from "react-datepicker";
 
 import styles from './style';
 import actions from 'Actions';
+import Utils from 'Utils';
 
 import BackIcon from 'Icons/icons8-back.png';
 import PhoneIcon from 'Icons/icons8-phone.png';
@@ -120,17 +122,30 @@ class Onboarding extends React.Component {
 
   _handlePhoneChange = (event) => {
     const target = event.target;
+
+    this.setState({ phone: Utils.formatPhoneInput(target.value) });
+  };
+
+  _handleBirthdayChange = (event) => {
+    const target = event.target;
     let input = target.value .replace(/\D/g, '');
-    input = input.substring(0, 10);
-    if (input.length > 6) {
-      input = '(' + input.slice(0, 3) + ') ' + input.slice(3, 6) + '-' + input.slice(6);
-    } else if (input.length > 3) {
-      input = '(' + input.slice(0, 3) + ') ' + input.slice(3);
-    } else {
-      input = input;
+    input = input.substring(0, 8);
+    const monthInput = input.substring(0, 2);
+    const dayInput = input.substring(2, 4);
+    const yearInput = input.substring(4, 8);
+
+    let output;
+    if (monthInput) {
+      output = Utils.formatMonthInput(monthInput);
+    }
+    if (dayInput) {
+      output = output.concat(`/${Utils.formatDayInput(dayInput)}`);
+    }
+    if (yearInput) {
+      output = output.concat(`/${Utils.formatYearInput(yearInput)}`);
     }
 
-    this.setState({ phone: input });
+    this.setState({ birthday: output });
   };
 
   _handleSubmitInfo = (event) => {
@@ -274,7 +289,7 @@ class Onboarding extends React.Component {
               placeholder='--/--/--'
               type="text"
               value={this.state.birthday}
-              onChange={this._handleInputChange}
+              onChange={this._handleBirthdayChange}
             />
           </div>
           <div style={styles.txtInputContainer}>
