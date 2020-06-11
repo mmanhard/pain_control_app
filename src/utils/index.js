@@ -1,5 +1,15 @@
-const formatPhoneInput = (phoneInput) => {
+const formatPhoneInput = (input) => {
+  input = input.replace(/\D/g, '');
+  input = input.substring(0, 10);
+  if (input.length > 6) {
+    input = '(' + input.slice(0, 3) + ') ' + input.slice(3, 6) + '-' + input.slice(6);
+  } else if (input.length > 3) {
+    input = '(' + input.slice(0, 3) + ') ' + input.slice(3);
+  } else {
+    input = input;
+  }
 
+  return input;
 }
 
 const formatMonthInput = (monthInput) => {
