@@ -19,6 +19,7 @@ module.exports = {
       Pages: path.resolve(__dirname, 'src/pages/'),
       Reducers: path.resolve(__dirname, 'src/reducers/'),
       Store: path.resolve(__dirname, 'src/store/'),
+      Utils: path.resolve(__dirname, 'src/utils/'),
       Icons: path.resolve(__dirname, 'assets/icons/'),
     }
   },
@@ -37,9 +38,11 @@ module.exports = {
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
-        use: [
-          'file-loader',
-        ],
+        use: ['file-loader'],
+      },
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
       },
     ]
   },
