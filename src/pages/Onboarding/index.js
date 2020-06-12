@@ -286,7 +286,7 @@ class Onboarding extends React.Component {
             <input
               name="birthday"
               style={styles.txtInput}
-              placeholder='--/--/--'
+              placeholder='mm/dd/yyyy'
               type="text"
               value={this.state.birthday}
               onChange={this._handleBirthdayChange}
