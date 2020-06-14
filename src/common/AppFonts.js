@@ -23,7 +23,7 @@ const size = {
   small: 12,
   medSmall: 14,
   medium: 16,
-  medLarge: 21,
+  medLarge: 18,
   large: 28,
   xLarge: 32,
   xxLarge: 40

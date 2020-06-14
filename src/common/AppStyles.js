@@ -54,4 +54,9 @@ export default {
     textDecoration: 'underline',
   },
   typBoxShadow: `0px 4px 4px rgba(0,0,0,0.25)`,
+  typBorder: {
+    borderStyle: 'solid',
+    borderWidth: 0.25,
+    borderColor: AppColors.blue,
+  }
 }
