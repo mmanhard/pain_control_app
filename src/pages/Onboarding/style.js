@@ -19,7 +19,8 @@ export default {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    boxShadow: AppStyles.typBoxShadow,
   },
   titleTxt: {
     ...AppFonts.Raleway.bold,
