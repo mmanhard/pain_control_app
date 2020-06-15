@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 
 import Pages from "Pages";
 import AppFonts from 'Common/AppFonts';
+import AppColors from 'Common/AppColors';
 
 class Navigation extends React.Component {
   componentDidMount() {
@@ -28,6 +29,8 @@ class Navigation extends React.Component {
     if (this.props.bodyPartUpdate) {
       this.props.getBodyParts(userInfo);
     }
+
+    document.body.style = `background: ${AppColors.lilac};`;
   }
 
   componentDidUpdate(prevProps) {
