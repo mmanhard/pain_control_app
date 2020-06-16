@@ -18,17 +18,9 @@ class Navigation extends React.Component {
   componentDidMount() {
     const { userInfo } = this.props;
 
-    if (this.props.userUpdate) {
-      this.props.getUserData(userInfo);
-    }
-
-    if (this.props.entryUpdate) {
-      this.props.getEntries(userInfo);
-    }
-
-    if (this.props.bodyPartUpdate) {
-      this.props.getBodyParts(userInfo);
-    }
+    this.props.getUserData(userInfo);
+    this.props.getEntries(userInfo);
+    this.props.getBodyParts(userInfo);
 
     document.body.style = `background: ${AppColors.lilac};`;
   }
