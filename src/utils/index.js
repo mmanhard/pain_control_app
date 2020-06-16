@@ -1,3 +1,5 @@
+import AppColors from 'Common/AppColors';
+
 const formatPhoneInput = (input) => {
   input = input.replace(/\D/g, '');
   input = input.substring(0, 10);
@@ -80,9 +82,27 @@ const formatYearInput = (yearInput) => {
   return yearInput;
 }
 
+const convertPainLeveltoHexColor = (painLevel) => {
+  switch (Math.floor(painLevel / 2) % 5) {
+    case 4:
+      return 'black';
+    case 3:
+      return 'red';
+    case 2:
+      return 'orange';
+    case 1:
+      return 'yellow';
+    case 0:
+      return 'green';
+    default:
+      return 'white';
+  }
+}
+
 export default {
   formatPhoneInput,
   formatMonthInput,
   formatDayInput,
   formatYearInput,
+  convertPainLeveltoHexColor
 }
