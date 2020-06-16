@@ -1,8 +1,10 @@
 import React from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import actions from '../actions';
-import Navbar from '../components/Navbar';
+
+import actions from 'Actions';
+import Navbar from 'Components/Navbar';
+import styles from './style';
 
 class Entries extends React.Component {
   constructor(props) {
@@ -16,7 +18,7 @@ class Entries extends React.Component {
     const { userInfo, bodyParts, entries, logout } = this.props;
 
     return (
-      <div>
+      <div style={styles.container}>
         <Navbar userInfo={userInfo} logout={logout}/>
         <h2>Entries</h2>
         <ul>

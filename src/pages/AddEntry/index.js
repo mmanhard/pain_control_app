@@ -1,9 +1,11 @@
 import React from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import actions from '../actions';
 import { withRouter } from 'react-router';
-import Navbar from '../components/Navbar';
+
+import actions from 'Actions';
+import Navbar from 'Components/Navbar';
+import styles from './style';
 
 class AddEntry extends React.Component {
   constructor(props) {
@@ -43,22 +45,24 @@ class AddEntry extends React.Component {
       }
     });
 
-    this.props.addEntry(userInfo, entry);
-    this.props.history.replace('/dashboard');
+    console.log(entry);
+    // this.props.addEntry(userInfo, entry);
+    // this.props.history.replace('/dashboard');
   }
 
   render() {
     const { userInfo, bodyParts, logout } = this.props;
 
     return (
-      <div>
+      <div style={styles.container}>
         <Navbar userInfo={userInfo} logout={logout}/>
         <h2>AddEntry</h2>
         <h3>User ID: {this.props.userInfo?.id}</h3>
         <form onSubmit={this._handleSubmit}>
           {bodyParts.map((part) => {
-            return (<div key={part.name}>
-              <h4>{part.name}</h4>
+            const pk = part.location ? `${part.location}_${part.name}` : part.name;
+            return (<div key={`part.name`}>
+              <h4>{pk}</h4>
               <input type="number" name={part.name} onChange={this._handleInputChange}/>
             </div>);
           })}

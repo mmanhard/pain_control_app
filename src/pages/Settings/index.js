@@ -1,10 +1,12 @@
 import React from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import actions from '../actions';
-import Navbar from '../components/Navbar';
 
-class PainPoints extends React.Component {
+import actions from 'Actions';
+import Navbar from 'Components/Navbar';
+import styles from './style';
+
+class Settings extends React.Component {
   constructor(props) {
     super(props);
 
@@ -14,11 +16,11 @@ class PainPoints extends React.Component {
 
   render() {
     const { userInfo, logout } = this.props;
-    
+
     return (
-      <div>
+      <div style={styles.container}>
         <Navbar userInfo={userInfo} logout={logout}/>
-        <h2>PainPoints</h2>
+        <h2>Settings</h2>
       </div>
     )
   }
@@ -35,4 +37,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(PainPoints);
+)(Settings);
