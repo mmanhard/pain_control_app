@@ -6,10 +6,8 @@ class BodyVisualizer extends React.Component {
     super(props);
 
     this.state = {
-
     };
   }
-
   _getColor = (bodyPartName) => {
     const { bodyParts, statType } = this.props;
 
@@ -52,10 +50,14 @@ class BodyVisualizer extends React.Component {
   // }
 
   render() {
+    const { contentContainerStyle } = this.props;
     return (
-      <div style={{flex: 1, height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-        <div>
-          <svg width="200" height="310" style={{transform: 'scale(1.75)'}}>
+      <div
+        style={{...contentContainerStyle, display: 'flex', justifyContent: 'center', alignItems: 'center'}}
+        ref={ (divContainer) => { this.divContainer = divContainer } }
+      >
+        <div style={{height: '100%'}}>
+          <svg width="100%" height='100%' viewBox='0 0 200 310'>
             <g>
               <title>Body BodyVisualizer</title>
               {shapes.map((shape) => {
