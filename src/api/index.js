@@ -23,7 +23,7 @@ const logout = () => {
 
 const getUserData = (userInfo, params) => {
   const path = `${userPath}${userInfo.id}/`;
-  return _get(path);
+  return _get(path, params);
 };
 
 const updateUser = (userInfo, data) => {
@@ -33,14 +33,12 @@ const updateUser = (userInfo, data) => {
 
 const getBodyParts = (userInfo, params) => {
   const path = `${userPath}${userInfo.id}${bodypartPath}`;
-  return _get(path);
+  return _get(path, params);
 };
 
-const getBodyPart = (userInfo, params) => {
-  params.bodyPartID = '5ee6c65d163af31e1e981561';
-  const path = `${userPath}${userInfo.id}${bodypartPath}${params.bodyPartID}/`;
-  console.log(path);
-  return _get(path);
+const getBodyPart = (userInfo, bodyPartID, params) => {
+  const path = `${userPath}${userInfo.id}${bodypartPath}${bodyPartID}/`;
+  return _get(path, params);
 };
 
 const addBodyPart = (userInfo, data) => {
@@ -50,7 +48,7 @@ const addBodyPart = (userInfo, data) => {
 
 const getEntries = (userInfo, params) => {
   const path = `${userPath}${userInfo.id}${entryPath}`;
-  return _get(path);
+  return _get(path, params);
 };
 
 const addEntry = (userInfo, data) => {
@@ -64,10 +62,11 @@ const apiHandler = axios.create({
   headers: {...defaultHeaders}
 });
 
-const _get = async (path) => {
+const _get = async (path, params) => {
   const token = localStorage.getItem('token');
   let Authorization = `Bearer ${token}`;
   return apiHandler.get(path, {
+    params,
     headers: {
       ...defaultHeaders,
       Authorization,

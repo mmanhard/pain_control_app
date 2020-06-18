@@ -180,13 +180,13 @@ const getBodyParts = (userInfo, params) => {
   };
 }
 
-const getBodyPart = (userInfo, params) => {
+const getBodyPart = (userInfo, bodyPartID, params) => {
   return async dispatch => {
     dispatch({
       type: userActions.GET_USER_BODY_PART_REQUEST
     });
     try {
-      const response = await API.getBodyPart(userInfo, params);
+      const response = await API.getBodyPart(userInfo, bodyPartID, params);
 
       if (!response.fail) {
         dispatch({
