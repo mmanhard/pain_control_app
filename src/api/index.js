@@ -36,6 +36,13 @@ const getBodyParts = (userInfo, params) => {
   return _get(path);
 };
 
+const getBodyPart = (userInfo, params) => {
+  params.bodyPartID = '5ee6c65d163af31e1e981561';
+  const path = `${userPath}${userInfo.id}${bodypartPath}${params.bodyPartID}/`;
+  console.log(path);
+  return _get(path);
+};
+
 const addBodyPart = (userInfo, data) => {
   const path = `${userPath}${userInfo.id}${bodypartPath}`;
   return _post(path, data);
@@ -115,6 +122,7 @@ export default {
   getUserData,
   updateUser,
   getBodyParts,
+  getBodyPart,
   addBodyPart,
   getEntries,
   addEntry

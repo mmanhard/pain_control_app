@@ -5,6 +5,7 @@ const initialState = {
   isLogin: false,
   loginSuccess: false,
   userUpdate: false,
+  bodyPartInfo: null,
   bodyParts: null,
   bodyPartUpdate: false,
   entries: null,
@@ -41,11 +42,16 @@ export default (state = initialState, action) => {
         ...state,
         userUpdate: true,
       };
-    case actions.userActions.GET_USER_BODY_PART_SUCCESS:
+    case actions.userActions.GET_USER_BODY_PARTS_SUCCESS:
       return {
         ...state,
         bodyParts: payload.data.body_parts,
         bodyPartUpdate: false
+      };
+    case actions.userActions.GET_USER_BODY_PART_SUCCESS:
+      return {
+        ...state,
+        bodyPartInfo: payload.data.body_part_info,
       };
     case actions.userActions.ADD_USER_BODY_PART_SUCCESS:
       return {

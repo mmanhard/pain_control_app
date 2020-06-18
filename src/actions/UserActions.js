@@ -21,6 +21,10 @@ const userActions = {
   UPDATE_USER_SUCCESS: 'UPDATE_' + USER_PREFIX + '_SUCCESS',
   UPDATE_USER_FAIL: 'UPDATE_' + USER_PREFIX + '_FAIL',
 
+  GET_USER_BODY_PARTS_REQUEST: 'GET_' + USER_PREFIX + '_BODY_PARTS' + '_REQUEST',
+  GET_USER_BODY_PARTS_SUCCESS: 'GET_' + USER_PREFIX + '_BODY_PARTS' + '_SUCCESS',
+  GET_USER_BODY_PARTS_FAIL: 'GET_' + USER_PREFIX + '_BODY_PARTS' + '_FAIL',
+
   GET_USER_BODY_PART_REQUEST: 'GET_' + USER_PREFIX + '_BODY_PART' + '_REQUEST',
   GET_USER_BODY_PART_SUCCESS: 'GET_' + USER_PREFIX + '_BODY_PART' + '_SUCCESS',
   GET_USER_BODY_PART_FAIL: 'GET_' + USER_PREFIX + '_BODY_PART' + '_FAIL',
@@ -155,10 +159,34 @@ const updateUser = (userInfo, data) => {
 const getBodyParts = (userInfo, params) => {
   return async dispatch => {
     dispatch({
-      type: userActions.GET_USER_BODY_PART_REQUEST
+      type: userActions.GET_USER_BODY_PARTS_REQUEST
     });
     try {
       const response = await API.getBodyParts(userInfo, params);
+
+      if (!response.fail) {
+        dispatch({
+          type: userActions.GET_USER_BODY_PARTS_SUCCESS,
+          payload: { data: { ...response.data } }
+        });
+      } else {
+        dispatch({
+          type: userActions.GET_USER_BODY_PARTS_FAIL,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+}
+
+const getBodyPart = (userInfo, params) => {
+  return async dispatch => {
+    dispatch({
+      type: userActions.GET_USER_BODY_PART_REQUEST
+    });
+    try {
+      const response = await API.getBodyPart(userInfo, params);
 
       if (!response.fail) {
         dispatch({
@@ -256,6 +284,7 @@ export {
   getUserData,
   updateUser,
   getBodyParts,
+  getBodyPart,
   addBodyPart,
   getEntries,
   addEntry
