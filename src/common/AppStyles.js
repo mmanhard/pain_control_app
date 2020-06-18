@@ -12,8 +12,35 @@ export default {
   },
   center: {
     display: 'flex',
+    flexDirection: 'column',
     alignItems: "center",
     justifyContent: "center",
+  },
+  columnStart: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+  rowCenter: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
+  rowStart: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start'
+  },
+  rowEnd: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
+  },
+  rowSpace: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly'
   },
   typContentContainer: {
     backgroundColor: AppColors.white,
