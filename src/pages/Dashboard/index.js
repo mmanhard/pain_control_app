@@ -11,11 +11,21 @@ import AppStyles from 'Common/AppStyles';
 import AppColors from 'Common/AppColors';
 
 const statTypes = {
-  avg: 'avg',
+  mean: 'mean',
+  median: 'median',
   max: 'high',
   min: 'low',
-  stddev: 'stddev'
+  stdev: 'stdev'
 }
+
+const daytimes = {
+  all_day: 'All Day',
+  wakeup: 'Wake Up',
+  morning: 'Morning',
+  lunch: 'Lunch',
+  evening: 'Evening',
+  bed_time: 'Bed Time',
+};
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -24,7 +34,9 @@ class Dashboard extends React.Component {
     this.state = {
       name: '',
       type: 'Joint',
-      statType: statTypes.max
+      statType: statTypes.mean,
+      daytime: 'all_day',
+      currentBodyPart: null
     };
   }
 
@@ -33,18 +45,83 @@ class Dashboard extends React.Component {
     this.setState({ [target.name]: target.value });
   }
 
-  _changeStatType = (event) => {
-
-  }
-
   _displayAddBodyPart = (bodyPartName) => {
     console.log('Would you like to add: ');
     console.log(bodyPartName);
   }
 
+  _renderOverviewStats = () => {
+    const { currentBodyPart } = this.state;
+
+    if (!currentBodyPart) {
+      return (<div>6</div>)
+    } else {
+      let stats = currentBodyPart?.stats?.total;
+      return (
+        <div style={styles.statsRow}>
+          <div style={styles.subtitleContainer}>Overview</div>
+          <div style={styles.statContainer}>
+            <div style={styles.statTxt}>{stats.high ? stats.high.toFixed(1) : '-'}</div>
+            <div style={styles.statTitle}>Max</div>
+          </div>
+          <div style={styles.statContainer}>
+            <div style={styles.statTxt}>{stats.low ? stats.low.toFixed(1) : '-'}</div>
+            <div style={styles.statTitle}>Min</div>
+          </div>
+          <div style={styles.statContainer}>
+            <div style={styles.statTxt}>{stats.median ? stats.median.toFixed(1) : '-'}</div>
+            <div style={styles.statTitle}>Median</div>
+          </div>
+          <div style={styles.statContainer}>
+            <div style={styles.statTxt}>{stats.stdev ? stats.stdev.toFixed(1) : '-'}</div>
+            <div style={styles.statTitle}>Std Dev</div>
+          </div>
+        </div>
+      );
+    }
+  }
+
+  _renderDaytimeStats = () => {
+    const { currentBodyPart, statType } = this.state;
+
+    if (!currentBodyPart) {
+      return (<div>6</div>)
+    } else {
+      let stats = currentBodyPart?.stats?.daytime;
+      return (
+        <div style={styles.statsRow}>
+          <div style={styles.subtitleContainer}>Pain Throughout the Day</div>
+          <div style={styles.statContainer}>
+            <div style={styles.statTxt}>{stats?.wakeup && stats.wakeup[statType] ? stats.wakeup[statType] : '-'}</div>
+            <div style={styles.statTitle}>Wake Up</div>
+          </div>
+          <div style={styles.statContainer}>
+            <div style={styles.statTxt}>{stats?.morning && stats.morning[statType] ? stats.morning[statType] : '-'}</div>
+            <div style={styles.statTitle}>Morning</div>
+          </div>
+          <div style={styles.statContainer}>
+            <div style={styles.statTxt}>{stats?.lunch && stats.lunch[statType] ? stats.lunch[statType] : '-'}</div>
+            <div style={styles.statTitle}>Lunch</div>
+          </div>
+          <div style={styles.statContainer}>
+            <div style={styles.statTxt}>{stats?.evening && stats.evening[statType] ? stats.evening[statType] : '-'}</div>
+            <div style={styles.statTitle}>Evening</div>
+          </div>
+          <div style={styles.statContainer}>
+            <div style={styles.statTxt}>{stats?.bed_time && stats.bed_time[statType] ? stats.bed_time[statType] : '-'}</div>
+            <div style={styles.statTitle}>Bed Time</div>
+          </div>
+        </div>
+      );
+    }
+  }
+
   render() {
-    const { userInfo, bodyParts, token, history, logout } = this.props;
-    const { statType } = this.state;
+    const { userInfo, bodyParts, token, history, logout, entries } = this.props;
+    const { statType, daytime, currentBodyPart } = this.state;
+
+    console.log(entries[0]);
+    console.log(entries[entries.length-1]);
     return (
       <div style={styles.container}>
         <Navbar userInfo={userInfo} logout={logout}/>
@@ -58,8 +135,20 @@ class Dashboard extends React.Component {
               <button style={styles.helpIcon}>?</button>
               <div style={styles.filterContaienr}>
                 <div style={styles.filterTxt}>Show:</div>
-                <button style={styles.filterOptionTxt}>MAX</button>
-                <button style={styles.filterOptionTxt}>ALL DAY</button>
+                <select name="statType" style={styles.filterOptionTxt} onChange={this._handleInputChange}>
+                  <option value={statTypes.mean}>Average</option>
+                  <option value={statTypes.median}>Median</option>
+                  <option value={statTypes.max}>Max</option>
+                  <option value={statTypes.min}>Min</option>
+                  <option value={statTypes.stdev}>Std Dev</option>
+                </select>
+                <select name="daytime" style={styles.filterOptionTxt} onChange={this._handleInputChange}>
+                  {Object.entries(daytimes).map(([key, value]) => {
+                    return (
+                      <option key={key} value={key}>{value}</option>
+                    );
+                  })}
+                </select>
                 <div style={styles.filterDateContainer}>
                   <span style={styles.filterDate}>TEST</span>
                   <span style={styles.filterDate}>TEST</span>
@@ -68,8 +157,10 @@ class Dashboard extends React.Component {
               <BodyVisualizer
                 contentContainerStyle={styles.visualizer}
                 bodyParts={bodyParts}
+                daytime={daytime}
                 statType={statType}
                 history={history}
+                changeCurrentBodyPart={(part) => { this.setState({currentBodyPart: part})}}
                 displayAddBodyPart={this._displayAddBodyPart} />
             </div>
             <div style={styles.painLegend}>
@@ -111,7 +202,7 @@ class Dashboard extends React.Component {
             <div style={{ ...AppStyles.typContentContainer, padding: 30, flex: 1, ...AppStyles.columnStart }}>
               <div style={{ ...AppStyles.rowSpace, height: 110, width: '100%', position: 'relative'}}>
                 <div style={styles.titleContainer}>
-                  <div>General</div>
+                  <div>{currentBodyPart ? `${currentBodyPart.location} ${currentBodyPart.name}` : 'General'}</div>
                   <div>Stats</div>
                 </div>
 
@@ -122,89 +213,38 @@ class Dashboard extends React.Component {
                     <div>Tracking Since:</div>
                   </div>
                   <div style={{height: '100%', flex: 0.8, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'flex-end'}}>
-                    <div>58</div>
+                    <div>{currentBodyPart ? currentBodyPart.stats.total.num_entries : entries.length}</div>
                     <div>5/24/2020</div>
                     <div>5/8/2020</div>
                   </div>
                 </div>
               </div>
               <div style={styles.statsContainer}>
-                <div style={styles.statsRow}>
-                  <div style={styles.subtitleContainer}>General</div>
-                  <div style={styles.statContainer}>
-                    <div style={styles.statTxt}>8.3</div>
-                    <div style={styles.statTitle}>Max</div>
-                  </div>
-                  <div style={styles.statContainer}>
-                    <div style={styles.statTxt}>8.3</div>
-                    <div style={styles.statTitle}>Min</div>
-                  </div>
-                  <div style={styles.statContainer}>
-                    <div style={styles.statTxt}>8.3</div>
-                    <div style={styles.statTitle}>Std Dev</div>
-                  </div>
-                  <div style={styles.statContainer}>
-                    <div style={styles.statTxt}>8.3</div>
-                    <div style={styles.statTitle}>Swing</div>
-                  </div>
-                </div>
+                {this._renderOverviewStats()}
                 <hr style={{width: '85%', height: 0, borderTop: `solid 2px ${AppColors.blue}`}}/>
-                <div style={styles.statsRow}>
-                  <div style={styles.subtitleContainer}>Time of Day</div>
-                  <div style={styles.statContainer}>
-                    <div style={styles.statTxt}>8.3</div>
-                    <div style={styles.statTitle}>Wake Up</div>
-                  </div>
-                  <div style={styles.statContainer}>
-                    <div style={styles.statTxt}>8.3</div>
-                    <div style={styles.statTitle}>Morning</div>
-                  </div>
-                  <div style={styles.statContainer}>
-                    <div style={styles.statTxt}>8.3</div>
-                    <div style={styles.statTitle}>Afternoon</div>
-                  </div>
-                  <div style={styles.statContainer}>
-                    <div style={styles.statTxt}>8.3</div>
-                    <div style={styles.statTitle}>Dinner</div>
-                  </div>
-                  <div style={styles.statContainer}>
-                    <div style={styles.statTxt}>8.3</div>
-                    <div style={styles.statTitle}>Bed Time</div>
-                  </div>
-                </div>
-                <button style={styles.mainButtonInactive}>View Details</button>
+                {this._renderDaytimeStats()}
+                <button
+                  onClick={() => {
+                    if (currentBodyPart) {
+                      this.props.history.push(`pain_points/${currentBodyPart.id}`);
+                    } else {
+                      this.props.history.push(`pain_points/`);
+                    }
+                  }}
+                  style={styles.mainButtonInactive}>{currentBodyPart ? 'View Details' : 'View All Pain Points'}</button>
               </div>
-
-              {/*}<h3>User ID: {this.props.userInfo?.id}</h3>
-              <h3>Name: {`${userInfo?.first_name} ${userInfo?.last_name}`}</h3>
-              <h3>{userInfo?.email && `Email: ${userInfo?.email}`}</h3>
-              <h3>{userInfo?.phone && `Phone Number: ${userInfo?.phone}`}</h3>
-              <h3>{userInfo?.birthday && `Birthday: ${userInfo?.birthday}`}</h3>
-              <h3>{userInfo?.hometown && `Hometown: ${userInfo?.hometown}`}</h3>
-              <h3>{userInfo?.medical_history && `Medical History: ${userInfo?.medical_history}`}</h3>
-
-              { this.props.bodyParts && <h3>Number of Body Parts: {this.props.bodyParts.length}</h3> }
-
-              { this.props.bodyParts && bodyParts.map((part) => {
-                  if (part.stats?.num_entries > 0) {
-                    return (
-                      <div key={part.id}>
-                        {(part.location && `${part.location} `)}
-                        {`${part.name} ${part.stats[this.state.statType]}`}
-                      </div>
-                    );
-                  }
-              })}
-
-              <form>
-                <input name="statType" value={statTypes.avg} type="radio" onChange={this._handleInputChange}/> Avg
-                <input name="statType" value={statTypes.max} type="radio" onChange={this._handleInputChange}/> Max
-                <input name="statType" value={statTypes.min} type="radio" onChange={this._handleInputChange}/> Min
-              </form>*/}
             </div>
             <div style={styles.mainButtonContainer}>
-              <button style={styles.mainButton}>Add An Entry</button>
-              <button style={styles.mainButton}>View Entries</button>
+              <button
+                onClick={() => { this.props.history.push('add_entry')}}
+                style={styles.mainButton}>
+                Add An Entry
+              </button>
+              <button
+                onClick={() => { this.props.history.push('entries')}}
+                style={styles.mainButton}>
+                View All Entries
+              </button>
               <button style={styles.mainButton}>Build Report</button>
             </div>
           </div>
@@ -220,7 +260,8 @@ const mapStateToProps = state => ({
   userUpdate: state.users.userUpdate,
   bodyPartUpdate: state.users.bodyPartUpdate,
   bodyParts: state.users.bodyParts,
-  loginSuccess: state.users.loginSuccess
+  loginSuccess: state.users.loginSuccess,
+  entries: state.users.entries
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -30,8 +30,8 @@ export default {
       top: 0,
       left: 0,
       height: 110,
-      width: 200,
       paddingLeft: 10,
+      paddingRight: 10,
       ...AppFonts.Raleway.regular,
       fontSize: AppFonts.size.xxLarge,
       color: AppColors.white,
@@ -74,7 +74,8 @@ export default {
       fontSize: AppFonts.size.medium,
       textAlign: 'center',
       border: 'none',
-      boxShadow: AppStyles.typBoxShadow
+      boxShadow: AppStyles.typBoxShadow,
+      alignItems: 'center'
     },
     filterDateContainer: {
       ...AppStyles.rowCenter,
