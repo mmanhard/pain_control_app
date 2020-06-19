@@ -45,9 +45,9 @@ class AddEntry extends React.Component {
       }
     });
 
-    console.log(entry);
-    // this.props.addEntry(userInfo, entry);
-    // this.props.history.replace('/dashboard');
+    // console.log(entry);
+    this.props.addEntry(userInfo, entry);
+    this.props.history.replace('/dashboard');
   }
 
   render() {
@@ -61,7 +61,7 @@ class AddEntry extends React.Component {
         <form onSubmit={this._handleSubmit}>
           {bodyParts.map((part) => {
             const pk = part.location ? `${part.location}_${part.name}` : part.name;
-            return (<div key={`part.name`}>
+            return (<div key={pk}>
               <h4>{pk}</h4>
               <input type="number" name={part.name} onChange={this._handleInputChange}/>
             </div>);

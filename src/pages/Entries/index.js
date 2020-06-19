@@ -14,6 +14,11 @@ class Entries extends React.Component {
     };
   }
 
+  componentDidMount() {
+    const { userInfo } = this.props;
+    this.props.getEntries(userInfo);
+  }
+
   render() {
     const { userInfo, bodyParts, entries, logout } = this.props;
 
@@ -26,6 +31,9 @@ class Entries extends React.Component {
             return (<li key={entry.id}>
               <div>{`Entry ID: ${entry.id}`}</div>
               <div>{`Entry Notes: ${entry.notes}`}</div>
+              <div>{`Entry Date: ${entry.date}`}</div>
+              <div>{`Entry Time: ${entry.time_of_day}`}</div>
+              <div>{`Max Pain: ${entry.stats.high}`}</div>
               {entry.pain_subentries.map((subentry) => {
 
                 return (<div key={subentry.body_part.id}>

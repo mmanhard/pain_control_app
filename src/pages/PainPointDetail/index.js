@@ -14,13 +14,29 @@ class PainPointDetail extends React.Component {
     };
   }
 
-  render() {
-    const { userInfo, logout } = this.props;
+  componentDidMount() {
+    const { userInfo } = this.props;
+    this.props.getBodyPart(userInfo, {});
+  }
 
+  render() {
+    const { userInfo, bodyPartInfo, logout } = this.props;
+
+    console.log(bodyPartInfo?.customStats?.calendar);
+    // console.log(bodyPartInfo?.customStats?.daytime);
+    // console.log(bodyPartInfo?.customStats?.moving);
     return (
       <div style={styles.container}>
         <Navbar userInfo={userInfo} logout={logout}/>
         <h2>PainPointDetail</h2>
+        <h3>{`Pain Point ID: ${bodyPartInfo?.id}`}</h3>
+        <h3>{`Pain Point Name: ${bodyPartInfo?.name}`}</h3>
+        <h3>{`Pain Point Location: ${bodyPartInfo?.location}`}</h3>
+        <h3>{`Pain Max: ${bodyPartInfo?.customStats?.total?.high}`}</h3>
+        <h3>{`Pain Min: ${bodyPartInfo?.customStats?.total?.low}`}</h3>
+        <h3>{`Pain Mean: ${bodyPartInfo?.customStats?.total?.mean}`}</h3>
+        <h3>{`Pain Median: ${bodyPartInfo?.customStats?.total?.median}`}</h3>
+        <h3>{`Pain StdDev: ${bodyPartInfo?.customStats?.total?.stdev}`}</h3>
       </div>
     )
   }
@@ -28,6 +44,7 @@ class PainPointDetail extends React.Component {
 
 const mapStateToProps = state => ({
   userInfo: state.users.userInfo,
+  bodyPartInfo: state.users.bodyPartInfo
 });
 
 const mapDispatchToProps = dispatch => ({
