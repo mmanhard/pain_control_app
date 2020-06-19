@@ -9,14 +9,23 @@ class BodyVisualizer extends React.Component {
     };
   }
   _getColor = (bodyPartName) => {
-    const { bodyParts, statType } = this.props;
+    const { bodyParts, statType, daytime } = this.props;
 
     let part;
     if (bodyParts) {
       for (part of bodyParts) {
         let name = part.location ? `${part.location}_${part.name}` : part.name ;
         if (name === bodyPartName) {
-          return utils.convertPainLeveltoHexColor(part.stats[statType]);
+          if (daytime !== 'all_day') {
+            const daytimeStats = part.stats.daytime[daytime]
+            if (daytimeStats) {
+              return utils.convertPainLeveltoHexColor(daytimeStats[statType]);
+            } else {
+              return 'none';
+            }
+          } else {
+            return utils.convertPainLeveltoHexColor(part.stats.total[statType]);
+          }
         }
       }
     }
@@ -24,15 +33,15 @@ class BodyVisualizer extends React.Component {
     return 'white';
   }
 
-  _handlePartClick = (bodyPartName) => {
-    const { bodyParts, statType, history, displayAddBodyPart } = this.props;
+  _handlePartClick = (clickedBodyPart) => {
+    const { bodyParts, statType, history, changeCurrentBodyPart, displayAddBodyPart } = this.props;
 
     let part;
     if (bodyParts) {
       for (part of bodyParts) {
         let name = part.location ? `${part.location}_${part.name}` : part.name ;
-        if (name === bodyPartName) {
-          history.push(`pain_points/${part.id}`);
+        if (name === clickedBodyPart) {
+          changeCurrentBodyPart(part);
           return;
         }
       }
