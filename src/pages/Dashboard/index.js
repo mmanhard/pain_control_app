@@ -12,11 +12,11 @@ import AppStyles from 'Common/AppStyles';
 import AppColors from 'Common/AppColors';
 
 const statTypes = {
-  mean: 'mean',
-  median: 'median',
-  max: 'high',
-  min: 'low',
-  stdev: 'stdev'
+  mean: 'Mean',
+  median: 'Median',
+  high: 'Max',
+  low: 'Min',
+  stdev: 'Std Dev'
 }
 
 const daytimes = {
@@ -35,7 +35,7 @@ class Dashboard extends React.Component {
     this.state = {
       name: '',
       type: 'Joint',
-      statType: statTypes.mean,
+      statType: 'mean',
       daytime: 'all_day',
       currentBodyPart: null
     };
@@ -138,11 +138,11 @@ class Dashboard extends React.Component {
               <div style={styles.filterContaienr}>
                 <div style={styles.filterTxt}>Show:</div>
                 <select name="statType" style={styles.filterOptionTxt} onChange={this._handleInputChange}>
-                  <option value={statTypes.mean}>Average</option>
-                  <option value={statTypes.median}>Median</option>
-                  <option value={statTypes.max}>Max</option>
-                  <option value={statTypes.min}>Min</option>
-                  <option value={statTypes.stdev}>Std Dev</option>
+                  {Object.entries(statTypes).map(([key, value]) => {
+                    return (
+                      <option key={key} value={key}>{value}</option>
+                    );
+                  })}
                 </select>
                 <select name="daytime" style={styles.filterOptionTxt} onChange={this._handleInputChange}>
                   {Object.entries(daytimes).map(([key, value]) => {
