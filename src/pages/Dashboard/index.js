@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
+import moment from 'moment';
 
 import actions from 'Actions';
 import Navbar from 'Components/Navbar';
@@ -120,8 +121,9 @@ class Dashboard extends React.Component {
     const { userInfo, bodyParts, token, history, logout, entries } = this.props;
     const { statType, daytime, currentBodyPart } = this.state;
 
-    console.log(entries[0]);
-    console.log(entries[entries.length-1]);
+    const dateEntries = currentBodyPart?.stats?.calendar ? currentBodyPart?.stats?.calendar : entries;
+    const last_entry = moment(dateEntries[0].date).utc().format('MM/DD/YY');
+    const oldest_entry = moment(dateEntries[dateEntries.length-1].date).utc().format('MM/DD/YY');
     return (
       <div style={styles.container}>
         <Navbar userInfo={userInfo} logout={logout}/>
@@ -214,8 +216,8 @@ class Dashboard extends React.Component {
                   </div>
                   <div style={{height: '100%', flex: 0.8, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'flex-end'}}>
                     <div>{currentBodyPart ? currentBodyPart.stats.total.num_entries : entries.length}</div>
-                    <div>5/24/2020</div>
-                    <div>5/8/2020</div>
+                    <div>{last_entry}</div>
+                    <div>{oldest_entry}</div>
                   </div>
                 </div>
               </div>
