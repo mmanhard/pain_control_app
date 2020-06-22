@@ -28,6 +28,15 @@ const daytimes = {
   bed_time: 'Bed Time',
 };
 
+const dateRanges = {
+  all_time: 'All Time',
+  today: 'Today',
+  this_week: 'This Week',
+  this_month: 'This Month',
+  this_year: 'This Year',
+  custom: 'Custom'
+};
+
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -37,7 +46,7 @@ class Dashboard extends React.Component {
       type: 'Joint',
       statType: 'mean',
       daytime: 'all_day',
-      currentBodyPart: null
+      currentBodyPartID: undefined
     };
   }
 
@@ -46,84 +55,115 @@ class Dashboard extends React.Component {
     this.setState({ [target.name]: target.value });
   }
 
+  _handleDateRangeChange = (event) => {
+    const { userInfo } = this.props;
+    const target = event.target;
+
+    let startDate, endDate;
+    switch (target.value) {
+      case 'today':
+        startDate = moment().startOf('day');
+        break;
+      case 'this_week':
+        startDate = moment().subtract(6,'d').startOf('day');
+        break;
+      case 'this_month':
+        startDate = moment().subtract(1,'M').startOf('day');
+        break;
+      case 'this_year':
+        startDate = moment().subtract(1,'Y').startOf('day');
+        break;
+      case 'custom':
+        console.log('Need to handle custom case!!!');
+    }
+
+    let params = {};
+    if (startDate) {
+      params = { ...params, start_date: startDate.toISOString() };
+    }
+    if (endDate) {
+      params = { ...params, end_date: endDate.toISOString() };
+    }
+    this.props.getEntries(userInfo, params);
+    this.props.getBodyParts(userInfo, params);
+  }
+
   _displayAddBodyPart = (bodyPartName) => {
     console.log('Would you like to add: ');
     console.log(bodyPartName);
   }
 
-  _renderOverviewStats = () => {
-    const { currentBodyPart } = this.state;
-
-    if (!currentBodyPart) {
-      return (<div>6</div>)
-    } else {
-      let stats = currentBodyPart?.stats?.total;
-      return (
-        <div style={styles.statsRow}>
-          <div style={styles.subtitleContainer}>Overview</div>
-          <div style={styles.statContainer}>
-            <div style={styles.statTxt}>{stats.high ? stats.high.toFixed(1) : '-'}</div>
-            <div style={styles.statTitle}>Max</div>
-          </div>
-          <div style={styles.statContainer}>
-            <div style={styles.statTxt}>{stats.low ? stats.low.toFixed(1) : '-'}</div>
-            <div style={styles.statTitle}>Min</div>
-          </div>
-          <div style={styles.statContainer}>
-            <div style={styles.statTxt}>{stats.median ? stats.median.toFixed(1) : '-'}</div>
-            <div style={styles.statTitle}>Median</div>
-          </div>
-          <div style={styles.statContainer}>
-            <div style={styles.statTxt}>{stats.stdev ? stats.stdev.toFixed(1) : '-'}</div>
-            <div style={styles.statTitle}>Std Dev</div>
-          </div>
+  _renderOverviewStats = (currentBodyPart) => {
+    let stats = currentBodyPart?.stats?.total;
+    return (
+      <div style={styles.statsRow}>
+        <div style={styles.subtitleContainer}>Overview</div>
+        <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{stats.high ? stats.high.toFixed(1) : '-'}</div>
+          <div style={styles.statTitle}>Max</div>
         </div>
-      );
-    }
+        <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{stats.low ? stats.low.toFixed(1) : '-'}</div>
+          <div style={styles.statTitle}>Min</div>
+        </div>
+        <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{stats.median ? stats.median.toFixed(1) : '-'}</div>
+          <div style={styles.statTitle}>Median</div>
+        </div>
+        <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{stats.stdev ? stats.stdev.toFixed(1) : '-'}</div>
+          <div style={styles.statTitle}>Std Dev</div>
+        </div>
+      </div>
+    );
   }
 
-  _renderDaytimeStats = () => {
-    const { currentBodyPart, statType } = this.state;
+  _renderDaytimeStats = (currentBodyPart) => {
+    const { statType } = this.state;
 
-    if (!currentBodyPart) {
-      return (<div>6</div>)
-    } else {
-      let stats = currentBodyPart?.stats?.daytime;
-      return (
-        <div style={styles.statsRow}>
-          <div style={styles.subtitleContainer}>Pain Throughout the Day</div>
-          <div style={styles.statContainer}>
-            <div style={styles.statTxt}>{stats?.wakeup && stats.wakeup[statType] ? stats.wakeup[statType] : '-'}</div>
-            <div style={styles.statTitle}>Wake Up</div>
-          </div>
-          <div style={styles.statContainer}>
-            <div style={styles.statTxt}>{stats?.morning && stats.morning[statType] ? stats.morning[statType] : '-'}</div>
-            <div style={styles.statTitle}>Morning</div>
-          </div>
-          <div style={styles.statContainer}>
-            <div style={styles.statTxt}>{stats?.lunch && stats.lunch[statType] ? stats.lunch[statType] : '-'}</div>
-            <div style={styles.statTitle}>Lunch</div>
-          </div>
-          <div style={styles.statContainer}>
-            <div style={styles.statTxt}>{stats?.evening && stats.evening[statType] ? stats.evening[statType] : '-'}</div>
-            <div style={styles.statTitle}>Evening</div>
-          </div>
-          <div style={styles.statContainer}>
-            <div style={styles.statTxt}>{stats?.bed_time && stats.bed_time[statType] ? stats.bed_time[statType] : '-'}</div>
-            <div style={styles.statTitle}>Bed Time</div>
-          </div>
+    let stats = currentBodyPart?.stats?.daytime;
+    return (
+      <div style={styles.statsRow}>
+        <div style={styles.subtitleContainer}>Pain Throughout the Day</div>
+        <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{stats?.wakeup && stats.wakeup[statType] ? stats.wakeup[statType] : '-'}</div>
+          <div style={styles.statTitle}>Wake Up</div>
         </div>
-      );
-    }
+        <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{stats?.morning && stats.morning[statType] ? stats.morning[statType] : '-'}</div>
+          <div style={styles.statTitle}>Morning</div>
+        </div>
+        <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{stats?.lunch && stats.lunch[statType] ? stats.lunch[statType] : '-'}</div>
+          <div style={styles.statTitle}>Lunch</div>
+        </div>
+        <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{stats?.evening && stats.evening[statType] ? stats.evening[statType] : '-'}</div>
+          <div style={styles.statTitle}>Evening</div>
+        </div>
+        <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{stats?.bed_time && stats.bed_time[statType] ? stats.bed_time[statType] : '-'}</div>
+          <div style={styles.statTitle}>Bed Time</div>
+        </div>
+      </div>
+    );
   }
 
   render() {
     const { userInfo, bodyParts, token, history, logout, entries } = this.props;
-    const { statType, daytime, currentBodyPart } = this.state;
+    const { statType, daytime, currentBodyPartID } = this.state;
+
+    let part, currentBodyPart;
+    for (part of bodyParts) {
+      if (currentBodyPartID && part.id == currentBodyPartID) {
+        currentBodyPart = part;
+        break;
+      }
+    }
 
     const dateEntries = currentBodyPart?.stats?.calendar ? currentBodyPart?.stats?.calendar : entries;
-    const last_entry = moment(dateEntries[0].date).utc().format('MM/DD/YY');
-    const oldest_entry = moment(dateEntries[dateEntries.length-1].date).utc().format('MM/DD/YY');
+    const last_entry = moment(dateEntries[0]?.date).utc().format('MM/DD/YY');
+    const oldest_entry = moment(dateEntries[dateEntries.length-1]?.date).utc().format('MM/DD/YY');
     return (
       <div style={styles.container}>
         <Navbar userInfo={userInfo} logout={logout}/>
@@ -151,10 +191,13 @@ class Dashboard extends React.Component {
                     );
                   })}
                 </select>
-                <div style={styles.filterDateContainer}>
-                  <span style={styles.filterDate}>TEST</span>
-                  <span style={styles.filterDate}>TEST</span>
-                </div>
+                <select name="dateRange" style={styles.filterOptionTxt} onChange={this._handleDateRangeChange}>
+                  {Object.entries(dateRanges).map(([key, value]) => {
+                    return (
+                      <option key={key} value={key}>{value}</option>
+                    );
+                  })}
+                </select>
               </div>
               <BodyVisualizer
                 contentContainerStyle={styles.visualizer}
@@ -162,7 +205,7 @@ class Dashboard extends React.Component {
                 daytime={daytime}
                 statType={statType}
                 history={history}
-                changeCurrentBodyPart={(part) => { this.setState({currentBodyPart: part})}}
+                changeCurrentBodyPart={(part) => { this.setState({currentBodyPartID: part.id})}}
                 displayAddBodyPart={this._displayAddBodyPart} />
             </div>
             <div style={styles.painLegend}>
@@ -215,26 +258,37 @@ class Dashboard extends React.Component {
                     <div>Tracking Since:</div>
                   </div>
                   <div style={{height: '100%', flex: 0.8, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'flex-end'}}>
-                    <div>{currentBodyPart ? currentBodyPart.stats.total.num_entries : entries.length}</div>
+                    <div>{currentBodyPart
+                      ? (currentBodyPart.stats?.total?.num_entries ? currentBodyPart.stats.total.num_entries : 0 )
+                      : entries.length}
+                    </div>
                     <div>{last_entry}</div>
                     <div>{oldest_entry}</div>
                   </div>
                 </div>
               </div>
-              <div style={styles.statsContainer}>
-                {this._renderOverviewStats()}
-                <hr style={{width: '85%', height: 0, borderTop: `solid 2px ${AppColors.blue}`}}/>
-                {this._renderDaytimeStats()}
-                <button
-                  onClick={() => {
-                    if (currentBodyPart) {
-                      this.props.history.push(`pain_points/${currentBodyPart.id}`);
-                    } else {
-                      this.props.history.push(`pain_points/`);
-                    }
-                  }}
-                  style={styles.mainButtonInactive}>{currentBodyPart ? 'View Details' : 'View All Pain Points'}</button>
-              </div>
+              {(currentBodyPart && currentBodyPart.stats) ? (
+                <div style={styles.statsContainer}>
+                  {this._renderOverviewStats(currentBodyPart)}
+                  <hr style={{width: '85%', height: 0, borderTop: `solid 2px ${AppColors.blue}`}}/>
+                  {this._renderDaytimeStats(currentBodyPart)}
+                  <button
+                    onClick={() => {
+                      if (currentBodyPart) {
+                        this.props.history.push(`pain_points/${currentBodyPart.id}`);
+                      } else {
+                        this.props.history.push(`pain_points/`);
+                      }
+                    }}
+                    style={styles.mainButtonInactive}>
+                    {currentBodyPart ? 'View Details' : 'View All Pain Points'}
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  TEMP
+                </div>
+              )}
             </div>
             <div style={styles.mainButtonContainer}>
               <button

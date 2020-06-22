@@ -16,15 +16,18 @@ class BodyVisualizer extends React.Component {
       for (part of bodyParts) {
         let name = part.location ? `${part.location}_${part.name}` : part.name ;
         if (name === bodyPartName) {
-          if (daytime !== 'all_day') {
-            const daytimeStats = part.stats.daytime[daytime]
-            if (daytimeStats) {
-              return utils.convertPainLeveltoHexColor(daytimeStats[statType]);
+          let stats = part.stats;
+          if (stats) {
+            if (daytime !== 'all_day') {
+              const daytimeStats = part.stats.daytime[daytime]
+              if (daytimeStats) {
+                return utils.convertPainLeveltoHexColor(daytimeStats[statType]);
+              } else {
+                return 'white';
+              }
             } else {
-              return 'none';
+              return utils.convertPainLeveltoHexColor(part.stats.total[statType]);
             }
-          } else {
-            return utils.convertPainLeveltoHexColor(part.stats.total[statType]);
           }
         }
       }
