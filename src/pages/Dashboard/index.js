@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
+import moment from 'moment';
 
 import actions from 'Actions';
 import Navbar from 'Components/Navbar';
@@ -11,11 +12,30 @@ import AppStyles from 'Common/AppStyles';
 import AppColors from 'Common/AppColors';
 
 const statTypes = {
-  avg: 'avg',
-  max: 'high',
-  min: 'low',
-  stddev: 'stddev'
+  mean: 'Mean',
+  median: 'Median',
+  high: 'Max',
+  low: 'Min',
+  stdev: 'Std Dev'
 }
+
+const daytimes = {
+  all_day: 'All Day',
+  wakeup: 'Wake Up',
+  morning: 'Morning',
+  lunch: 'Lunch',
+  evening: 'Evening',
+  bed_time: 'Bed Time',
+};
+
+const dateRanges = {
+  all_time: 'All Time',
+  today: 'Today',
+  this_week: 'This Week',
+  this_month: 'This Month',
+  this_year: 'This Year',
+  custom: 'Custom'
+};
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -24,7 +44,9 @@ class Dashboard extends React.Component {
     this.state = {
       name: '',
       type: 'Joint',
-      statType: statTypes.max
+      statType: 'mean',
+      daytime: 'all_day',
+      currentBodyPartID: undefined
     };
   }
 
@@ -33,8 +55,37 @@ class Dashboard extends React.Component {
     this.setState({ [target.name]: target.value });
   }
 
-  _changeStatType = (event) => {
+  _handleDateRangeChange = (event) => {
+    const { userInfo } = this.props;
+    const target = event.target;
 
+    let startDate, endDate;
+    switch (target.value) {
+      case 'today':
+        startDate = moment().startOf('day');
+        break;
+      case 'this_week':
+        startDate = moment().subtract(6,'d').startOf('day');
+        break;
+      case 'this_month':
+        startDate = moment().subtract(1,'M').startOf('day');
+        break;
+      case 'this_year':
+        startDate = moment().subtract(1,'Y').startOf('day');
+        break;
+      case 'custom':
+        console.log('Need to handle custom case!!!');
+    }
+
+    let params = {};
+    if (startDate) {
+      params = { ...params, start_date: startDate.toISOString() };
+    }
+    if (endDate) {
+      params = { ...params, end_date: endDate.toISOString() };
+    }
+    this.props.getEntries(userInfo, params);
+    this.props.getBodyParts(userInfo, params);
   }
 
   _displayAddBodyPart = (bodyPartName) => {
@@ -42,47 +93,215 @@ class Dashboard extends React.Component {
     console.log(bodyPartName);
   }
 
-  render() {
-    const { userInfo, bodyParts, token, history, logout } = this.props;
+  _renderOverviewStats = (currentBodyPart) => {
+    let stats = currentBodyPart?.stats?.total;
+    return (
+      <div style={styles.statsRow}>
+        <div style={styles.subtitleContainer}>Overview</div>
+        <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{stats.high ? stats.high.toFixed(1) : '-'}</div>
+          <div style={styles.statTitle}>Max</div>
+        </div>
+        <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{stats.low ? stats.low.toFixed(1) : '-'}</div>
+          <div style={styles.statTitle}>Min</div>
+        </div>
+        <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{stats.median ? stats.median.toFixed(1) : '-'}</div>
+          <div style={styles.statTitle}>Median</div>
+        </div>
+        <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{stats.stdev ? stats.stdev.toFixed(1) : '-'}</div>
+          <div style={styles.statTitle}>Std Dev</div>
+        </div>
+      </div>
+    );
+  }
+
+  _renderDaytimeStats = (currentBodyPart) => {
     const { statType } = this.state;
+
+    let stats = currentBodyPart?.stats?.daytime;
+    return (
+      <div style={styles.statsRow}>
+        <div style={styles.subtitleContainer}>Pain Throughout the Day</div>
+        <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{stats?.wakeup && stats.wakeup[statType] ? stats.wakeup[statType] : '-'}</div>
+          <div style={styles.statTitle}>Wake Up</div>
+        </div>
+        <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{stats?.morning && stats.morning[statType] ? stats.morning[statType] : '-'}</div>
+          <div style={styles.statTitle}>Morning</div>
+        </div>
+        <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{stats?.lunch && stats.lunch[statType] ? stats.lunch[statType] : '-'}</div>
+          <div style={styles.statTitle}>Lunch</div>
+        </div>
+        <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{stats?.evening && stats.evening[statType] ? stats.evening[statType] : '-'}</div>
+          <div style={styles.statTitle}>Evening</div>
+        </div>
+        <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{stats?.bed_time && stats.bed_time[statType] ? stats.bed_time[statType] : '-'}</div>
+          <div style={styles.statTitle}>Bed Time</div>
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    const { userInfo, bodyParts, token, history, logout, entries } = this.props;
+    const { statType, daytime, currentBodyPartID } = this.state;
+
+    let part, currentBodyPart;
+    for (part of bodyParts) {
+      if (currentBodyPartID && part.id == currentBodyPartID) {
+        currentBodyPart = part;
+        break;
+      }
+    }
+
+    const dateEntries = currentBodyPart?.stats?.calendar ? currentBodyPart?.stats?.calendar : entries;
+    const last_entry = moment(dateEntries[0]?.date).utc().format('MM/DD/YY');
+    const oldest_entry = moment(dateEntries[dateEntries.length-1]?.date).utc().format('MM/DD/YY');
     return (
       <div style={styles.container}>
         <Navbar userInfo={userInfo} logout={logout}/>
         <div style={styles.contentContainer}>
           <div style={styles.leftContentContainer}>
-            <BodyVisualizer bodyParts={bodyParts} statType={statType} history={history} displayAddBodyPart={this._displayAddBodyPart} />
-          </div>
-          <div style={styles.rightContentContainer}>
-            <div style={{ ...AppStyles.typContentContainer, flex: 1 }}>
-              <h3>User ID: {this.props.userInfo?.id}</h3>
-              <h3>Name: {`${userInfo?.first_name} ${userInfo?.last_name}`}</h3>
-              <h3>{userInfo?.email && `Email: ${userInfo?.email}`}</h3>
-              <h3>{userInfo?.phone && `Phone Number: ${userInfo?.phone}`}</h3>
-              <h3>{userInfo?.birthday && `Birthday: ${userInfo?.birthday}`}</h3>
-              <h3>{userInfo?.hometown && `Hometown: ${userInfo?.hometown}`}</h3>
-              <h3>{userInfo?.medical_history && `Medical History: ${userInfo?.medical_history}`}</h3>
-
-              { this.props.bodyParts && <h3>Number of Body Parts: {this.props.bodyParts.length}</h3> }
-
-              { this.props.bodyParts && bodyParts.map((part) => {
-                  if (part.stats?.num_entries > 0) {
+            <div style={{ flex: 1, width: '100%', position: 'relative'}}>
+              <div style={styles.titleContainer}>
+                <div>My</div>
+                <div>Pain Map</div>
+              </div>
+              <button style={styles.helpIcon}>?</button>
+              <div style={styles.filterContaienr}>
+                <div style={styles.filterTxt}>Show:</div>
+                <select name="statType" style={styles.filterOptionTxt} onChange={this._handleInputChange}>
+                  {Object.entries(statTypes).map(([key, value]) => {
                     return (
-                      <div key={part.id}>
-                        {(part.location && `${part.location} `)}
-                        {`${part.name} ${part.stats[this.state.statType]}`}
+                      <option key={key} value={key}>{value}</option>
+                    );
+                  })}
+                </select>
+                <select name="daytime" style={styles.filterOptionTxt} onChange={this._handleInputChange}>
+                  {Object.entries(daytimes).map(([key, value]) => {
+                    return (
+                      <option key={key} value={key}>{value}</option>
+                    );
+                  })}
+                </select>
+                <select name="dateRange" style={styles.filterOptionTxt} onChange={this._handleDateRangeChange}>
+                  {Object.entries(dateRanges).map(([key, value]) => {
+                    return (
+                      <option key={key} value={key}>{value}</option>
+                    );
+                  })}
+                </select>
+              </div>
+              <BodyVisualizer
+                contentContainerStyle={styles.visualizer}
+                bodyParts={bodyParts}
+                daytime={daytime}
+                statType={statType}
+                history={history}
+                changeCurrentBodyPart={(part) => { this.setState({currentBodyPartID: part.id})}}
+                displayAddBodyPart={this._displayAddBodyPart} />
+            </div>
+            <div style={styles.painLegend}>
+              <div>
+                <p style={{marginLeft: 40, marginBottom: 0  }}>Pain</p>
+                <p style={{marginLeft: 40, marginTop: 0 }}>Legend</p>
+              </div>
+              <div style={{flex: 1}}>
+                <div style={styles.painLegendNumbers}>
+                  <div style={{flex: 0.5}}></div>
+                  {Object.entries(AppColors.painLevelColors).map(([type, color]) => {
+                    if (type === 'none') {
+                      return (
+                        <div key={type} style={{flex: 1.5, ...AppStyles.rowEnd, paddingRight: 18}}>
+                          <div style={{ ...styles.painLegendColor, backgroundColor: color}}></div>
+                        </div>
+                      );
+                    }
+                    return (
+                      <div key={type} style={{flex: 1, ...AppStyles.rowCenter}}>
+                        <div style={{ ...styles.painLegendColor, backgroundColor: color}}></div>
                       </div>
                     );
-                  }
-              })}
-
-              <form>
-                <input name="statType" value={statTypes.avg} type="radio" onChange={this._handleInputChange}/> Avg
-                <input name="statType" value={statTypes.max} type="radio" onChange={this._handleInputChange}/> Max
-                <input name="statType" value={statTypes.min} type="radio" onChange={this._handleInputChange}/> Min
-              </form>
+                  })}
+                </div>
+                <div style={styles.painLegendNumbers}>
+                  <span style={{flex: 1, textAlign: 'center'}}>0</span>
+                  <span style={{flex: 1, textAlign: 'center'}}>2</span>
+                  <span style={{flex: 1, textAlign: 'center'}}>4</span>
+                  <span style={{flex: 1, textAlign: 'center'}}>6</span>
+                  <span style={{flex: 1, textAlign: 'center'}}>8</span>
+                  <span style={{flex: 1, textAlign: 'center'}}>10</span>
+                  <span style={{flex: 1, textAlign: 'end', paddingRight: 16}}>N/A</span>
+                </div>
+              </div>
             </div>
-            <div style={{ ...AppStyles.typContentContainer, flex: 0.5, marginTop: 20 }}>
+          </div>
+          <div style={styles.rightContentContainer}>
+            <div style={{ ...AppStyles.typContentContainer, padding: 30, flex: 1, ...AppStyles.columnStart }}>
+              <div style={{ ...AppStyles.rowSpace, height: 110, width: '100%', position: 'relative'}}>
+                <div style={styles.titleContainer}>
+                  <div>{currentBodyPart ? `${currentBodyPart.location} ${currentBodyPart.name}` : 'General'}</div>
+                  <div>Stats</div>
+                </div>
 
+                <div style={styles.basicStatsContainer}>
+                  <div style={{height: '100%', flex: 1.2, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'flex-start'}}>
+                    <div>Total # of Entries:</div>
+                    <div>Last Entry:</div>
+                    <div>Tracking Since:</div>
+                  </div>
+                  <div style={{height: '100%', flex: 0.8, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'flex-end'}}>
+                    <div>{currentBodyPart
+                      ? (currentBodyPart.stats?.total?.num_entries ? currentBodyPart.stats.total.num_entries : 0 )
+                      : entries.length}
+                    </div>
+                    <div>{last_entry}</div>
+                    <div>{oldest_entry}</div>
+                  </div>
+                </div>
+              </div>
+              {(currentBodyPart && currentBodyPart.stats) ? (
+                <div style={styles.statsContainer}>
+                  {this._renderOverviewStats(currentBodyPart)}
+                  <hr style={{width: '85%', height: 0, borderTop: `solid 2px ${AppColors.blue}`}}/>
+                  {this._renderDaytimeStats(currentBodyPart)}
+                  <button
+                    onClick={() => {
+                      if (currentBodyPart) {
+                        this.props.history.push(`pain_points/${currentBodyPart.id}`);
+                      } else {
+                        this.props.history.push(`pain_points/`);
+                      }
+                    }}
+                    style={styles.mainButtonInactive}>
+                    {currentBodyPart ? 'View Details' : 'View All Pain Points'}
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  TEMP
+                </div>
+              )}
+            </div>
+            <div style={styles.mainButtonContainer}>
+              <button
+                onClick={() => { this.props.history.push('add_entry')}}
+                style={styles.mainButton}>
+                Add An Entry
+              </button>
+              <button
+                onClick={() => { this.props.history.push('entries')}}
+                style={styles.mainButton}>
+                View All Entries
+              </button>
+              <button style={styles.mainButton}>Build Report</button>
             </div>
           </div>
         </div>
@@ -97,7 +316,8 @@ const mapStateToProps = state => ({
   userUpdate: state.users.userUpdate,
   bodyPartUpdate: state.users.bodyPartUpdate,
   bodyParts: state.users.bodyParts,
-  loginSuccess: state.users.loginSuccess
+  loginSuccess: state.users.loginSuccess,
+  entries: state.users.entries
 });
 
 const mapDispatchToProps = dispatch => ({

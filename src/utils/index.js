@@ -85,17 +85,17 @@ const formatYearInput = (yearInput) => {
 const convertPainLeveltoHexColor = (painLevel) => {
   switch (Math.floor(painLevel / 2) % 5) {
     case 4:
-      return 'black';
+      return AppColors.painLevelColors.xHigh;
     case 3:
-      return 'red';
+      return AppColors.painLevelColors.high;
     case 2:
-      return 'orange';
+      return AppColors.painLevelColors.medium;
     case 1:
-      return 'yellow';
+      return AppColors.painLevelColors.low;
     case 0:
-      return 'green';
+      return AppColors.painLevelColors.xLow;
     default:
-      return 'white';
+      return AppColors.painLevelColors.none;
   }
 }
 

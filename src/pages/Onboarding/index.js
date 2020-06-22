@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
-import DatePicker from "react-datepicker";
 
 import styles from './style';
 import actions from 'Actions';

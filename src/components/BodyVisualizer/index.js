@@ -6,19 +6,29 @@ class BodyVisualizer extends React.Component {
     super(props);
 
     this.state = {
-
     };
   }
-
   _getColor = (bodyPartName) => {
-    const { bodyParts, statType } = this.props;
+    const { bodyParts, statType, daytime } = this.props;
 
     let part;
     if (bodyParts) {
       for (part of bodyParts) {
         let name = part.location ? `${part.location}_${part.name}` : part.name ;
         if (name === bodyPartName) {
-          return utils.convertPainLeveltoHexColor(part.stats[statType]);
+          let stats = part.stats;
+          if (stats) {
+            if (daytime !== 'all_day') {
+              const daytimeStats = part.stats.daytime[daytime]
+              if (daytimeStats) {
+                return utils.convertPainLeveltoHexColor(daytimeStats[statType]);
+              } else {
+                return 'white';
+              }
+            } else {
+              return utils.convertPainLeveltoHexColor(part.stats.total[statType]);
+            }
+          }
         }
       }
     }
@@ -26,15 +36,15 @@ class BodyVisualizer extends React.Component {
     return 'white';
   }
 
-  _handlePartClick = (bodyPartName) => {
-    const { bodyParts, statType, history, displayAddBodyPart } = this.props;
+  _handlePartClick = (clickedBodyPart) => {
+    const { bodyParts, statType, history, changeCurrentBodyPart, displayAddBodyPart } = this.props;
 
     let part;
     if (bodyParts) {
       for (part of bodyParts) {
         let name = part.location ? `${part.location}_${part.name}` : part.name ;
-        if (name === bodyPartName) {
-          history.push(`pain_points/${part.id}`);
+        if (name === clickedBodyPart) {
+          changeCurrentBodyPart(part);
           return;
         }
       }
@@ -52,10 +62,14 @@ class BodyVisualizer extends React.Component {
   // }
 
   render() {
+    const { contentContainerStyle } = this.props;
     return (
-      <div style={{flex: 1, height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-        <div>
-          <svg width="200" height="310" style={{transform: 'scale(1.75)'}}>
+      <div
+        style={{...contentContainerStyle, display: 'flex', justifyContent: 'center', alignItems: 'center'}}
+        ref={ (divContainer) => { this.divContainer = divContainer } }
+      >
+        <div style={{height: '100%'}}>
+          <svg width="100%" height='100%' viewBox='0 0 200 310'>
             <g>
               <title>Body BodyVisualizer</title>
               {shapes.map((shape) => {
