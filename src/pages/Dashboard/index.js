@@ -164,6 +164,36 @@ class Dashboard extends React.Component {
     const dateEntries = currentBodyPart?.stats?.calendar ? currentBodyPart?.stats?.calendar : entries;
     const last_entry = moment(dateEntries[0]?.date).utc().format('MM/DD/YY');
     const oldest_entry = moment(dateEntries[dateEntries.length-1]?.date).utc().format('MM/DD/YY');
+
+    // bodyParts={bodyParts}
+    // daytime={daytime}
+    // statType={statType}
+    // history={history}
+
+    const bodyPartDisplayNames = bodyParts.map(part => {
+      return part.location ? `${part.location}_${part.name}` : part.name;
+    });
+
+    const visualizerBodyParts = bodyParts.map(part => {
+      const displayName = part.location ? `${part.location}_${part.name}` : part.name;
+      let stats;
+      if (daytime !== 'all_day') {
+        if (part.stats?.daytime && part.stats?.daytime[daytime]) {
+          stats = part.stats.daytime[daytime][statType];
+        }
+      } else {
+        if (part.stats?.total) {
+          stats = part.stats.total[statType];
+        }
+      }
+      return ({
+        name: displayName,
+        id: part.id,
+        stats
+      });
+    });
+
+
     return (
       <div style={styles.container}>
         <Navbar userInfo={userInfo} logout={logout}/>
@@ -201,12 +231,9 @@ class Dashboard extends React.Component {
               </div>
               <BodyVisualizer
                 contentContainerStyle={styles.visualizer}
-                bodyParts={bodyParts}
-                daytime={daytime}
-                statType={statType}
-                history={history}
-                changeCurrentBodyPart={(part) => { this.setState({currentBodyPartID: part.id})}}
-                displayAddBodyPart={this._displayAddBodyPart} />
+                bodyParts={visualizerBodyParts}
+                clickBodyPartFound={(part) => { this.setState({currentBodyPartID: part.id})}}
+                clickBodyPartNotFound={this._displayAddBodyPart} />
             </div>
             <div style={styles.painLegend}>
               <div>

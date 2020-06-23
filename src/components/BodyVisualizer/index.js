@@ -9,27 +9,12 @@ class BodyVisualizer extends React.Component {
     };
   }
   _getColor = (bodyPartName) => {
-    const { bodyParts, statType, daytime } = this.props;
+    const { bodyParts, stats } = this.props;
 
     let part;
-    if (bodyParts) {
-      for (part of bodyParts) {
-        let name = part.location ? `${part.location}_${part.name}` : part.name ;
-        if (name === bodyPartName) {
-          let stats = part.stats;
-          if (stats) {
-            if (daytime !== 'all_day') {
-              const daytimeStats = part.stats.daytime[daytime]
-              if (daytimeStats) {
-                return utils.convertPainLeveltoHexColor(daytimeStats[statType]);
-              } else {
-                return 'white';
-              }
-            } else {
-              return utils.convertPainLeveltoHexColor(part.stats.total[statType]);
-            }
-          }
-        }
+    for (part of bodyParts) {
+      if (part.name === bodyPartName && part.stats) {
+        return utils.convertPainLeveltoHexColor(part.stats);
       }
     }
 
@@ -37,20 +22,17 @@ class BodyVisualizer extends React.Component {
   }
 
   _handlePartClick = (clickedBodyPart) => {
-    const { bodyParts, statType, history, changeCurrentBodyPart, displayAddBodyPart } = this.props;
+    const { bodyParts, clickBodyPartFound, clickBodyPartNotFound } = this.props;
 
     let part;
-    if (bodyParts) {
-      for (part of bodyParts) {
-        let name = part.location ? `${part.location}_${part.name}` : part.name ;
-        if (name === clickedBodyPart) {
-          changeCurrentBodyPart(part);
-          return;
-        }
+    for (part of bodyParts) {
+      if (part.name === clickedBodyPart) {
+        clickBodyPartFound(part);
+        return;
       }
     }
 
-    displayAddBodyPart(bodyPartName);
+    clickBodyPartNotFound(clickedBodyPart);
   }
 
   // _handlePartHoverStart = (event) => {
