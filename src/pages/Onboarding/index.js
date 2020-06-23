@@ -376,7 +376,9 @@ class Onboarding extends React.Component {
     const { selectOtherBodyParts, otherBodyParts } = this.state;
     return (
       <div style={styles.contentContainer}>
-        <button style={styles.backBtn} onClick={() => { this._switchScreen(true) }}><img src={BackIcon} style={{height: 32, margin: 'auto' }} /></button>
+        <button style={styles.backBtn} onClick={() => { this._switchScreen(true) }}>
+          <img src={BackIcon} style={{height: 32, margin: 'auto' }} />
+        </button>
         <div style={{ ...styles.infoContainer}}>
           {this._renderPartsRow(defaultUpperJoints, 30)}
           {this._renderPartsRow(defaultLowerJoints, -30)}
