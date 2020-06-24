@@ -22,6 +22,12 @@ export default {
     alignItems: "center",
     justifyContent: "flex-start",
   },
+  columnSpace: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
   rowCenter: {
     display: 'flex',
     flexDirection: 'row',
