@@ -9,6 +9,8 @@ import Navbar from 'Components/Navbar';
 import BodyVisualizer from 'Components/BodyVisualizer';
 import styles from './style';
 
+import withWindowDimensions from 'Common/AppDimens';
+
 const daytimes = {
   all_day: 'All Day',
   wakeup: 'Wake Up',
@@ -161,12 +163,8 @@ class Entries extends React.Component {
   }
 
   render() {
-    const { userInfo, bodyParts, entries, logout } = this.props;
+    const { userInfo, bodyParts, entries, logout, windowWidth } = this.props;
     const { sortBy } = this.state;
-
-    for (let entry of entries) {
-      console.log(entry.stats);
-    }
     return (
       <div style={styles.container}>
         <Navbar userInfo={userInfo} logout={logout}/>
@@ -245,7 +243,7 @@ class Entries extends React.Component {
             <div style={styles.entryNumberText}># of Entries: {entries.length}</div>
           </div>
         </div>
-        <div style={styles.entriesContainer}>
+        <div style={styles.entriesContainer(windowWidth)}>
           {entries.map(this._renderEntry)}
         </div>
       </div>
@@ -266,4 +264,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(Entries));
+)(withRouter(withWindowDimensions(Entries)));
