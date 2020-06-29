@@ -51,6 +51,11 @@ const addBodyPart = (userInfo, data) => {
   return _post(path, data);
 };
 
+const editBodyPart = (userInfo, bodyPartID, data) => {
+  const path = `${userPath}${userInfo.id}${bodypartPath}${bodyPartID}/`;
+  return _patch(path, data);
+}
+
 const getEntries = (userInfo, params) => {
   const path = `${userPath}${userInfo.id}${entryPath}`;
   return _get(path, params);
@@ -129,6 +134,7 @@ export default {
   getBodyParts,
   getBodyPart,
   addBodyPart,
+  editBodyPart,
   getEntries,
   addEntry
 }

@@ -58,6 +58,11 @@ export default (state = initialState, action) => {
         ...state,
         bodyPartUpdate: true
       };
+    case actions.userActions.EDIT_USER_BODY_PART_SUCCESS:
+      return {
+        ...state,
+        bodyPartUpdate: true
+      };
     case actions.userActions.GET_USER_ENTRY_SUCCESS:
       return {
         ...state,
