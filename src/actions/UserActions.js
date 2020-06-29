@@ -13,6 +13,10 @@ const userActions = {
   USER_LOGIN_SUCCESS: USER_PREFIX + '_LOGIN' + '_SUCCESS',
   USER_LOGIN_FAIL: USER_PREFIX + '_LOGIN' + '_FAIL',
 
+  USER_PASSWORD_CHANGE_REQUEST: USER_PREFIX + '_PASSWORD_CHANGE' + '_REQUEST',
+  USER_PASSWORD_CHANGE_SUCCESS: USER_PREFIX + '_PASSWORD_CHANGE' + '_SUCCESS',
+  USER_PASSWORD_CHANGE_FAIL: USER_PREFIX + '_PASSWORD_CHANGE' + '_FAIL',
+
   GET_USER_REQUEST: 'GET_' + USER_PREFIX + '_REQUEST',
   GET_USER_SUCCESS: 'GET_' + USER_PREFIX + '_SUCCESS',
   GET_USER_FAIL: 'GET_' + USER_PREFIX + '_FAIL',
@@ -107,6 +111,30 @@ const logout = () => {
     }
   };
 };
+
+const changePassword = (userInfo, data) => {
+  return async dispatch => {
+    dispatch({
+      type: userActions.USER_PASSWORD_CHANGE_REQUEST
+    });
+    try {
+      const response = await API.changePassword(userInfo, data);
+
+      if (response.data.auth_token) {
+        localStorage.setItem('token', response.data.auth_token);
+        dispatch({
+          type: userActions.USER_PASSWORD_CHANGE_SUCCESS
+        });
+      } else {
+        dispatch({
+          type: userActions.USER_PASSWORD_CHANGE_FAIL
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+}
 
 const getUserData = (userInfo, params) => {
   return async dispatch => {
@@ -281,6 +309,7 @@ export {
   register,
   login,
   logout,
+  changePassword,
   getUserData,
   updateUser,
   getBodyParts,

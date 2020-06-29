@@ -21,6 +21,11 @@ const logout = () => {
   return _post(path, null);
 }
 
+const changePassword = (userInfo, data) => {
+  const path = `${userPath}${userInfo.id}/change_password/`;
+  return _patch(path, data);
+};
+
 const getUserData = (userInfo, params) => {
   const path = `${userPath}${userInfo.id}/`;
   return _get(path, params);
@@ -118,6 +123,7 @@ export default {
   register,
   login,
   logout,
+  changePassword,
   getUserData,
   updateUser,
   getBodyParts,
