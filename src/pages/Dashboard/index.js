@@ -344,7 +344,7 @@ const mapStateToProps = state => ({
   loginSuccess: state.users.loginSuccess,
   bodyPartUpdate: state.bodyParts.bodyPartUpdate,
   bodyParts: state.bodyParts.bodyParts,
-  entries: state.users.entries
+  entries: state.entries.entries
 });
 
 const mapDispatchToProps = dispatch => ({

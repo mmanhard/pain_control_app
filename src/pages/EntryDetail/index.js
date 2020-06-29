@@ -104,7 +104,7 @@ class EntryDetail extends React.Component {
 const mapStateToProps = state => ({
   userInfo: state.users.userInfo,
   bodyParts: state.bodyParts.bodyParts,
-  entryInfo: state.users.entryInfo
+  entryInfo: state.entries.entryInfo
 });
 
 const mapDispatchToProps = dispatch => ({
