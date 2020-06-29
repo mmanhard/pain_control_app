@@ -14,6 +14,27 @@ const formatPhoneInput = (input) => {
   return input;
 }
 
+const formatDateInput = (dateInput) => {
+  let input = dateInput.replace(/\D/g, '');
+  input = input.substring(0, 8);
+  const monthInput = input.substring(0, 2);
+  const dayInput = input.substring(2, 4);
+  const yearInput = input.substring(4, 8);
+
+  let output;
+  if (monthInput) {
+    output = formatMonthInput(monthInput);
+  }
+  if (dayInput) {
+    output = output.concat(`/${formatDayInput(dayInput)}`);
+  }
+  if (yearInput) {
+    output = output.concat(`/${formatYearInput(yearInput)}`);
+  }
+
+  return output;
+}
+
 const formatMonthInput = (monthInput) => {
   monthInput = monthInput.substring(0,2);
 
@@ -101,8 +122,6 @@ const convertPainLeveltoHexColor = (painLevel) => {
 
 export default {
   formatPhoneInput,
-  formatMonthInput,
-  formatDayInput,
-  formatYearInput,
+  formatDateInput,
   convertPainLeveltoHexColor
 }

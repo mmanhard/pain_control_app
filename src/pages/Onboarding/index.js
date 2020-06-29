@@ -127,24 +127,8 @@ class Onboarding extends React.Component {
 
   _handleBirthdayChange = (event) => {
     const target = event.target;
-    let input = target.value .replace(/\D/g, '');
-    input = input.substring(0, 8);
-    const monthInput = input.substring(0, 2);
-    const dayInput = input.substring(2, 4);
-    const yearInput = input.substring(4, 8);
 
-    let output;
-    if (monthInput) {
-      output = Utils.formatMonthInput(monthInput);
-    }
-    if (dayInput) {
-      output = output.concat(`/${Utils.formatDayInput(dayInput)}`);
-    }
-    if (yearInput) {
-      output = output.concat(`/${Utils.formatYearInput(yearInput)}`);
-    }
-
-    this.setState({ birthday: output });
+    this.setState({ birthday: Utils.formatDateInput(target.value) });
   };
 
   _handleSubmitInfo = (event) => {
