@@ -341,9 +341,9 @@ class Dashboard extends React.Component {
 const mapStateToProps = state => ({
   userInfo: state.users.userInfo,
   userUpdate: state.users.userUpdate,
-  bodyPartUpdate: state.users.bodyPartUpdate,
-  bodyParts: state.users.bodyParts,
   loginSuccess: state.users.loginSuccess,
+  bodyPartUpdate: state.bodyParts.bodyPartUpdate,
+  bodyParts: state.bodyParts.bodyParts,
   entries: state.users.entries
 });
 

@@ -277,27 +277,9 @@ class AddEntry extends React.Component {
   }
 }
 
-// <h2>AddEntry</h2>
-// <h3>User ID: {this.props.userInfo?.id}</h3>
-// <form onSubmit={this._handleSubmit}>
-//   {bodyParts.map((part) => {
-//     const pk = part.location ? `${part.location}_${part.name}` : part.name;
-//     return (<div key={pk}>
-//       <h4>{pk}</h4>
-//       <input type="number" name={part.name} onChange={this._handleInputChange}/>
-//     </div>);
-//   })}
-//   <br />
-//   <label>
-//     Notes:
-//     <textarea rows="4" cols="50" name="notes" onChange={this._handleInputChange}/>
-//   </label>
-//   <input type="submit" value="Submit Entry" />
-// </form>
-
 const mapStateToProps = state => ({
   userInfo: state.users.userInfo,
-  bodyParts: state.users.bodyParts,
+  bodyParts: state.bodyParts.bodyParts,
 });
 
 const mapDispatchToProps = dispatch => ({

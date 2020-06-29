@@ -25,22 +25,6 @@ const userActions = {
   UPDATE_USER_SUCCESS: 'UPDATE_' + USER_PREFIX + '_SUCCESS',
   UPDATE_USER_FAIL: 'UPDATE_' + USER_PREFIX + '_FAIL',
 
-  GET_USER_BODY_PARTS_REQUEST: 'GET_' + USER_PREFIX + '_BODY_PARTS' + '_REQUEST',
-  GET_USER_BODY_PARTS_SUCCESS: 'GET_' + USER_PREFIX + '_BODY_PARTS' + '_SUCCESS',
-  GET_USER_BODY_PARTS_FAIL: 'GET_' + USER_PREFIX + '_BODY_PARTS' + '_FAIL',
-
-  GET_USER_BODY_PART_REQUEST: 'GET_' + USER_PREFIX + '_BODY_PART' + '_REQUEST',
-  GET_USER_BODY_PART_SUCCESS: 'GET_' + USER_PREFIX + '_BODY_PART' + '_SUCCESS',
-  GET_USER_BODY_PART_FAIL: 'GET_' + USER_PREFIX + '_BODY_PART' + '_FAIL',
-
-  ADD_USER_BODY_PART_REQUEST: 'ADD_' + USER_PREFIX + '_BODY_PART' + '_REQUEST',
-  ADD_USER_BODY_PART_SUCCESS: 'ADD_' + USER_PREFIX + '_BODY_PART' + '_SUCCESS',
-  ADD_USER_BODY_PART_FAIL: 'ADD_' + USER_PREFIX + '_BODY_PART' + '_FAIL',
-
-  EDIT_USER_BODY_PART_REQUEST: 'EDIT_' + USER_PREFIX + '_BODY_PART' + '_REQUEST',
-  EDIT_USER_BODY_PART_SUCCESS: 'EDIT_' + USER_PREFIX + '_BODY_PART' + '_SUCCESS',
-  EDIT_USER_BODY_PART_FAIL: 'EDIT_' + USER_PREFIX + '_BODY_PART' + '_FAIL',
-
   GET_USER_ENTRY_REQUEST: 'GET_' + USER_PREFIX + '_ENTRY' + '_REQUEST',
   GET_USER_ENTRY_SUCCESS: 'GET_' + USER_PREFIX + '_ENTRY' + '_SUCCESS',
   GET_USER_ENTRY_FAIL: 'GET_' + USER_PREFIX + '_ENTRY' + '_FAIL',
@@ -188,102 +172,6 @@ const updateUser = (userInfo, data) => {
   };
 }
 
-const getBodyParts = (userInfo, params) => {
-  return async dispatch => {
-    dispatch({
-      type: userActions.GET_USER_BODY_PARTS_REQUEST
-    });
-    try {
-      const response = await API.getBodyParts(userInfo, params);
-
-      if (!response.fail) {
-        dispatch({
-          type: userActions.GET_USER_BODY_PARTS_SUCCESS,
-          payload: { data: { ...response.data } }
-        });
-      } else {
-        dispatch({
-          type: userActions.GET_USER_BODY_PARTS_FAIL,
-        });
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-}
-
-const getBodyPart = (userInfo, bodyPartID, params) => {
-  return async dispatch => {
-    dispatch({
-      type: userActions.GET_USER_BODY_PART_REQUEST
-    });
-    try {
-      const response = await API.getBodyPart(userInfo, bodyPartID, params);
-
-      if (!response.fail) {
-        dispatch({
-          type: userActions.GET_USER_BODY_PART_SUCCESS,
-          payload: { data: { ...response.data } }
-        });
-      } else {
-        dispatch({
-          type: userActions.GET_USER_BODY_PART_FAIL,
-        });
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-}
-
-const addBodyPart = (userInfo, data) => {
-  return async dispatch => {
-    dispatch({
-      type: userActions.ADD_USER_BODY_PART_REQUEST
-    });
-    try {
-      const response = await API.addBodyPart(userInfo, data);
-
-      if (!response.fail) {
-        dispatch({
-          type: userActions.ADD_USER_BODY_PART_SUCCESS,
-          payload: { data: { ...response.data } }
-        });
-      } else {
-        dispatch({
-          type: userActions.ADD_USER_BODY_PART_FAIL,
-        });
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-}
-
-const editBodyPart = (userInfo, bodyPartID, data) => {
-  return async dispatch => {
-    dispatch({
-      type: userActions.EDIT_USER_BODY_PART_REQUEST
-    });
-    try {
-      const response = await API.editBodyPart(userInfo, bodyPartID, data);
-
-      if (!response.fail) {
-        dispatch({
-          type: userActions.EDIT_USER_BODY_PART_SUCCESS,
-          payload: { data: { ...response.data } }
-        });
-      } else {
-        dispatch({
-          type: userActions.EDIT_USER_BODY_PART_FAIL,
-        });
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-}
-
 const getEntries = (userInfo, params) => {
   return async dispatch => {
     dispatch({
@@ -340,10 +228,6 @@ export {
   changePassword,
   getUserData,
   updateUser,
-  getBodyParts,
-  getBodyPart,
-  addBodyPart,
-  editBodyPart,
   getEntries,
   addEntry
 }

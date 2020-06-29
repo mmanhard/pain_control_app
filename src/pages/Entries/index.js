@@ -253,7 +253,7 @@ class Entries extends React.Component {
 
 const mapStateToProps = state => ({
   userInfo: state.users.userInfo,
-  bodyParts: state.users.bodyParts,
+  bodyParts: state.bodyParts.bodyParts,
   entries: state.users.entries
 });
 

@@ -44,7 +44,7 @@ class PainPointDetail extends React.Component {
 
 const mapStateToProps = state => ({
   userInfo: state.users.userInfo,
-  bodyPartInfo: state.users.bodyPartInfo
+  bodyPartInfo: state.bodyParts.bodyPartInfo
 });
 
 const mapDispatchToProps = dispatch => ({
