@@ -95,7 +95,7 @@ function PrivateRoute({ isLogin, children, ...rest }) {
 
 function Entry() {
   let { entryID } = useParams();
-  return <Pages.EntryDetail entryInfo={ { id: entryID } } />;
+  return <Pages.EntryDetail entryID={entryID} />;
 }
 
 function PainPoint() {
