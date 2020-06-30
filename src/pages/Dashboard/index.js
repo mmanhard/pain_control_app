@@ -10,6 +10,8 @@ import BodyVisualizer from 'Components/BodyVisualizer';
 import styles from './style';
 import AppStyles from 'Common/AppStyles';
 import AppColors from 'Common/AppColors';
+import ActionModal from 'Components/ActionModal';
+import HelpModal from 'Components/HelpModal';
 
 const statTypes = {
   mean: 'Mean',
@@ -21,7 +23,6 @@ const statTypes = {
 
 const daytimes = {
   all_day: 'All Day',
-  wakeup: 'Wake Up',
   morning: 'Morning',
   lunch: 'Lunch',
   evening: 'Evening',
@@ -46,8 +47,12 @@ class Dashboard extends React.Component {
       type: 'Joint',
       statType: 'mean',
       daytime: 'all_day',
-      currentBodyPartID: undefined
+      currentBodyPartID: undefined,
+      newBodyPart: undefined,
     };
+
+    this.actionModalRef = React.createRef();
+    this.helpModalRef = React.createRef();
   }
 
   _handleInputChange = (event) => {
@@ -88,16 +93,46 @@ class Dashboard extends React.Component {
     this.props.getBodyParts(userInfo, params);
   }
 
-  _displayAddBodyPart = (bodyPartName) => {
-    console.log('Would you like to add: ');
-    console.log(bodyPartName);
+  _displayAddBodyPart = (bodyPart) => {
+    this.setState({newBodyPart: bodyPart });
+    this.actionModalRef.current.open();
+  }
+
+  _renderGeneralStats = (bodyParts) => {
+    const { statType } = this.state;
+    return (
+      <ul style={styles.generalStatsContainer}>
+        <div style={styles.subtitleContainer}>
+          <div>{statTypes[statType]}</div>
+          <div>Pain Level</div>
+        </div>
+        {bodyParts.map(part => {
+          return (
+            <li key={part.id} style={styles.statContainer}>
+              <button
+                onClick={() => {this.setState({ currentBodyPartID: part.id })}}
+                style={styles.statTxtBtn}>
+                {part.stats ? Number(part.stats).toFixed(1) : '-'}
+              </button>
+              <div style={styles.statTitle}>{part.name.replace('_', ' ')}</div>
+            </li>
+          )
+        })}
+
+        <button
+          onClick={() => {this.props.history.push('pain_points/')}}
+          style={{...styles.mainButtonInactive, marginLeft: 'auto', marginRight: 'auto'}}>
+          View All Pain Points
+        </button>
+      </ul>
+    )
   }
 
   _renderOverviewStats = (currentBodyPart) => {
     let stats = currentBodyPart?.stats?.total;
     return (
       <div style={styles.statsRow}>
-        <div style={styles.subtitleContainer}>Overview</div>
+        <div style={styles.subtitleContainer}>Overall</div>
         <div style={styles.statContainer}>
           <div style={styles.statTxt}>{stats.high ? stats.high.toFixed(1) : '-'}</div>
           <div style={styles.statTitle}>Max</div>
@@ -124,10 +159,9 @@ class Dashboard extends React.Component {
     let stats = currentBodyPart?.stats?.daytime;
     return (
       <div style={styles.statsRow}>
-        <div style={styles.subtitleContainer}>Pain Throughout the Day</div>
-        <div style={styles.statContainer}>
-          <div style={styles.statTxt}>{stats?.wakeup && stats.wakeup[statType] ? stats.wakeup[statType] : '-'}</div>
-          <div style={styles.statTitle}>Wake Up</div>
+        <div style={styles.subtitleContainer}>
+          <div>{statTypes[statType]}</div>
+          <div>Over the Day</div>
         </div>
         <div style={styles.statContainer}>
           <div style={styles.statTxt}>{stats?.morning && stats.morning[statType] ? stats.morning[statType] : '-'}</div>
@@ -151,7 +185,7 @@ class Dashboard extends React.Component {
 
   render() {
     const { userInfo, bodyParts, token, history, logout, entries } = this.props;
-    const { statType, daytime, currentBodyPartID } = this.state;
+    const { statType, daytime, currentBodyPartID, newBodyPart } = this.state;
 
     let part, currentBodyPart;
     for (part of bodyParts) {
@@ -164,11 +198,6 @@ class Dashboard extends React.Component {
     const dateEntries = currentBodyPart?.stats?.calendar ? currentBodyPart?.stats?.calendar : entries;
     const last_entry = moment(dateEntries[0]?.date).utc().format('MM/DD/YY');
     const oldest_entry = moment(dateEntries[dateEntries.length-1]?.date).utc().format('MM/DD/YY');
-
-    // bodyParts={bodyParts}
-    // daytime={daytime}
-    // statType={statType}
-    // history={history}
 
     const bodyPartDisplayNames = bodyParts.map(part => {
       return part.location ? `${part.location}_${part.name}` : part.name;
@@ -204,7 +233,11 @@ class Dashboard extends React.Component {
                 <div>My</div>
                 <div>Pain Map</div>
               </div>
-              <button style={styles.helpIcon}>?</button>
+              <button
+                onClick={() => {this.helpModalRef.current.open()}}
+                style={styles.helpIcon}>
+                ?
+              </button>
               <div style={styles.filterContaienr}>
                 <div style={styles.filterTxt}>Show:</div>
                 <select name="statType" style={styles.filterOptionTxt} onChange={this._handleInputChange}>
@@ -232,6 +265,7 @@ class Dashboard extends React.Component {
               <BodyVisualizer
                 contentContainerStyle={styles.visualizer}
                 bodyParts={visualizerBodyParts}
+                clickBackground={() => { this.setState({currentBodyPartID: undefined })}}
                 clickBodyPartFound={(part) => { this.setState({currentBodyPartID: part.id})}}
                 clickBodyPartNotFound={this._displayAddBodyPart} />
             </div>
@@ -299,40 +333,58 @@ class Dashboard extends React.Component {
                   {this._renderOverviewStats(currentBodyPart)}
                   <hr style={{width: '85%', height: 0, borderTop: `solid 2px ${AppColors.blue}`}}/>
                   {this._renderDaytimeStats(currentBodyPart)}
-                  <button
-                    onClick={() => {
-                      if (currentBodyPart) {
-                        this.props.history.push(`pain_points/${currentBodyPart.id}`);
-                      } else {
-                        this.props.history.push(`pain_points/`);
-                      }
-                    }}
-                    style={styles.mainButtonInactive}>
-                    {currentBodyPart ? 'View Details' : 'View All Pain Points'}
-                  </button>
+                  <div style={AppStyles.rowSpace}>
+                    <button
+                      onClick={() => {this.setState({ currentBodyPartID: undefined })}}
+                      style={styles.mainButtonInactive}>
+                      View General
+                    </button>
+                    <button
+                      onClick={() => {this.props.history.push(`pain_points/${currentBodyPart.id}`)}}
+                      style={styles.mainButtonInactive}>
+                      View Details
+                    </button>
+                  </div>
                 </div>
               ) : (
-                <div>
-                  TEMP
+                <div style={styles.statsContainer}>
+                  {this._renderGeneralStats(visualizerBodyParts)}
                 </div>
               )}
             </div>
             <div style={styles.mainButtonContainer}>
               <button
+                onClick={() => { this.props.history.push('entries')}}
+                style={styles.mainButtonInactive}>
+                View All Entries
+              </button>
+              <button
                 onClick={() => { this.props.history.push('add_entry')}}
                 style={styles.mainButton}>
                 Add An Entry
-              </button>
-              <button
-                onClick={() => { this.props.history.push('entries')}}
-                style={styles.mainButton}>
-                View All Entries
               </button>
               <button style={styles.mainButton}>Build Report</button>
             </div>
           </div>
         </div>
 
+        <ActionModal
+          ref={this.actionModalRef}
+          contentStyle={styles.formModalContainer}
+          action={() => {
+            this.props.addBodyPart(userInfo, newBodyPart)
+          }}
+        >
+          <p style={styles.actionModalTxt}>
+            Would you like to start tracking your {newBodyPart && newBodyPart.displayName}?
+          </p>
+        </ActionModal>
+
+        <HelpModal
+          ref={this.helpModalRef}
+          contentStyle={styles.formModalContainer}
+        >
+        </HelpModal>
       </div>
     )
   }

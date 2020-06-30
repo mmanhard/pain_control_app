@@ -30,6 +30,7 @@ export default {
       top: 0,
       left: 0,
       height: 110,
+      width: 200,
       paddingLeft: 10,
       paddingRight: 10,
       ...AppFonts.Raleway.regular,
@@ -150,25 +151,47 @@ export default {
       width: '95%',
       marginTop: 10,
     },
+    generalStatsContainer: {
+      ...AppStyles.rowStart,
+      flexWrap: 'wrap',
+      alignContent: 'space-between',
+      paddingLeft: 30,
+      alignItems: 'center',
+      flex: 1,
+      width: '95%',
+      marginTop: 10,
+    },
     subtitleContainer: {
       ...AppStyles.center,
       backgroundColor: AppColors.lilac,
       height: 60,
-      width: 100,
+      width: '25%',
       borderRadius: 20,
       color: AppColors.blue
     },
     statContainer: {
       ...AppStyles.center,
-      flex: 1,
+      width: '25%',
       textAlign: 'center',
+    },
+    statTxtBtn: {
+      ...AppStyles.center,
+      ...AppFonts.Raleway.bold,
+      fontSize: AppFonts.size.medium,
+      backgroundColor: AppColors.blue,
+      height: 60,
+      width: 60,
+      borderRadius: 30,
+      color: AppColors.white,
+      border: 'none',
+      boxShadow: AppStyles.typBoxShadow
     },
     statTxt: {
       ...AppStyles.center,
       backgroundColor: AppColors.blue,
-      height: 50,
-      width: 50,
-      borderRadius: 25,
+      height: 60,
+      width: 60,
+      borderRadius: 30,
       color: AppColors.white
     },
     statTitle: {
@@ -207,5 +230,13 @@ export default {
       color: AppColors.white,
       backgroundColor: AppColors.blue,
       margin: 10,
+    },
+    actionModalTxt: {
+      ...AppFonts.Raleway.bold,
+      fontSize: AppFonts.size.medLarge,
+      color: AppColors.black,
+      marginTop: 30,
+      textAlign: 'center',
+      width: '80%'
     }
 }
