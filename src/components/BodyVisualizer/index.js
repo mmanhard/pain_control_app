@@ -21,9 +21,10 @@ class BodyVisualizer extends React.Component {
     return 'white';
   }
 
-  _handlePartClick = (clickedBodyPart) => {
+  _handlePartClick = (event, clickedBodyPart) => {
     const { bodyParts, clickBodyPartFound, clickBodyPartNotFound } = this.props;
 
+    event.stopPropagation();
     let part;
     for (part of bodyParts) {
       if (part.name === clickedBodyPart) {
@@ -32,7 +33,15 @@ class BodyVisualizer extends React.Component {
       }
     }
 
-    clickBodyPartNotFound(clickedBodyPart);
+    let newBodyPart = {}
+    const splitName = clickedBodyPart.split('_')
+    if (splitName.length > 1) {
+      const displayName = clickedBodyPart.replace('_',' ');
+      newBodyPart = { name: splitName[1], displayName, type: 'None', location: splitName[0]}
+    } else {
+      newBodyPart = { name: splitName[0], displayName: splitName[0], type: 'None' }
+    }
+    clickBodyPartNotFound(newBodyPart);
   }
 
   // _handlePartHoverStart = (event) => {
@@ -44,11 +53,12 @@ class BodyVisualizer extends React.Component {
   // }
 
   render() {
-    const { contentContainerStyle } = this.props;
+    const { contentContainerStyle, clickBackground } = this.props;
     return (
       <div
         style={{...contentContainerStyle, display: 'flex', justifyContent: 'center', alignItems: 'center'}}
         ref={ (divContainer) => { this.divContainer = divContainer } }
+        onClick={clickBackground}
       >
         <div style={{height: '100%'}}>
           <svg width="100%" height='100%' viewBox='0 0 200 310'>
@@ -57,7 +67,7 @@ class BodyVisualizer extends React.Component {
               {shapes.map((shape) => {
                 return (
                   <ellipse key={shape.id}
-                    onClick={() => {this._handlePartClick(shape.id)}}
+                    onClick={(event) => {this._handlePartClick(event, shape.id)}}
                     onMouseOver={this._handlePartHoverStart}
                     onMouseLeave={this._handlePartHoverEnd}
                     id={shape.id} ry={shape.r} rx={shape.r} cy={shape.cy} cx={shape.cx} stroke="#000" fill={this._getColor(shape.id)}/>
