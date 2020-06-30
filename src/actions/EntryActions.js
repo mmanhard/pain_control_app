@@ -9,6 +9,10 @@ const entryActions = {
   GET_ALL_ENTRIES_SUCCESS: 'GET_ALL_' + ENTRY_PREFIX + '_SUCCESS',
   GET_ALL_ENTRIES_FAIL: 'GET_ALL_' + ENTRY_PREFIX + '_FAIL',
 
+  GET_ENTRY_REQUEST: 'GET_' + ENTRY_PREFIX + '_REQUEST',
+  GET_ENTRY_SUCCESS: 'GET_' + ENTRY_PREFIX + '_SUCCESS',
+  GET_ENTRY_FAIL: 'GET_' + ENTRY_PREFIX + '_FAIL',
+
   ADD_ENTRY_REQUEST: 'ADD_' + ENTRY_PREFIX + '_REQUEST',
   ADD_ENTRY_SUCCESS: 'ADD_' + ENTRY_PREFIX + '_SUCCESS',
   ADD_ENTRY_FAIL: 'ADD_' + ENTRY_PREFIX + '_FAIL',
@@ -30,6 +34,30 @@ const getEntries = (userInfo, params) => {
       } else {
         dispatch({
           type: entryActions.GET_ALL_ENTRIES_FAIL,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+}
+
+const getEntry = (userInfo, entryID, params) => {
+  return async dispatch => {
+    dispatch({
+      type: entryActions.GET_ENTRY_REQUEST,
+    });
+    try {
+      const response = await API.getEntry(userInfo, entryID, params);
+
+      if (!response.fail) {
+        dispatch({
+          type: entryActions.GET_ENTRY_SUCCESS,
+          payload: { data: { ...response.data } }
+        });
+      } else {
+        dispatch({
+          type: entryActions.GET_ENTRY_FAIL,
         });
       }
     } catch (err) {
@@ -65,5 +93,6 @@ const addEntry = (userInfo, data) => {
 export {
   entryActions,
   getEntries,
+  getEntry,
   addEntry
 }

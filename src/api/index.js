@@ -61,6 +61,11 @@ const getEntries = (userInfo, params) => {
   return _get(path, params);
 };
 
+const getEntry = (userInfo, entryID, params) => {
+  const path = `${userPath}${userInfo.id}${entryPath}${entryID}/`;
+  return _get(path, params);
+};
+
 const addEntry = (userInfo, data) => {
   const path = `${userPath}${userInfo.id}${entryPath}`;
   return _post(path, data);
@@ -136,5 +141,6 @@ export default {
   addBodyPart,
   editBodyPart,
   getEntries,
+  getEntry,
   addEntry
 }
