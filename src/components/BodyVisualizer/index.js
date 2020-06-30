@@ -10,15 +10,14 @@ class BodyVisualizer extends React.Component {
   }
   _getColor = (bodyPartName) => {
     const { bodyParts, stats } = this.props;
-
     let part;
     for (part of bodyParts) {
-      if (part.name === bodyPartName && part.stats) {
+      if (part.name === bodyPartName && typeof part.stats !== 'undefined') {
         return utils.convertPainLeveltoHexColor(part.stats);
       }
     }
 
-    return 'white';
+    return utils.convertPainLeveltoHexColor();
   }
 
   _handlePartClick = (event, clickedBodyPart) => {
