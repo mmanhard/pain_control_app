@@ -30,6 +30,7 @@ export default {
       top: 0,
       left: 0,
       height: 110,
+      minWidth: 200,
       paddingLeft: 10,
       paddingRight: 10,
       ...AppFonts.Raleway.regular,
@@ -158,6 +159,15 @@ export default {
       borderRadius: 20,
       color: AppColors.blue
     },
+    painLevelTxt: {
+      ...AppStyles.center,
+      backgroundColor: AppColors.blue,
+      height: 110,
+      width: 110,
+      borderRadius: 55,
+      color: AppColors.white,
+      fontSize: AppFonts.size.xxLarge
+    },
     statContainer: {
       ...AppStyles.center,
       flex: 1,
@@ -175,6 +185,24 @@ export default {
       marginTop: 8,
       color: AppColors.blue,
       fontSize: AppFonts.size.medSmall,
+    },
+    notesContainer: {
+      width: 250,
+      height: 100,
+      backgroundColor: AppColors.lilac,
+      color: AppColors.blue,
+      fontSize: AppFonts.size.medSmall,
+      borderRadius: 20,
+      padding: 10,
+      border: `1px solid ${AppColors.blue}`,
+      marginTop: 20,
+      marginBottom: 20,
+    },
+    buttonContainer: {
+      ...AppStyles.center,
+      flex: 1,
+      height: '100%',
+      backgroundColor: 'red'
     },
     mainButtonContainer: {
       ...AppStyles.typContentContainer,
