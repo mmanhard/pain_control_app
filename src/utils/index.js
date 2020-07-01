@@ -1,4 +1,5 @@
 import AppColors from 'Common/AppColors';
+import moment from 'moment';
 
 const formatPhoneInput = (input) => {
   input = input.replace(/\D/g, '');
@@ -23,10 +24,10 @@ const formatDateInput = (dateInput) => {
 
   let output;
   if (monthInput) {
-    output = formatMonthInput(monthInput);
+    output = formatTwoDigitInput(monthInput, false, 12);
   }
   if (dayInput) {
-    output = output.concat(`/${formatDayInput(dayInput)}`);
+    output = output.concat(`/${formatTwoDigitInput(dayInput, false, 31)}`);
   }
   if (yearInput) {
     output = output.concat(`/${formatYearInput(yearInput)}`);
@@ -35,40 +36,22 @@ const formatDateInput = (dateInput) => {
   return output;
 }
 
-const formatMonthInput = (monthInput) => {
-  monthInput = monthInput.substring(0,2);
+const formatTwoDigitInput = (input, zeroAllowed, max) => {
+  input = input.substring(0,2);
 
-  if (monthInput.length == 1 && Number(monthInput) > 1) {
-    monthInput = '0'.concat(monthInput);
+  if (input.length == 1 && Number(input) > Math.floor( max / 10)) {
+    input = '0'.concat(input);
   }
 
-  if (monthInput === '00') {
+  if (!zeroAllowed && input === '00') {
     return '0';
   }
 
-  if (Number(monthInput) > 12) {
-    return monthInput.substring(0,1);
+  if (Number(input) > max) {
+    return input.substring(0,1);
   }
 
-  return monthInput;
-}
-
-const formatDayInput = (dayInput) => {
-  dayInput = dayInput.substring(0,2);
-
-  if (dayInput.length == 1 && Number(dayInput) > 3) {
-    dayInput = '0'.concat(dayInput);
-  }
-
-  if (dayInput === '00') {
-    return '0';
-  }
-
-  if (Number(dayInput) > 31) {
-    return dayInput.substring(0,1);
-  }
-
-  return dayInput;
+  return input;
 }
 
 const formatYearInput = (yearInput) => {
@@ -103,6 +86,47 @@ const formatYearInput = (yearInput) => {
   return yearInput;
 }
 
+const formatTimeInput = (timeInput) => {
+  let input = timeInput.replace(' ', '').replace(':','');
+  const hourInput = input.substring(0, 2);
+  const minuteInput = input.substring(2, 4);
+
+  let output = '';
+  if (hourInput) {
+    output = output.concat(formatTwoDigitInput(hourInput, false, 12));
+  }
+  if (minuteInput) {
+    output = output.concat(`:${formatTwoDigitInput(minuteInput, true, 59)}`);
+  }
+
+  return output;
+}
+
+const convertDateTimeToMoment = (date, time, timePeriod) => {
+  if (!date || date.length < 10) return undefined;
+  if (!time || time.length < 5) return undefined;
+  if (!timePeriod || (timePeriod != 'AM' && timePeriod != 'PM')) {
+    return undefined;
+  }
+
+  let output = moment();
+  time = time.replace(' ', '').replace(':','');
+  const hour = (timePeriod == 'PM' ? 12 : 0) + Number(time.substring(0, 2));
+  const minute = time.substring(2, 4);
+  output.hour(hour);
+  output.minute(minute);
+
+  date = date.replace(/\D/g, '');
+  const month = date.substring(0, 2);
+  const day = date.substring(2, 4);
+  const year = date.substring(4, 8);
+  output.date(day);
+  output.month(month-1);
+  output.year(year);
+
+  return output;
+}
+
 const convertPainLeveltoHexColor = (painLevel) => {
   switch (Math.floor(painLevel / 2) % 5) {
     case 4:
@@ -123,5 +147,7 @@ const convertPainLeveltoHexColor = (painLevel) => {
 export default {
   formatPhoneInput,
   formatDateInput,
+  formatTimeInput,
+  convertDateTimeToMoment,
   convertPainLeveltoHexColor
 }

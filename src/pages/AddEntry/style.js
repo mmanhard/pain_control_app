@@ -29,9 +29,76 @@ export default {
     },
     configContentContainer: {
       marginTop: 30,
-      height: 400,
       width: '100%',
+      ...AppStyles.columnStart,
       ...AppStyles.typContentContainer
+    },
+    configAMPM: {
+      height: 36,
+      width: 54,
+      borderRadius: 18,
+      backgroundColor: AppColors.lilac,
+      color: AppColors.blue,
+      paddingLeft: 6,
+      ...AppFonts.Raleway.bold,
+      fontSize: AppFonts.size.medium,
+      textAlign: 'center',
+      border: 'none',
+      boxShadow: AppStyles.typBoxShadow,
+      alignItems: 'center'
+    },
+    configRow: {
+      margin: 20,
+      ...AppStyles.rowStart,
+      width: '90%'
+    },
+    configTitle: {
+      ...AppStyles.center,
+      alignItems: 'flex-start',
+      width: 180,
+      height: 68,
+      borderRadius: 34,
+      backgroundColor: AppColors.blue,
+    },
+    configTitleTxt: {
+      marginLeft: 20,
+      color: AppColors.white,
+      fontSize: AppFonts.size.medLarge,
+    },
+    configSubtitleTxt: {
+      color: AppColors.blue,
+      fontSize: AppFonts.size.medLarge,
+    },
+    configTimeTxt: {
+      background: 'none',
+      color: AppColors.black,
+      border: 'none',
+      textAlign: 'center',
+      width: 120,
+      margin: 10,
+      paddingBottom: 8,
+      borderBottom: `solid 2px ${AppColors.blue}`,
+      ...AppFonts.Raleway.bold,
+      fontSize: AppFonts.size.medium,
+    },
+    helpIcon: {
+      height: 24,
+      width: 24,
+      borderRadius: 14,
+      marginLeft: 10,
+      border: `solid 2px ${AppColors.blue}`,
+      color: AppColors.blue,
+      textAlign: 'center'
+    },
+    configDisplayTxt: {
+      height: 32,
+      borderRadius: 24,
+      paddingLeft: 16,
+      paddingRight: 16,
+      paddingTop: 10,
+      textAlign: 'center',
+      backgroundColor: AppColors.lilac,
+      color: AppColors.blue,
     },
     entryContainer: {
       flex: 1,
@@ -42,13 +109,10 @@ export default {
       width: '100%',
       marginTop: 30,
     },
-    partsContainer: (offset) => {
-      return {
-        marginLeft: offset,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center'
-      };
+    partsContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center'
     },
     partContainer: (selected) => {
       return {
@@ -167,5 +231,29 @@ export default {
       left: 200,
       ...AppFonts.Raleway.regular,
       color: AppColors.blue,
+    },
+    mainButtonInactive: {
+      ...AppFonts.Raleway.bold,
+      fontSize: AppFonts.size.medLarge,
+      border: 'none',
+      boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
+      height: 60,
+      width: 180,
+      borderRadius: 30,
+      color: AppColors.blue,
+      backgroundColor: AppColors.lilac,
+      margin: 10,
+    },
+    mainButton: {
+      ...AppFonts.Raleway.bold,
+      fontSize: AppFonts.size.medLarge,
+      border: 'none',
+      boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
+      height: 60,
+      width: 180,
+      borderRadius: 30,
+      color: AppColors.white,
+      backgroundColor: AppColors.blue,
+      margin: 10,
     }
 }

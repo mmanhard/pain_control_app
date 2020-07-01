@@ -2,12 +2,16 @@ import React from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
+import moment from 'moment';
 
 import actions from 'Actions';
 import Navbar from 'Components/Navbar';
 import styles from './style';
 import BodyVisualizer from 'Components/BodyVisualizer';
 import AppStyles from 'Common/AppStyles';
+import BubbleList from 'Components/BubbleList';
+import HelpModal from 'Components/HelpModal';
+import Utils from 'Utils';
 
 import BackIcon from 'Icons/icons8-back.png';
 
@@ -23,9 +27,16 @@ class AddEntry extends React.Component {
 
     this.state = {
       screenType: screenTypes.addPainLevels,
+      highDetail: true,
       bodyPartsIncluded: {},
+      entryDate: 'Right Now',
+      entryTime: undefined,
+      entryTimePeriod: 'PM',
+      entryMoment: undefined,
       notes: ''
     };
+
+    this.helpModalRef = React.createRef();
   }
 
   _handleInputChange = (event) => {
@@ -59,8 +70,20 @@ class AddEntry extends React.Component {
 
   _handleSubmitPainLevels = () => {
     const { bodyParts } = this.props;
-    const { bodyPartsIncluded } = this.state;
-    console.log(bodyPartsIncluded);
+    const { bodyPartsIncluded, entryTime, entryDate, entryTimePeriod } = this.state;
+
+    // Convert current entry date/time to moment.
+    if (entryDate == 'Right Now') {
+      this.setState({ entryMoment: moment() });
+    } else {
+      const inputMoment = Utils.convertDateTimeToMoment(entryDate, entryTime, entryTimePeriod);
+      if (inputMoment) {
+        this.setState({ entryMoment: inputMoment });
+      } else {
+        alert('You must submit a real date and time!');
+        return ;
+      }
+    }
 
     let part;
     for (part of bodyParts) {
@@ -69,23 +92,27 @@ class AddEntry extends React.Component {
         bodyPartsIncluded[part.id].location = part.location;
       }
     }
+    if (Object.keys(bodyPartsIncluded).length === 0) {
+      alert('You must record at least one pain level!');
+      return ;
+    }
     this.setState({ bodyPartsIncluded });
     this._switchScreen();
   }
 
   _handleSubmitPainNotes = () => {
     const { bodyPartsIncluded } = this.state;
-    console.log(bodyPartsIncluded);
     this._switchScreen();
   }
 
   _handleSubmitEntry = (e) => {
     const { userInfo, bodyParts } = this.props;
-    const { notes, bodyPartsIncluded } = this.state;
+    const { notes, bodyPartsIncluded, entryMoment } = this.state;
 
     e.preventDefault();
 
     let entry = {
+      'date': entryMoment.toISOString(),
       'pain_subentries': []
     };
 
@@ -109,10 +136,13 @@ class AddEntry extends React.Component {
   }
 
   _switchScreen = (backward = false) => {
+    const { highDetail } = this.state;
+
     switch (this.state.screenType) {
       case (screenTypes.addPainLevels):
         if (!backward) {
-          this.setState({ screenType: screenTypes.addPainNotes});
+          if (highDetail) this.setState({ screenType: screenTypes.addPainNotes});
+          else this.setState({ screenType: screenTypes.addNotes});
         }
         break;
       case (screenTypes.addPainNotes):
@@ -124,7 +154,8 @@ class AddEntry extends React.Component {
         break;
       case (screenTypes.addNotes):
         if (backward) {
-          this.setState({ screenType: screenTypes.addPainNotes});
+          if (highDetail) this.setState({ screenType: screenTypes.addPainNotes});
+          else this.setState({ screenType: screenTypes.addPainLevels});
         } else {
           this.props.history.replace('/dashboard');
         }
@@ -132,28 +163,24 @@ class AddEntry extends React.Component {
     }
   }
 
-  _renderPartsRow = (parts, offset = 0) => {
+  _renderItem = (part) => {
     const { bodyPartsIncluded } = this.state;
+
+    const selected = bodyPartsIncluded[part.id];
+    const displayName = part.location ? `${part.location} ${part.name}` : part.name;
+
     return (
-      <div style={styles.partsContainer(offset)}>
-        {parts.map((part) => {
-          const selected = bodyPartsIncluded[part.id];
-          const displayName = part.location ? `${part.location} ${part.name}` : part.name;
-          return (
-            <div
-              key={part.id}
-              style={styles.partContainer(selected)}>
-              <div>{displayName}</div>
-              <input
-                type='text'
-                name={part.id}
-                value={selected ? bodyPartsIncluded[part.id].pain_level : ''}
-                placeholder={'-'}
-                style={styles.painLevelInput}
-                onChange={this._handlePainLevelChange}/>
-            </div>
-          );
-        })}
+      <div
+        key={part.id}
+        style={styles.partContainer(selected)}>
+        <div>{displayName}</div>
+        <input
+          type='text'
+          name={part.id}
+          value={selected ? bodyPartsIncluded[part.id].pain_level : ''}
+          placeholder={'-'}
+          style={styles.painLevelInput}
+          onChange={this._handlePainLevelChange}/>
       </div>
     );
   }
@@ -173,16 +200,21 @@ class AddEntry extends React.Component {
     });
 
     return (
-      <div style={{...styles.entryContainer, ...AppStyles.center}}>
-        <div style={styles.painLevelsContainer}>
-          {this._renderPartsRow(bodyParts.slice(0,3), 30)}
-          {this._renderPartsRow(bodyParts.slice(3,6), -30)}
-          {this._renderPartsRow(bodyParts.slice(6,9), -30)}
-        </div>
-        <div style={styles.visualizerContainer}>
+      <div style={{...styles.entryContainer, ...AppStyles.rowSpace}}>
+        <div style={{...AppStyles.center, flex: 1, height: '100%'}}>
+          <BubbleList
+            contentContainerStyle={styles.painLevelsContainer}
+            rowContainerStyle={styles.partsContainer}
+            renderItem={this._renderItem}
+            items={bodyParts}
+            itemsPerRow={3}
+            offset={90}
+          />
           <div style={{...AppStyles.center, flex: 1}}>
             <button style={styles.continueBtn} onClick={this._handleSubmitPainLevels}>Continue</button>
           </div>
+        </div>
+        <div style={styles.visualizerContainer}>
           <BodyVisualizer
             contentContainerStyle={styles.visualizer}
             bodyParts={visualizerBodyParts} />
@@ -248,9 +280,156 @@ class AddEntry extends React.Component {
     );
   }
 
+  _handleDateChange = () => {
+    const target = event.target;
+    const { entryDate, entryTime, entryTimePeriod } = this.state;
+
+    if (entryDate === 'Right Now') {
+      this.setState({
+        entryDate: moment().format('MM/DD/YYYY'),
+        entryTime: moment().format('hh:mm')});
+    } else {
+      let newDateValue = Utils.formatDateInput(target.value);
+      let inputMoment = Utils.convertDateTimeToMoment(newDateValue, entryTime, entryTimePeriod);
+
+      if (inputMoment && inputMoment.diff(moment(), 'minutes') == 0) {
+        this.setState({
+          entryDate: 'Right Now',
+          entryTime: undefined,
+        });
+      } else {
+        this.setState({ entryDate: newDateValue});
+      }
+    }
+  }
+
+  _handleTimeChange = () => {
+    const target = event.target;
+    const { entryDate, entryTimePeriod } = this.state;
+
+    let newTimeValue = Utils.formatTimeInput(target.value);
+    let inputMoment = Utils.convertDateTimeToMoment(entryDate, newTimeValue, entryTimePeriod);
+
+    if (inputMoment && inputMoment.diff(moment(), 'minutes') == 0) {
+      this.setState({
+        entryDate: 'Right Now',
+        entryTime: undefined,
+      });
+    } else {
+      this.setState({ entryTime: newTimeValue});
+    }
+  }
+
+  _handleTimePeriodChange = () => {
+    const target = event.target;
+    const { entryDate, entryTime } = this.state;
+
+    let inputMoment = Utils.convertDateTimeToMoment(entryDate, entryTime, target.value);
+
+    if (inputMoment && inputMoment.diff(moment(), 'minutes') == 0) {
+      this.setState({
+        entryDate: 'Right Now',
+        entryTime: undefined,
+      });
+    } else {
+      this.setState({ entryTimePeriod: target.value});
+    }
+  }
+
+  _renderConfiguration = () => {
+    const { screenType, highDetail, entryTime, entryMoment } = this.state;
+    if (screenType === screenTypes.addPainLevels) {
+      return (
+        <div style={styles.configContentContainer}>
+          <div style={styles.configRow}>
+            <div style={styles.configTitle}>
+              <div style={styles.configTitleTxt}>Configure</div>
+              <div style={styles.configTitleTxt}>Entry</div>
+            </div>
+          </div>
+          <div style={{flex: 1, ...AppStyles.center, marginBottom: 20}}>
+            <div style={styles.configSubtitleTxt}>Time & Date</div>
+            <div style={AppStyles.rowSpace}>
+              <input
+                type='text'
+                style={styles.configTimeTxt}
+                name={'entryDate'}
+                value={this.state.entryDate}
+                onChange={this._handleDateChange}
+              />
+              {(typeof entryTime !== 'undefined') && (
+                <div>
+                  <input
+                    type='text'
+                    style={styles.configTimeTxt}
+                    name={'entryTime'}
+                    value={this.state.entryTime}
+                    onChange={this._handleTimeChange}
+                  />
+                  <select style={styles.configAMPM} name='entryTimePeriod' onChange={this._handleTimePeriodChange}>
+                    <option value={'PM'}>PM</option>
+                    <option value={'AM'}>AM</option>
+                  </select>
+                </div>)}
+            </div>
+          </div>
+          <div style={{flex: 1, ...AppStyles.center, marginBottom: 20}}>
+            <div style={AppStyles.rowSpace}>
+              <div style={styles.configSubtitleTxt}>Level of Detail</div>
+              <button
+                onClick={() => {this.helpModalRef.current.open()}}
+                style={styles.helpIcon}>
+                ?
+              </button>
+            </div>
+            <div style={{...AppStyles.rowSpace, marginTop: 10}}>
+              <button
+                style={!highDetail ? styles.mainButtonInactive : styles.mainButton}
+                onClick={() => {this.setState({ highDetail: true })}}>
+                High Detail
+              </button>
+              <button
+                style={highDetail ? styles.mainButtonInactive : styles.mainButton}
+                onClick={() => {this.setState({ highDetail: false })}}>
+                Low Detail
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div style={styles.configContentContainer}>
+          <div style={styles.configRow}>
+            <div style={styles.configTitle}>
+              <div style={styles.configTitleTxt}>Entry</div>
+              <div style={styles.configTitleTxt}>Configuration</div>
+            </div>
+          </div>
+          <div style={{flex: 1, ...AppStyles.rowSpace, width: '100%', margin: 20, alignItems: 'center'}}>
+            <div style={styles.configSubtitleTxt}>Time & Date</div>
+            <div style={styles.configDisplayTxt}>{entryMoment?.format('MM/DD/YY hh:mm a')}</div>
+          </div>
+          <div style={{flex: 1, ...AppStyles.rowSpace, width: '100%', margin: 20, alignItems: 'center'}}>
+            <div style={AppStyles.rowSpace}>
+              <div style={styles.configSubtitleTxt}>Level of Detail</div>
+              <button
+                onClick={() => {this.helpModalRef.current.open()}}
+                style={styles.helpIcon}>
+                ?
+              </button>
+            </div>
+            <div style={styles.configDisplayTxt}>{highDetail ? 'High Detail' : 'Low Detail'}</div>
+          </div>
+        </div>
+      );
+    }
+
+  }
+
   render() {
     const { userInfo, bodyParts, logout } = this.props;
-    const { screenType } = this.state;
+    const { screenType, highDetail } = this.state;
 
     return (
       <div style={styles.container}>
@@ -263,14 +442,18 @@ class AddEntry extends React.Component {
               {screenType === screenTypes.addNotes && 'Need to say anything else?'}
             </p>
           </div>
-          <div style={styles.configContentContainer}>
-
-          </div>
+          {this._renderConfiguration()}
         </div>
 
         {screenType === screenTypes.addPainLevels && this._renderAddPainLevels()}
         {screenType === screenTypes.addPainNotes && this._renderAddPainNotes()}
         {screenType === screenTypes.addNotes && this._renderAddNotes()}
+
+        <HelpModal
+          ref={this.helpModalRef}
+          contentStyle={styles.formModalContainer}
+        >
+        </HelpModal>
 
       </div>
     )
