@@ -5,8 +5,6 @@ const initialState = {
   isLogin: false,
   loginSuccess: false,
   userUpdate: false,
-  entries: null,
-  entryUpdate: false
 };
 
 export default (state = initialState, action) => {
@@ -38,17 +36,6 @@ export default (state = initialState, action) => {
       return {
         ...state,
         userUpdate: true,
-      };
-    case actions.userActions.GET_USER_ENTRY_SUCCESS:
-      return {
-        ...state,
-        entries: payload.data.entries,
-        entryUpdate: false
-      };
-    case actions.userActions.ADD_USER_ENTRY_SUCCESS:
-      return {
-        ...state,
-        entryUpdate: true
       };
     case actions.userActions.LOG_OUT:
       return initialState;
