@@ -14,6 +14,11 @@ export default (state = initialState, action) => {
         entries: payload.data.entries,
         entryUpdate: false
       };
+    case actions.entryActions.GET_ENTRY_SUCCESS:
+      return {
+        ...state,
+        entryInfo: payload.data.entry_info,
+      };
     case actions.entryActions.ADD_ENTRY_SUCCESS:
       return {
         ...state,
