@@ -30,7 +30,7 @@ export default {
       top: 0,
       left: 0,
       height: 110,
-      width: 200,
+      minWidth: 200,
       paddingLeft: 10,
       paddingRight: 10,
       ...AppFonts.Raleway.regular,

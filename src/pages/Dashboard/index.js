@@ -134,19 +134,19 @@ class Dashboard extends React.Component {
       <div style={styles.statsRow}>
         <div style={styles.subtitleContainer}>Overall</div>
         <div style={styles.statContainer}>
-          <div style={styles.statTxt}>{stats.high ? stats.high.toFixed(1) : '-'}</div>
+          <div style={styles.statTxt}>{stats?.high ? stats.high.toFixed(1) : '-'}</div>
           <div style={styles.statTitle}>Max</div>
         </div>
         <div style={styles.statContainer}>
-          <div style={styles.statTxt}>{stats.low ? stats.low.toFixed(1) : '-'}</div>
+          <div style={styles.statTxt}>{stats?.low ? stats.low.toFixed(1) : '-'}</div>
           <div style={styles.statTitle}>Min</div>
         </div>
         <div style={styles.statContainer}>
-          <div style={styles.statTxt}>{stats.median ? stats.median.toFixed(1) : '-'}</div>
+          <div style={styles.statTxt}>{stats?.median ? stats.median.toFixed(1) : '-'}</div>
           <div style={styles.statTitle}>Median</div>
         </div>
         <div style={styles.statContainer}>
-          <div style={styles.statTxt}>{stats.stdev ? stats.stdev.toFixed(1) : '-'}</div>
+          <div style={styles.statTxt}>{stats?.stdev ? stats.stdev.toFixed(1) : '-'}</div>
           <div style={styles.statTitle}>Std Dev</div>
         </div>
       </div>
@@ -311,24 +311,26 @@ class Dashboard extends React.Component {
                   <div>{currentBodyPart ? `${currentBodyPart.location} ${currentBodyPart.name}` : 'General'}</div>
                   <div>Stats</div>
                 </div>
-
-                <div style={styles.basicStatsContainer}>
-                  <div style={{height: '100%', flex: 1.2, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'flex-start'}}>
-                    <div>Total # of Entries:</div>
-                    <div>Last Entry:</div>
-                    <div>Tracking Since:</div>
-                  </div>
-                  <div style={{height: '100%', flex: 0.8, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'flex-end'}}>
-                    <div>{currentBodyPart
-                      ? (currentBodyPart.stats?.total?.num_entries ? currentBodyPart.stats.total.num_entries : 0 )
-                      : entries.length}
-                    </div>
-                    <div>{last_entry}</div>
-                    <div>{oldest_entry}</div>
-                  </div>
-                </div>
+                {(!currentBodyPart || currentBodyPart.stats?.total?.num_entries)
+                ? (
+                    <div style={styles.basicStatsContainer}>
+                      <div style={{height: '100%', flex: 1.2, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'flex-start'}}>
+                        <div>Total # of Entries:</div>
+                        <div>Last Entry:</div>
+                        <div>Tracking Since:</div>
+                      </div>
+                      <div style={{height: '100%', flex: 0.8, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'flex-end'}}>
+                        <div>{currentBodyPart
+                          ? (currentBodyPart.stats?.total?.num_entries ? currentBodyPart.stats.total.num_entries : 0 )
+                          : entries.length}
+                        </div>
+                        <div>{last_entry}</div>
+                        <div>{oldest_entry}</div>
+                      </div>
+                    </div>)
+                : (<div style={styles.basicStatsContainer}>No entries for this pain point in this timeframe!</div>)}
               </div>
-              {(currentBodyPart && currentBodyPart.stats) ? (
+              {(currentBodyPart) ? (
                 <div style={styles.statsContainer}>
                   {this._renderOverviewStats(currentBodyPart)}
                   <hr style={{width: '85%', height: 0, borderTop: `solid 2px ${AppColors.blue}`}}/>
