@@ -67,8 +67,8 @@ class Navigation extends React.Component {
             <PrivateRoute path="/pain_points" isLogin={this.props.isLogin} exact={true}>
               <Pages.PainPoints />
             </PrivateRoute>
-            <PrivateRoute path="/pain_points/:pointID" isLogin={this.props.isLogin}>
-              <Pages.PainPointDetail />
+            <PrivateRoute path="/pain_points/:bodyPartID" isLogin={this.props.isLogin}>
+              <PainPoint />
             </PrivateRoute>
             <PrivateRoute path="/settings" isLogin={this.props.isLogin} exact={true}>
               <Pages.Settings />
@@ -99,8 +99,8 @@ function Entry() {
 }
 
 function PainPoint() {
-  let { pointID } = useParams();
-  return <Pages.PainPointDetail bodyPartInfo={ { id: pointID } } />;
+  let { bodyPartID } = useParams();
+  return <Pages.PainPointDetail bodyPartID={bodyPartID} />;
 }
 
 const mapStateToProps = state => ({

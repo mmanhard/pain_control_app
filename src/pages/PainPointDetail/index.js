@@ -15,16 +15,13 @@ class PainPointDetail extends React.Component {
   }
 
   componentDidMount() {
-    const { userInfo } = this.props;
-    this.props.getBodyPart(userInfo, {});
+    const { userInfo, bodyPartID } = this.props;
+    this.props.getBodyPart(userInfo, bodyPartID, {});
   }
 
   render() {
     const { userInfo, bodyPartInfo, logout } = this.props;
 
-    console.log(bodyPartInfo?.customStats?.calendar);
-    // console.log(bodyPartInfo?.customStats?.daytime);
-    // console.log(bodyPartInfo?.customStats?.moving);
     return (
       <div style={styles.container}>
         <Navbar userInfo={userInfo} logout={logout}/>
