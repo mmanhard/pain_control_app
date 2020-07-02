@@ -280,7 +280,7 @@ class AddEntry extends React.Component {
     );
   }
 
-  _handleDateChange = () => {
+  _handleDateChange = (event) => {
     const target = event.target;
     const { entryDate, entryTime, entryTimePeriod } = this.state;
 
@@ -303,7 +303,7 @@ class AddEntry extends React.Component {
     }
   }
 
-  _handleTimeChange = () => {
+  _handleTimeChange = (event) => {
     const target = event.target;
     const { entryDate, entryTimePeriod } = this.state;
 
@@ -320,7 +320,7 @@ class AddEntry extends React.Component {
     }
   }
 
-  _handleTimePeriodChange = () => {
+  _handleTimePeriodChange = (event) => {
     const target = event.target;
     const { entryDate, entryTime } = this.state;
 
