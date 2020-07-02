@@ -12,6 +12,7 @@ import AppStyles from 'Common/AppStyles';
 import AppColors from 'Common/AppColors';
 import ActionModal from 'Components/ActionModal';
 import HelpModal from 'Components/HelpModal';
+import Utils from 'Utils';
 
 const statTypes = {
   mean: 'Mean',
@@ -49,6 +50,8 @@ class Dashboard extends React.Component {
       daytime: 'all_day',
       currentBodyPartID: undefined,
       newBodyPart: undefined,
+      customStartDate: undefined,
+      customEndDate: undefined,
     };
 
     this.actionModalRef = React.createRef();
@@ -79,7 +82,13 @@ class Dashboard extends React.Component {
         startDate = moment().subtract(1,'Y').startOf('day');
         break;
       case 'custom':
-        console.log('Need to handle custom case!!!');
+        startDate = moment().subtract(1,'Y').startOf('day');
+        endDate = moment();
+        this.setState({ customStartDate: startDate.format('MM/DD/YYYY'), customEndDate: endDate.format('MM/DD/YYYY') });
+    }
+
+    if (target.value !== 'custom') {
+      this.setState({ customStartDate: undefined, customEndDate: undefined });
     }
 
     let params = {};
@@ -91,6 +100,29 @@ class Dashboard extends React.Component {
     }
     this.props.getEntries(userInfo, params);
     this.props.getBodyParts(userInfo, params);
+  }
+
+  _handleCustomDateChange = (event) => {
+    const target = event.target;
+    const { entryDate, entryTime, entryTimePeriod } = this.state;
+
+    this.setState({ [target.name]: Utils.formatDateInput(target.value) });
+  }
+
+  _handleSubmitCustomDates = () => {
+    const { userInfo } = this.props;
+    const { customStartDate, customEndDate } = this.state;
+
+    const startDate = Utils.convertDateTimeToMoment(customStartDate, '12:00', 'AM');
+    const endDate = Utils.convertDateTimeToMoment(customEndDate, '11:59', 'PM');
+
+    if (startDate && endDate) {
+      const params = { start_date: startDate.toISOString(), end_date: endDate.toISOString() };
+      this.props.getEntries(userInfo, params);
+      this.props.getBodyParts(userInfo, params);
+    } else{
+      alert('Incomplete dates!')
+    }
   }
 
   _displayAddBodyPart = (bodyPart) => {
@@ -185,12 +217,13 @@ class Dashboard extends React.Component {
 
   render() {
     const { userInfo, bodyParts, token, history, logout, entries } = this.props;
-    const { statType, daytime, currentBodyPartID, newBodyPart } = this.state;
+    const { statType, daytime, currentBodyPartID, newBodyPart, customStartDate, customEndDate } = this.state;
 
     let part, currentBodyPart;
     for (part of bodyParts) {
       if (currentBodyPartID && part.id == currentBodyPartID) {
         currentBodyPart = part;
+        currentBodyPart.displayName = currentBodyPart.location ? `${currentBodyPart.location} ${currentBodyPart.name}` : currentBodyPart.name;
         break;
       }
     }
@@ -261,6 +294,29 @@ class Dashboard extends React.Component {
                     );
                   })}
                 </select>
+                {(typeof customStartDate !== 'undefined') && <div style={AppStyles.center}>
+                  <div style={styles.filterTxt}>Start Date</div>
+                  <input
+                    type='text'
+                    style={styles.configTimeTxt}
+                    name='customStartDate'
+                    value={customStartDate}
+                    onChange={this._handleCustomDateChange}
+                  />
+                  <div style={styles.filterTxt}>End Date</div>
+                  <input
+                    type='text'
+                    style={styles.configTimeTxt}
+                    name='customEndDate'
+                    value={customEndDate}
+                    onChange={this._handleCustomDateChange}
+                  />
+                  <button
+                    style={styles.submitDateBtn}
+                    onClick={this._handleSubmitCustomDates}>
+                    Submit
+                  </button>
+                </div>}
               </div>
               <BodyVisualizer
                 contentContainerStyle={styles.visualizer}
@@ -308,7 +364,7 @@ class Dashboard extends React.Component {
             <div style={{ ...AppStyles.typContentContainer, padding: 30, flex: 1, ...AppStyles.columnStart }}>
               <div style={{ ...AppStyles.rowSpace, height: 110, width: '100%', position: 'relative'}}>
                 <div style={styles.titleContainer}>
-                  <div>{currentBodyPart ? `${currentBodyPart.location} ${currentBodyPart.name}` : 'General'}</div>
+                  <div>{currentBodyPart ? currentBodyPart.displayName : 'General'}</div>
                   <div>Stats</div>
                 </div>
                 {(!currentBodyPart || currentBodyPart.stats?.total?.num_entries)

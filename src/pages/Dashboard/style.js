@@ -56,14 +56,26 @@ export default {
       borderRadius: 20,
       backgroundColor: AppColors.lilac,
       position: 'absolute',
-      top: '35%',
+      top: 140,
       left: '4%',
       width: 180,
-      height: '50%',
     },
     filterTxt: {
       color: AppColors.lightGrey,
-      textDecoration: 'underline'
+      textDecoration: 'underline',
+      margin: 8,
+    },
+    configTimeTxt: {
+      background: 'none',
+      color: AppColors.black,
+      border: 'none',
+      textAlign: 'center',
+      width: 120,
+      margin: 10,
+      paddingBottom: 8,
+      borderBottom: `solid 2px ${AppColors.blue}`,
+      ...AppFonts.Raleway.bold,
+      fontSize: AppFonts.size.medium,
     },
     filterOptionTxt: {
       height: 36,
@@ -76,7 +88,8 @@ export default {
       textAlign: 'center',
       border: 'none',
       boxShadow: AppStyles.typBoxShadow,
-      alignItems: 'center'
+      alignItems: 'center',
+      margin: 8,
     },
     filterDateContainer: {
       ...AppStyles.rowCenter,
@@ -85,6 +98,18 @@ export default {
     },
     filterDate: {
       textDecoration: 'underline'
+    },
+    submitDateBtn: {
+      backgroundColor: AppColors.blue,
+      height: 32,
+      width: 80,
+      borderRadius: 16,
+      textAlign: 'center',
+      border: 'none',
+      color: AppColors.white,
+      ...AppFonts.Raleway.bold,
+      marginBottom: 12,
+      boxShadow: AppStyles.typBoxShadow
     },
     visualizer: {
       backgroundColor: AppColors.white,

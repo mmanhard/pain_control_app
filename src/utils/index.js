@@ -22,9 +22,9 @@ const formatDateInput = (dateInput) => {
   const dayInput = input.substring(2, 4);
   const yearInput = input.substring(4, 8);
 
-  let output;
+  let output = '';
   if (monthInput) {
-    output = formatTwoDigitInput(monthInput, false, 12);
+    output = output.concat(formatTwoDigitInput(monthInput, false, 12));
   }
   if (dayInput) {
     output = output.concat(`/${formatTwoDigitInput(dayInput, false, 31)}`);
