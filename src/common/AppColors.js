@@ -12,5 +12,10 @@ export default {
     high: 'red',
     xHigh: 'black',
     none: 'white',
-  }
+  },
+  barSeries: [
+    '#5680E9',
+    '#E5C3D1',
+    '#7656E9',
+  ]
 }
