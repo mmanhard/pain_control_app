@@ -150,12 +150,6 @@ class Dashboard extends React.Component {
             </li>
           )
         })}
-
-        <button
-          onClick={() => {this.props.history.push('pain_points/')}}
-          style={{...styles.mainButtonInactive, marginLeft: 'auto', marginRight: 'auto'}}>
-          View All Pain Points
-        </button>
       </ul>
     )
   }
