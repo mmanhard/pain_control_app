@@ -415,7 +415,6 @@ class Dashboard extends React.Component {
                 style={styles.mainButton}>
                 Add An Entry
               </button>
-              <button style={styles.mainButton}>Build Report</button>
             </div>
           </div>
         </div>
