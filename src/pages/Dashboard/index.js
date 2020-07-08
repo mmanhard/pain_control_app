@@ -190,19 +190,19 @@ class Dashboard extends React.Component {
           <div>Over the Day</div>
         </div>
         <div style={styles.statContainer}>
-          <div style={styles.statTxt}>{stats?.morning && stats.morning[statType] ? stats.morning[statType] : '-'}</div>
+          <div style={styles.statTxt}>{stats?.morning && stats.morning[statType] ? stats.morning[statType].toFixed(1) : '-'}</div>
           <div style={styles.statTitle}>Morning</div>
         </div>
         <div style={styles.statContainer}>
-          <div style={styles.statTxt}>{stats?.lunch && stats.lunch[statType] ? stats.lunch[statType] : '-'}</div>
+          <div style={styles.statTxt}>{stats?.lunch && stats.lunch[statType] ? stats.lunch[statType].toFixed(1) : '-'}</div>
           <div style={styles.statTitle}>Lunch</div>
         </div>
         <div style={styles.statContainer}>
-          <div style={styles.statTxt}>{stats?.evening && stats.evening[statType] ? stats.evening[statType] : '-'}</div>
+          <div style={styles.statTxt}>{stats?.evening && stats.evening[statType] ? stats.evening[statType].toFixed(1) : '-'}</div>
           <div style={styles.statTitle}>Evening</div>
         </div>
         <div style={styles.statContainer}>
-          <div style={styles.statTxt}>{stats?.bed_time && stats.bed_time[statType] ? stats.bed_time[statType] : '-'}</div>
+          <div style={styles.statTxt}>{stats?.bed_time && stats.bed_time[statType] ? stats.bed_time[statType].toFixed(1) : '-'}</div>
           <div style={styles.statTitle}>Bed Time</div>
         </div>
       </div>
