@@ -265,7 +265,7 @@ class Dashboard extends React.Component {
                 style={styles.helpIcon}>
                 ?
               </button>
-              <div style={styles.filterContaienr}>
+              <div style={styles.filterContainer}>
                 <div style={styles.filterTxt}>Show:</div>
                 <select name="statType" style={styles.filterOptionTxt} onChange={this._handleInputChange}>
                   {Object.entries(statTypes).map(([key, value]) => {

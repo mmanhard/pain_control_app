@@ -50,7 +50,7 @@ export default {
       color: AppColors.blue,
       textAlign: 'center'
     },
-    filterContaienr: {
+    filterContainer: {
       ...AppStyles.center,
       justifyContent: 'space-evenly',
       borderRadius: 20,
