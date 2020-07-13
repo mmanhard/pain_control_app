@@ -5,7 +5,7 @@ module.exports = (env) => {
 
   return {
     mode: "development",
-    watch: true,
+    watch: !isProd,
     entry: "./src/index.js",
     output: {
       path: path.join(__dirname, "public"),
