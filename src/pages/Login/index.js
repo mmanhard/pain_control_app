@@ -109,6 +109,7 @@ class Login extends React.Component {
         </div>
         <RegistrationModal
           ref={this.modalRef}
+          isMobile={isMobile}
           handleInputChange={this._handleInputChange}
           handleRegister={this._handleRegister}
         />

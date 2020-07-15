@@ -2,13 +2,13 @@ import React from "react";
 
 import styles from './style';
 import AppColors from 'Common/AppColors';
+import Modal from 'Components/Modal';
 
 import NameIcon from 'Icons/icons8-name.png';
 import EmailIcon from 'Icons/icons8-email.png';
 import KeyIcon from 'Icons/icons8-key.png';
 
 import Icon from 'Icons/temp_ico.png';
-import Modal from 'Components/Modal'
 
 class RegistrationModal extends React.Component {
   constructor(props) {
@@ -28,13 +28,12 @@ class RegistrationModal extends React.Component {
   }
 
   render() {
-    const { handleInputChange, handleRegister } = this.props;
+    const { handleInputChange, handleRegister, isMobile } = this.props;
     return (
       <Modal
         ref={this.modalRef}
-        contentStyle={styles.container}
-      >
-        <div style={styles.formContainer}>
+        contentStyle={styles.container(isMobile)}>
+        <div style={styles.formContainer(isMobile)}>
           <div style={styles.txtInputContainer}>
             <img src={NameIcon} style={{width: 24, height: 24, margin: 'auto'}} />
             <input

@@ -4,24 +4,31 @@ import AppStyles from 'Common/AppStyles';
 import AppFonts from 'Common/AppFonts';
 
 export default {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    position: 'absolute',
-    margin: 'auto',
-    width: 400,
-    height: 425,
-    fontSize: AppFonts.size.xSmall,
-    color: AppColors.lightGrey,
-    ...AppStyles.typContentContainer
+  container: (isMobile) => {
+    return {
+      top                   : '50%',
+      left                  : '50%',
+      right                 : 'auto',
+      bottom                : 'auto',
+      transform: 'translate(-50%, -50%)',
+      display: 'flex',
+      flexDirection: 'column',
+      width: isMobile ? '85%' : 400,
+      height: 425,
+      fontSize: AppFonts.size.xSmall,
+      color: AppColors.lightGrey,
+      ...AppStyles.typContentContainer
+    }
   },
-  formContainer: {
-    flex: 1,
-    padding: '20px 60px 50px 60px',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
+  formContainer: (isMobile) => {
+    return {
+      flex: 1,
+      padding: isMobile ? 20 : '20px 60px 50px 60px',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }
   },
   txtInputContainer: {
     height: 36,
