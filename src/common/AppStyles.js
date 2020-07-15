@@ -56,6 +56,10 @@ export default {
     borderColor: AppColors.blue,
     boxShadow: `0px 4px 4px rgba(0,0,0,0.25)`,
   },
+  mobileContentContaner: {
+    backgroundColor: AppColors.white,
+    boxShadow: `0px 4px 4px rgba(0,0,0,0.25)`,
+  },
   closeBtn: {
     ...AppFonts.Raleway.xBold,
     display: 'flex',

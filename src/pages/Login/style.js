@@ -7,38 +7,49 @@ export default {
   container: {
     ...AppStyles.fill,
     ...AppStyles.center,
+    alignItems: 'stretch',
     backgroundColor: AppColors.lilac,
   },
-  contentContainer: {
-    ...AppStyles.fill,
-    margin: 100,
-    backgroundColor: AppColors.blue,
-    boxShadow: AppStyles.typBoxShadow,
-    minHeight: 320,
-    minWidth: 625
+  contentContainer: (isMobile, isSmallScreen) => {
+    const mobileFlexStyle = {
+      display: 'flex',
+      flexDirection: 'column' };
+    const flexStyle = isMobile ? mobileFlexStyle : AppStyles.rowSpace;
+    return {
+      flex: 1,
+      margin: isSmallScreen ? 0 : 80,
+      backgroundColor: AppColors.blue,
+      boxShadow: AppStyles.typBoxShadow,
+      minHeight: 350,
+      minWidth: 400,
+      ...flexStyle
+    }
   },
-  formContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    bottom: 0,
-    width: 400,
-    fontSize: AppFonts.size.xSmall,
-    color: AppColors.lightGrey,
-    backgroundColor: AppColors.white,
-    borderTopLeftRadius: 40,
-    borderStyle: 'solid',
-    borderWidth: 0.25,
-    borderColor: AppColors.blue,
+  formContainer: (isMobile) => {
+    const contentContainer = isMobile ? AppStyles.mobileContentContaner : AppStyles.typContentContainer;
+    return {
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+      width: isMobile ? '100%' : 400,
+      fontSize: AppFonts.size.xSmall,
+      color: AppColors.lightGrey,
+      ...contentContainer
+    }
   },
   noLoginContainer: {
-    padding: 10,
+    margin: 24,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center'
+  },
+  titleContainer: (isMobile) => {
+    return {
+      marginLeft: 50,
+      marginTop: isMobile ? 0 : 50,
+      flex: 1
+    }
   },
   titleTxt: {
     margin: 0,

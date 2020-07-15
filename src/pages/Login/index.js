@@ -7,6 +7,7 @@ import styles from './style';
 import actions from 'Actions';
 import AppColors from 'Common/AppColors';
 import RegistrationModal from 'Components/RegistrationModal';
+import withWindowDimensions from 'Common/AppDimens';
 
 import EmailIcon from 'Icons/icons8-email.png';
 import KeyIcon from 'Icons/icons8-key.png';
@@ -65,14 +66,15 @@ class Login extends React.Component {
   }
 
   render() {
+    const {isMobile, isSmallScreen} = this.props;
     return (
       <div style={styles.container}>
-        <div style={styles.contentContainer}>
-          <div style={{ marginLeft: 50, marginTop: 50}}>
+        <div style={styles.contentContainer(isMobile, isSmallScreen)}>
+          <div style={styles.titleContainer(isMobile)}>
             <p style={styles.titleTxt}>pain</p>
             <p style={styles.titleTxt}>control</p>
           </div>
-          <div style={styles.formContainer}>
+          <div style={styles.formContainer(isMobile)}>
             <div style={styles.noLoginContainer}>
               <p style={{marginRight: 10 }}>Don't have an account?</p>
               <button style={styles.registerBtn} onClick={this._open}>Register</button>
@@ -107,7 +109,6 @@ class Login extends React.Component {
         </div>
         <RegistrationModal
           ref={this.modalRef}
-          contentStyle={styles.formModalContainer}
           handleInputChange={this._handleInputChange}
           handleRegister={this._handleRegister}
         />
@@ -127,4 +128,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(Login));
+)(withRouter(withWindowDimensions(Login)));
