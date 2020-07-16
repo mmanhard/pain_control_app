@@ -6,6 +6,7 @@ import { withRouter } from 'react-router';
 import styles from './style';
 import actions from 'Actions';
 import Utils from 'Utils';
+import withWindowDimensions from 'Common/AppDimens';
 
 import BackIcon from 'Icons/icons8-back.png';
 import PhoneIcon from 'Icons/icons8-phone.png';
@@ -250,10 +251,11 @@ class Onboarding extends React.Component {
   }
 
   _renderAddInfo = () => {
+    const { isMobile, isShortScreen } = this.props;
     return (
-      <div style={styles.contentContainer}>
+      <div style={styles.contentContainer(isMobile)}>
         <div style={styles.infoContainer}>
-          <div style={{...styles.txtInputContainer, marginTop: 40 }}>
+          <div style={{...styles.txtInputContainer(isShortScreen), marginTop: 40 }}>
             <img src={PhoneIcon} style={{height: 24, margin: 'auto' }} />
             <input
               name="phone"
@@ -264,7 +266,7 @@ class Onboarding extends React.Component {
               onChange={this._handlePhoneChange}
             />
           </div>
-          <div style={styles.txtInputContainer}>
+          <div style={styles.txtInputContainer(isShortScreen)}>
             <img src={BirthdayIcon} style={{height: 24, margin: 'auto' }} />
             <input
               name="birthday"
@@ -275,7 +277,7 @@ class Onboarding extends React.Component {
               onChange={this._handleBirthdayChange}
             />
           </div>
-          <div style={styles.txtInputContainer}>
+          <div style={styles.txtInputContainer(isShortScreen)}>
             <img src={HomeIcon} style={{height: 24, margin: 'auto' }} />
             <input
               name="hometown"
@@ -357,9 +359,10 @@ class Onboarding extends React.Component {
   }
 
   _renderAddParts = () => {
+    const { isMobile } = this.props;
     const { selectOtherBodyParts, otherBodyParts } = this.state;
     return (
-      <div style={styles.contentContainer}>
+      <div style={styles.contentContainer(isMobile)}>
         <button style={styles.backBtn} onClick={() => { this._switchScreen(true) }}>
           <img src={BackIcon} style={{height: 32, margin: 'auto' }} />
         </button>
@@ -392,8 +395,9 @@ class Onboarding extends React.Component {
   }
 
   _renderAddNotes = () => {
+    const { isMobile } = this.props;
     return (
-      <div style={styles.contentContainer}>
+      <div style={styles.contentContainer(isMobile)}>
         <button style={styles.backBtn} onClick={() => { this._switchScreen(true) }}><img src={BackIcon} style={{height: 32}} /></button>
         <div style={styles.infoContainer}>
           <textarea rows="14" cols="65" maxLength="500"
@@ -410,10 +414,11 @@ class Onboarding extends React.Component {
   }
 
   render() {
+    const { isMobile } = this.props;
     const { screenType } = this.state;
     return (
-      <div style={styles.container}>
-        <div style={styles.titleContainer}>
+      <div style={styles.container(isMobile)}>
+        <div style={styles.titleContainer(isMobile)}>
           {screenType === screenTypes.addInfo && (<div>
             <p style={styles.titleTxt}>Welcome to Pain Control, {this.props.userInfo?.first_name}!</p>
             <p style={styles.subtitleTxt}>Tell us a little more about yourself.</p>
@@ -451,4 +456,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(Onboarding));
+)(withRouter(withWindowDimensions(Onboarding)));

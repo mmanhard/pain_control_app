@@ -7,6 +7,10 @@ const screenSizes = {
   large: 1200
 }
 
+const screenHeights = {
+  small: 640
+}
+
 export default function withWindowDimensions(WrappedComponent) {
     return class extends Component {
         state = { width: 0, height: 0 };
@@ -34,6 +38,7 @@ export default function withWindowDimensions(WrappedComponent) {
                     isSmallScreen={this.state.width < screenSizes.small}
                     isMediumScreen={this.state.width < screenSizes.medium}
                     isLargeScreen={this.state.width < screenSizes.large}
+                    isShortScreen={this.state.height < screenHeights.small}
                     windowWidth={this.state.width}
                     windowHeight={this.state.height}
                 />
