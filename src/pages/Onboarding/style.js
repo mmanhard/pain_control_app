@@ -4,19 +4,16 @@ import AppStyles from 'Common/AppStyles';
 import AppFonts from 'Common/AppFonts';
 
 export default {
-  container: (isMobile) => {
-    const flexStyle = isMobile ? AppStyles.columnStart : AppStyles.center;
-    return {
-      ...AppStyles.fill,
-      ...flexStyle,
-      backgroundColor: AppColors.lilac,
-      minHeight: 540
-    };
+  container: {
+    ...AppStyles.fill,
+    ...AppStyles.columnStart,
+    backgroundColor: AppColors.lilac,
+    minHeight: 700
   },
   titleContainer: (isMobile) => {
     return {
       height: 150,
-      margin: 0,
+      marginTop: isMobile ? 0 : 20,
       width: isMobile ? '100%' : 576,
       backgroundColor: AppColors.blue,
       display: 'flex',
@@ -55,7 +52,8 @@ export default {
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 20,
-    paddingBottom: 40
+    paddingBottom: 40,
+    position: 'relative'
   },
   backBtn: {
     ...AppStyles.closeBtn,
@@ -96,6 +94,7 @@ export default {
     color: AppColors.blue,
     backgroundColor: AppColors.lilac,
     borderRadius: 20,
+    width: '85%',
     marginBottom: 20,
     resize: 'none',
     boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
@@ -175,8 +174,7 @@ export default {
   },
   counterText: {
     position: 'relative',
-    top: -70,
-    left: 200,
+    bottom: 70,
     ...AppFonts.Raleway.regular,
     color: AppColors.blue,
   }

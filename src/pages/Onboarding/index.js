@@ -400,7 +400,7 @@ class Onboarding extends React.Component {
       <div style={styles.contentContainer(isMobile)}>
         <button style={styles.backBtn} onClick={() => { this._switchScreen(true) }}><img src={BackIcon} style={{height: 32}} /></button>
         <div style={styles.infoContainer}>
-          <textarea rows="14" cols="65" maxLength="500"
+          <textarea rows="15" cols="65" maxLength="500"
             name="medicalHistory"
             placeholder={'Please enter your medical history here!'}
             style={styles.medHistoryInput}
@@ -417,7 +417,7 @@ class Onboarding extends React.Component {
     const { isMobile } = this.props;
     const { screenType } = this.state;
     return (
-      <div style={styles.container(isMobile)}>
+      <div style={styles.container}>
         <div style={styles.titleContainer(isMobile)}>
           {screenType === screenTypes.addInfo && (<div>
             <p style={styles.titleTxt}>Welcome to Pain Control, {this.props.userInfo?.first_name}!</p>
