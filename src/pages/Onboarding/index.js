@@ -7,6 +7,7 @@ import styles from './style';
 import actions from 'Actions';
 import Utils from 'Utils';
 import withWindowDimensions from 'Common/AppDimens';
+import BubbleList from 'Components/BubbleList';
 
 import BackIcon from 'Icons/icons8-back.png';
 import PhoneIcon from 'Icons/icons8-phone.png';
@@ -101,7 +102,7 @@ class Onboarding extends React.Component {
       birthday: '',
       hometown: '',
       medicalHistory: '',
-      screenType: screenTypes.addInfo,
+      screenType: screenTypes.addParts,
       selectOtherBodyParts: false,
       otherBodyParts: []
     };
@@ -312,64 +313,73 @@ class Onboarding extends React.Component {
     this.setState({ [part.name]: { ...oldPartState, locations: locations }});
   }
 
-  _renderPartsRow = (parts, offset = 0, addPartButton = false) => {
+  _renderItem = (part) => {
+    const { isMobile } = this.props;
     const { selectOtherBodyParts } = this.state;
-    return (
-      <div style={styles.partsContainer(offset)}>
-        {parts.map((part) => {
-          const selected = this.state[part.name].selected
-          return (
-            <div key={part.name} style={styles.partContainer}>
-              <button
-                style={styles.partButton(selected)}
-                onClick={() => this._selectBodyPart(part)}
-                >
-                {part.name}
-              </button>
 
-              <div>
-                {selected && part.locations
-                  ? part.locations.map((loc) => {
-                    const selected = this.state[part.name].locations.indexOf(loc) !== -1;
-                    return (
-                      <button
-                        key={`${loc} ${part.name}`}
-                        style={styles.locButton(selected)}
-                        onClick={() => this._selectBodyPartLocation(part, loc)}
-                        >
-                        {loc}
-                      </button>
-                    );
-                  })
-                  : <div style={{ height: 32 }}></div>}
-              </div>
-
-            </div>);
-        })}
-        {addPartButton && <div style={styles.partContainer}>
+    if (part.name) {
+      const selected = this.state[part.name].selected;
+      return (
+        <div
+          key={part.name}
+          style={styles.partContainer}>
           <button
-            style={styles.partButton(selectOtherBodyParts)}
-            onClick={this._handleAddOther}
-            >
-            {selectOtherBodyParts ? 'Add More' : 'Other'}
+            style={styles.partButton(isMobile, selected)}
+            onClick={() => this._selectBodyPart(part)}>
+            {part.name}
           </button>
-        </div>}
-      </div>
-    );
+          <div>
+            {selected && part.locations
+              ? part.locations.map((loc) => {
+                const selected = this.state[part.name].locations.indexOf(loc) !== -1;
+                return (
+                  <button
+                    key={`${loc} ${part.name}`}
+                    style={styles.locButton(selected)}
+                    onClick={() => this._selectBodyPartLocation(part, loc)}
+                    >
+                    {loc}
+                  </button>
+                );
+              })
+              : <div style={{ height: 32 }}></div>}
+          </div>
+        </div>);
+      } else {
+        return (
+          <div
+            key={'addMoreBtn'}
+            style={styles.partContainer}>
+            <button
+              style={styles.partButton(isMobile, selectOtherBodyParts)}
+              onClick={this._handleAddOther}
+              >
+              {selectOtherBodyParts ? 'Add More' : 'Other'}
+            </button>
+          </div>
+        );
+      }
   }
 
   _renderAddParts = () => {
     const { isMobile } = this.props;
     const { selectOtherBodyParts, otherBodyParts } = this.state;
+
+    const bodyParts = [...defaultUpperJoints, ...defaultLowerJoints, ...defaultRegions, {}];
+
     return (
       <div style={styles.contentContainer(isMobile)}>
         <button style={styles.backBtn} onClick={() => { this._switchScreen(true) }}>
           <img src={BackIcon} style={{height: 32, margin: 'auto' }} />
         </button>
         <div style={{ ...styles.infoContainer}}>
-          {this._renderPartsRow(defaultUpperJoints, 30)}
-          {this._renderPartsRow(defaultLowerJoints, -30)}
-          {this._renderPartsRow(defaultRegions, 30, true)}
+          <BubbleList
+              rowContainerStyle={styles.partsContainer}
+              renderItem={this._renderItem}
+              items={bodyParts}
+              itemsPerRow={isMobile ? 3 : 4}
+              offset={isMobile ? 16 : 32}
+          />
           {selectOtherBodyParts && <div style={styles.addMoreContainer}>
             {otherBodyParts.map((part, i) => {
               return (

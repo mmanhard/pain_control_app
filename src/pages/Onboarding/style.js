@@ -99,13 +99,10 @@ export default {
     resize: 'none',
     boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
   },
-  partsContainer: (offset) => {
-    return {
-      marginLeft: offset,
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'center'
-    };
+  partsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center'
   },
   partContainer: {
     display: 'flex',
@@ -115,7 +112,7 @@ export default {
     marginLeft: 4,
     marginBottom: 16
   },
-  partButton: (selected) => {
+  partButton: (isMobile, selected) => {
     return {
       ...AppFonts.Raleway.bold,
       fontSize: AppFonts.size.medium,
@@ -124,7 +121,7 @@ export default {
       color: selected ? AppColors.lilac : AppColors.blue,
       borderRadius: 18,
       textAlign: 'center',
-      width: 120,
+      width: isMobile ? 100 : 120,
       height: 36,
       marginBottom: 4,
     };
