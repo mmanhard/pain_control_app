@@ -5,33 +5,56 @@ import AppFonts from 'Common/AppFonts';
 
 
 export default {
-    container: {
-      ...AppStyles.rowSpace,
-      padding: '110px 30px 30px 30px',
+    container: (isSmallScreen) => {
+      return {
+        ...AppStyles.fill,
+        padding: isSmallScreen ? '80px 0px 0px 0px' : '110px 30px 30px 30px',
+      }
     },
-    configContainer: {
-      width: 400,
-      marginRight: 30,
-      height: '100%',
-      ...AppStyles.columnStart
+    contentContainer: (isSmallScreen) => {
+      const flexStyle = isSmallScreen ? AppStyles.columnStart : AppStyles.rowSpace;
+      return {
+        height: '100%',
+        width: '100%',
+        ...flexStyle,
+        alignItems: 'flex-start',
+      }
     },
-    titleContainer: {
-      height: 150,
-      width: '100%',
-      backgroundColor: AppColors.blue
+    configContainer: (isSmallScreen) => {
+      return {
+        width: isSmallScreen ? '100%' : 400,
+        marginRight: isSmallScreen ? 0 : 30,
+        ...AppStyles.columnStart,
+      }
     },
-    titleTxt: {
-      ...AppFonts.Raleway.bold,
-      fontSize: AppFonts.size.large,
-      color: AppColors.white,
-      textAlign: 'center',
-      margin: 20,
+    titleContainer: (isSmallScreen) => {
+      return {
+        height: isSmallScreen ? 100 : 150,
+        width: '100%',
+        backgroundColor: isSmallScreen ? AppColors.white : AppColors.blue,
+        ...AppFonts.Raleway.bold,
+        color: isSmallScreen ? AppColors.blue : AppColors.white,
+        ...AppStyles.center
+      }
     },
-    configContentContainer: {
-      marginTop: 30,
-      width: '100%',
-      ...AppStyles.columnStart,
-      ...AppStyles.typContentContainer
+    titleTxt: (isMediumScreen) => {
+      return {
+        margin: 12,
+        fontSize: isMediumScreen ? AppFonts.size.large : AppFonts.size.xLarge,
+        textAlign: 'center',
+      }
+    },
+    configContentContainer: (isSmallScreen) => {
+      const contentContainer = isSmallScreen ? AppStyles.mobileContentContaner : AppStyles.typContentContainer;
+      return {
+        marginTop: isSmallScreen ? 0 : 30,
+        width: '100%',
+        ...contentContainer,
+        ...AppStyles.columnStart,
+        alignItems: 'center',
+        alignContent: 'center',
+        flexWrap: 'wrap',
+      }
     },
     configAMPM: {
       height: 36,
@@ -73,10 +96,10 @@ export default {
       background: 'none',
       color: AppColors.black,
       border: 'none',
+      borderRadius: 0,
       textAlign: 'center',
       width: 120,
       margin: 10,
-      paddingBottom: 8,
       borderBottom: `solid 2px ${AppColors.blue}`,
       ...AppFonts.Raleway.bold,
       fontSize: AppFonts.size.medium,
@@ -100,33 +123,37 @@ export default {
       backgroundColor: AppColors.lilac,
       color: AppColors.blue,
     },
-    entryContainer: {
-      flex: 1,
-      padding: 30,
-      ...AppStyles.typContentContainer,
+    entryContainer: (isSmallScreen) => {
+      const controlWidth = isSmallScreen ? {width: '100%'} : {minWidth: 500};
+      const contentContainer = isSmallScreen ? AppStyles.mobileContentContaner : AppStyles.typContentContainer;
+      return {
+        padding: isSmallScreen ? 0 : 30,
+        ...controlWidth,
+        flex: 1,
+        ...contentContainer,
+      }
     },
     painLevelsContainer: {
       width: '100%',
-      marginTop: 30,
     },
     partsContainer: {
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'center'
     },
-    partContainer: (selected) => {
+    partContainer: (isSmallScreen, selected) => {
       return {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         ...AppFonts.Raleway.bold,
-        fontSize: AppFonts.size.medium,
+        fontSize: isSmallScreen ? AppFonts.size.small : AppFonts.size.medium,
         border: 'none',
         backgroundColor: selected ? AppColors.blue : AppColors.lilac,
         color: selected ? AppColors.lilac : AppColors.blue,
         borderRadius: 18,
-        width: 140,
+        minWidth: 140,
         height: 36,
         marginLeft: 4,
         marginRight: 4,
@@ -144,14 +171,17 @@ export default {
       textAlign: 'center',
       border: 'none'
     },
-    visualizerContainer: {
-      ...AppStyles.rowSpace,
-      alignItems: 'center',
-      width: '100%',
-      flex: 1,
-    },
-    visualizer: {
-      height: 300,
+    visualizer: (isSmallScreen) => {
+      return {
+        ...AppStyles.rowSpace,
+        alignItems: 'center',
+        height: isSmallScreen ? 120 : 300,
+        width: isSmallScreen ? 180 : 300,
+        border: `solid 8px ${AppColors.blue}`,
+        boxShadow: AppStyles.typBoxShadow,
+        borderRadius: 40,
+        margin: 20,
+      }
     },
     backBtn: {
       ...AppStyles.closeBtn,
@@ -165,7 +195,8 @@ export default {
       ...AppStyles.rowSpace,
       height: 180,
       width: '100%',
-      marginBottom: 30,
+      marginTop: 8,
+      marginBottom: 22,
     },
     bodyPartTitle: {
       height: 50,
@@ -180,14 +211,15 @@ export default {
       marginBottom: 10,
     },
     levelContainer: {
-      ...AppStyles.typContentContainer,
-      flex: 1,
-      width: '90%',
-      paddingTop: 40,
-      paddingLeft: 24,
+      height: 36,
+      width: 140,
+      borderRadius: 25,
+      paddingTop: 14,
+      backgroundColor: AppColors.lilac,
       ...AppFonts.Raleway.bold,
       color: AppColors.blue,
-      fontSize: AppFonts.size.medLarge,
+      fontSize: AppFonts.size.medium,
+      textAlign: 'center',
     },
     bodyPartNotesInput: {
       border: 'none',
@@ -221,14 +253,14 @@ export default {
       color: AppColors.blue,
       backgroundColor: AppColors.lilac,
       borderRadius: 20,
+      width: '85%',
       marginBottom: 20,
       resize: 'none',
       boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
     },
     counterText: {
       position: 'relative',
-      top: -70,
-      left: 200,
+      bottom: 70,
       ...AppFonts.Raleway.regular,
       color: AppColors.blue,
     },

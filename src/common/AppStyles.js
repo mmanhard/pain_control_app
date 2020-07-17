@@ -5,7 +5,6 @@ import AppStyles from 'Common/AppStyles';
 export default {
   fill: {
     position: 'absolute',
-    bottom: 0,
     top: 0,
     right: 0,
     left: 0,
@@ -58,7 +57,6 @@ export default {
   },
   mobileContentContaner: {
     backgroundColor: AppColors.white,
-    boxShadow: `0px 4px 4px rgba(0,0,0,0.25)`,
   },
   closeBtn: {
     ...AppFonts.Raleway.xBold,
