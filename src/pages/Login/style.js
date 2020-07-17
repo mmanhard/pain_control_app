@@ -6,6 +6,7 @@ import AppFonts from 'Common/AppFonts';
 export default {
   container: {
     ...AppStyles.fill,
+    bottom: 0,
     ...AppStyles.center,
     alignItems: 'stretch',
     backgroundColor: AppColors.lilac,
