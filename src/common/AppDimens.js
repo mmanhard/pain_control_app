@@ -3,8 +3,12 @@ import React, { Component } from "react";
 const screenSizes = {
   xSmall: 576,
   small: 768,
-  medium: 992,
+  medium: 1096,
   large: 1200
+}
+
+const screenHeights = {
+  small: 640
 }
 
 export default function withWindowDimensions(WrappedComponent) {
@@ -34,6 +38,7 @@ export default function withWindowDimensions(WrappedComponent) {
                     isSmallScreen={this.state.width < screenSizes.small}
                     isMediumScreen={this.state.width < screenSizes.medium}
                     isLargeScreen={this.state.width < screenSizes.large}
+                    isShortScreen={this.state.height < screenHeights.small}
                     windowWidth={this.state.width}
                     windowHeight={this.state.height}
                 />

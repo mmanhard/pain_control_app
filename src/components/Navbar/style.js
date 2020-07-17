@@ -21,10 +21,9 @@ export default {
       alignItems: 'center'
     },
     rightContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
-      alignItems: 'center'
+      ...AppStyles.rowEnd,
+      alignItems: 'center',
+      position: 'relative'
     },
     welcomeTxt: {
       ...AppFonts.Raleway.regular,
@@ -32,14 +31,15 @@ export default {
       color: AppColors.white,
       marginRight: 0,
     },
-    dropdownToggle: (dropdownVisible) => {
+    dropdownToggle: (isMobile, dropdownVisible) => {
       return ({
+        ...AppStyles.center,
         transform: dropdownVisible ? 'rotate(90deg)' : 'rotate(-90deg)',
-        marginLeft: 0,
-        marginRight: 12,
-        marginTop: dropdownVisible ? 2 : 0,
+        marginRight: isMobile ? 0 : 12,
         border: 'none',
-        background: 'transparent'
+        background: 'transparent',
+        width: 28,
+        height: 28
       });
     },
     dropdownContainer: {
@@ -52,20 +52,22 @@ export default {
       flexDirection: 'row',
       justifyContent: 'flex-start'
     },
-    dropdownMenu: {
-      display: 'flex',
-      position: 'absolute',
-      top: 72,
-      right: 80,
-      width: 160,
-      backgroundColor: AppColors.white,
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-      justifyContent: 'center',
-      boxShadow: AppStyles.typBoxShadow,
-      borderTopLeftRadius: 20,
-      padding: 10,
-      ...AppStyles.typBorder,
+    dropdownMenu: (isMobile) => {
+      return {
+        display: 'flex',
+        position: 'absolute',
+        top: 48,
+        right: isMobile ? 60 : 120,
+        width: 160,
+        backgroundColor: AppColors.white,
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        boxShadow: AppStyles.typBoxShadow,
+        borderTopLeftRadius: 20,
+        padding: 10,
+        ...AppStyles.typBorder,
+      }
     },
     dropdownItem: {
       height: 48,
@@ -77,9 +79,16 @@ export default {
       textDecoration: 'none',
       background: 'transparent',
       width: '100%',
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'flex-start',
+      ...AppStyles.rowStart,
       alignItems: 'center'
+    },
+    addIconBtn: (isMobile) => {
+      return {
+        ...AppStyles.center,
+        width: 40,
+        background: 'transparent',
+        border: 'none',
+        marginRight: isMobile ? 12 : 64
+      }
     }
 }

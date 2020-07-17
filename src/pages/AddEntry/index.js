@@ -12,6 +12,8 @@ import AppStyles from 'Common/AppStyles';
 import BubbleList from 'Components/BubbleList';
 import HelpModal from 'Components/HelpModal';
 import Utils from 'Utils';
+import withWindowDimensions from 'Common/AppDimens';
+import AppColors from 'Common/AppColors';
 
 import BackIcon from 'Icons/icons8-back.png';
 
@@ -164,6 +166,7 @@ class AddEntry extends React.Component {
   }
 
   _renderItem = (part) => {
+    const { isSmallScreen } = this.props;
     const { bodyPartsIncluded } = this.state;
 
     const selected = bodyPartsIncluded[part.id];
@@ -172,7 +175,7 @@ class AddEntry extends React.Component {
     return (
       <div
         key={part.id}
-        style={styles.partContainer(selected)}>
+        style={styles.partContainer(isSmallScreen, selected)}>
         <div>{displayName}</div>
         <input
           type='text'
@@ -186,7 +189,7 @@ class AddEntry extends React.Component {
   }
 
   _renderAddPainLevels = () => {
-    const { bodyParts } = this.props;
+    const { bodyParts, isMobile, isSmallScreen, isLargeScreen } = this.props;
     const { bodyPartsIncluded } = this.state;
 
     let visualizerBodyParts = bodyParts.map(part => {
@@ -199,75 +202,91 @@ class AddEntry extends React.Component {
       });
     });
 
+    let painBubbleList = (
+      <BubbleList
+        contentContainerStyle={styles.painLevelsContainer}
+        rowContainerStyle={styles.partsContainer}
+        renderItem={this._renderItem}
+        items={bodyParts}
+        itemsPerRow={isMobile ? 2 : 3}
+        offset={30}
+      />
+    );
+
+    let continueBtn = (
+        <button style={{...styles.continueBtn, marginTop: 20, marginBottom: isSmallScreen ? 40 : 0}} onClick={this._handleSubmitPainLevels}>Continue</button>
+    );
+
+    let visualizer = (
+      <BodyVisualizer
+        contentContainerStyle={styles.visualizer(isSmallScreen)}
+        bodyParts={visualizerBodyParts} />
+    );
+
     return (
-      <div style={{...styles.entryContainer, ...AppStyles.rowSpace}}>
-        <div style={{...AppStyles.center, flex: 1, height: '100%'}}>
-          <BubbleList
-            contentContainerStyle={styles.painLevelsContainer}
-            rowContainerStyle={styles.partsContainer}
-            renderItem={this._renderItem}
-            items={bodyParts}
-            itemsPerRow={3}
-            offset={90}
-          />
-          <div style={{...AppStyles.center, flex: 1}}>
-            <button style={styles.continueBtn} onClick={this._handleSubmitPainLevels}>Continue</button>
-          </div>
+      <div style={{...styles.entryContainer(isSmallScreen), ...AppStyles.rowSpace}}>
+        <div style={{...AppStyles.columnStart, flex: 1}}>
+          {painBubbleList}
+          {isLargeScreen && visualizer}
+          {continueBtn}
         </div>
-        <div style={styles.visualizerContainer}>
-          <BodyVisualizer
-            contentContainerStyle={styles.visualizer}
-            bodyParts={visualizerBodyParts} />
-        </div>
+        {!isLargeScreen && visualizer}
       </div>
     );
   }
 
   _renderAddPainNotes = () => {
-    const { bodyParts } = this.props;
+    const { bodyParts, isSmallScreen } = this.props;
     const { bodyPartsIncluded } = this.state;
 
     const bodyPartList = bodyParts.filter((part) => bodyPartsIncluded[part.id]);
-    console.log(bodyPartList);
+
     return (
-      <div style={styles.entryContainer}>
-        <button style={styles.backBtn} onClick={() => { this._switchScreen(true) }}>
-          <img src={BackIcon} style={{height: 32, margin: 'auto' }} />
-        </button>
+      <div style={styles.entryContainer(isSmallScreen)}>
+        {!isSmallScreen && <button style={{...styles.backBtn, marginBottom: 20}} onClick={() => { this._switchScreen(true) }}>
+          <img src={BackIcon} style={{ height: 32, margin: 'auto' }} />
+        </button>}
         <div style={styles.bodyPartNoteContainer}>
-          {bodyPartList.map(part => {
+          {bodyPartList.map((part, index) => {
             const displayName = part.location ? `${part.location} ${part.name}` : part.name;
             return (
-              <div style={styles.bodyPartNote} key={part.id}>
-                <div style={{height: '100%', width: 160, ...AppStyles.center, marginRight: 20}}>
-                  <div style={styles.bodyPartTitle}>{displayName}</div>
-                  <div style={styles.levelContainer}>Pain Level: {bodyPartsIncluded[part.id].pain_level}</div>
+              <div style={{width: isSmallScreen ? '85%' : '100%', maxWidth: 800}} key={part.id}>
+                <div style={styles.bodyPartNote}>
+                  <div style={{height: '100%', width: 160, ...AppStyles.center, marginRight: 30}}>
+                    <div style={styles.bodyPartTitle}>{displayName}</div>
+                    <div style={styles.levelContainer}>Pain Level: {bodyPartsIncluded[part.id].pain_level}</div>
+                  </div>
+                  <textarea rows="8" cols="50" maxLength="200"
+                    name={part.id}
+                    value={bodyPartsIncluded[part.id].notes}
+                    placeholder={`Add some notes about your ${displayName} here.`}
+                    style={styles.bodyPartNotesInput}
+                    onChange={this._handlePainNotesChange} />
                 </div>
-                <textarea rows="8" cols="50" maxLength="200"
-                  name={part.id}
-                  value={bodyPartsIncluded[part.id].notes}
-                  placeholder={`Add some notes about your ${displayName} here.`}
-                  style={styles.bodyPartNotesInput}
-                  onChange={this._handlePainNotesChange} />
+                {(index < bodyPartList.length - 1) && <hr style={{width: '80%', height: 0, borderTop: `solid 1px ${AppColors.blue}`}}/>}
               </div>
             );
           })}
           <button style={styles.continueBtn} onClick={this._handleSubmitPainNotes}>Continue</button>
-          <button style={styles.skipBtn} onClick={() => { this._switchScreen() }}>Skip</button>
+          <div style={{...AppStyles.rowSpace, marginBottom: isSmallScreen ? 30 : 0}}>
+            {isSmallScreen && <button style={styles.skipBtn} onClick={() => { this._switchScreen(true) }}>Back</button>}
+            <button style={styles.skipBtn} onClick={() => { this._switchScreen() }}>Skip</button>
+          </div>
         </div>
       </div>
     );
   }
 
   _renderAddNotes = () => {
+    const { isSmallScreen } = this.props;
     const { notes } = this.state;
     return (
-      <div style={styles.entryContainer}>
-        <button style={styles.backBtn} onClick={() => { this._switchScreen(true) }}>
+      <div style={styles.entryContainer(isSmallScreen)}>
+        {!isSmallScreen && <button style={styles.backBtn} onClick={() => { this._switchScreen(true) }}>
           <img src={BackIcon} style={{height: 32, margin: 'auto' }} />
-        </button>
+        </button>}
         <div style={styles.addNotesContainer}>
-          <textarea rows="14" cols="65" maxLength="500"
+          <textarea rows="15" cols="65" maxLength="500"
             name="notes"
             value={notes}
             placeholder={'Add any additional notes here.'}
@@ -275,6 +294,7 @@ class AddEntry extends React.Component {
             onChange={this._handleInputChange} />
           <p style={styles.counterText}>{notes.length}/500</p>
           <button style={styles.continueBtn} onClick={this._handleSubmitEntry}>Submit Entry</button>
+          {isSmallScreen && <button style={{...styles.skipBtn, marginBottom: 30}} onClick={() => { this._switchScreen(true) }}>Back</button>}
         </div>
       </div>
     );
@@ -337,16 +357,17 @@ class AddEntry extends React.Component {
   }
 
   _renderConfiguration = () => {
+    const { isSmallScreen } = this.props;
     const { screenType, highDetail, entryTime, entryMoment } = this.state;
     if (screenType === screenTypes.addPainLevels) {
       return (
-        <div style={styles.configContentContainer}>
-          <div style={styles.configRow}>
+        <div style={styles.configContentContainer(isSmallScreen)}>
+          {!isSmallScreen && <div style={styles.configRow}>
             <div style={styles.configTitle}>
               <div style={styles.configTitleTxt}>Configure</div>
               <div style={styles.configTitleTxt}>Entry</div>
             </div>
-          </div>
+          </div>}
           <div style={{flex: 1, ...AppStyles.center, marginBottom: 20}}>
             <div style={styles.configSubtitleTxt}>Time & Date</div>
             <div style={AppStyles.rowSpace}>
@@ -373,7 +394,7 @@ class AddEntry extends React.Component {
                 </div>)}
             </div>
           </div>
-          <div style={{flex: 1, ...AppStyles.center, marginBottom: 20}}>
+          {!isSmallScreen && <div style={{ ...AppStyles.center, marginBottom: 20}}>
             <div style={AppStyles.rowSpace}>
               <div style={styles.configSubtitleTxt}>Level of Detail</div>
               <button
@@ -382,7 +403,7 @@ class AddEntry extends React.Component {
                 ?
               </button>
             </div>
-            <div style={{...AppStyles.rowSpace, marginTop: 10}}>
+            <div style={{...AppStyles.rowSpace, flexWrap: 'wrap', marginTop: 10}}>
               <button
                 style={!highDetail ? styles.mainButtonInactive : styles.mainButton}
                 onClick={() => {this.setState({ highDetail: true })}}>
@@ -394,24 +415,24 @@ class AddEntry extends React.Component {
                 Low Detail
               </button>
             </div>
-          </div>
+          </div>}
         </div>
       );
     } else {
       return (
-        <div style={styles.configContentContainer}>
-          <div style={styles.configRow}>
+        <div style={styles.configContentContainer(isSmallScreen)}>
+          {!isSmallScreen && <div style={styles.configRow}>
             <div style={styles.configTitle}>
               <div style={styles.configTitleTxt}>Entry</div>
               <div style={styles.configTitleTxt}>Configuration</div>
             </div>
-          </div>
-          <div style={{flex: 1, ...AppStyles.rowSpace, width: '100%', margin: 20, alignItems: 'center'}}>
+          </div>}
+          <div style={{flex: 1, ...AppStyles.rowSpace, flexWrap: 'wrap', width: '100%', margin: 20, alignItems: 'center'}}>
             <div style={styles.configSubtitleTxt}>Time & Date</div>
             <div style={styles.configDisplayTxt}>{entryMoment?.format('MM/DD/YY hh:mm a')}</div>
           </div>
-          <div style={{flex: 1, ...AppStyles.rowSpace, width: '100%', margin: 20, alignItems: 'center'}}>
-            <div style={AppStyles.rowSpace}>
+          {!isSmallScreen && <div style={{flex: 1, ...AppStyles.rowSpace, flexWrap: 'wrap', width: '100%', margin: 20, alignItems: 'center'}}>
+            <div style={{...AppStyles.rowSpace }}>
               <div style={styles.configSubtitleTxt}>Level of Detail</div>
               <button
                 onClick={() => {this.helpModalRef.current.open()}}
@@ -420,7 +441,7 @@ class AddEntry extends React.Component {
               </button>
             </div>
             <div style={styles.configDisplayTxt}>{highDetail ? 'High Detail' : 'Low Detail'}</div>
-          </div>
+          </div>}
         </div>
       );
     }
@@ -428,26 +449,28 @@ class AddEntry extends React.Component {
   }
 
   render() {
-    const { userInfo, bodyParts, logout } = this.props;
+    const { userInfo, bodyParts, logout, isSmallScreen, isMediumScreen } = this.props;
     const { screenType, highDetail } = this.state;
 
     return (
-      <div style={styles.container}>
+      <div style={styles.container(isSmallScreen)}>
         <Navbar userInfo={userInfo} logout={logout}/>
-        <div style={styles.configContainer}>
-          <div style={styles.titleContainer}>
-            <p style={styles.titleTxt}>
-              {screenType === screenTypes.addPainLevels && 'Rate your pain on a scale of 1-10.'}
-              {screenType === screenTypes.addPainNotes && 'Add some notes to accompany your entry.'}
-              {screenType === screenTypes.addNotes && 'Need to say anything else?'}
-            </p>
+        <div style={styles.contentContainer(isSmallScreen)}>
+          <div style={styles.configContainer(isSmallScreen)}>
+            <div style={styles.titleContainer(isSmallScreen)}>
+              <p style={styles.titleTxt(isMediumScreen)}>
+                {screenType === screenTypes.addPainLevels && 'Rate your pain on a scale of 1-10.'}
+                {screenType === screenTypes.addPainNotes && 'Add some notes to accompany your entry.'}
+                {screenType === screenTypes.addNotes && 'Need to say anything else?'}
+              </p>
+            </div>
+            {this._renderConfiguration()}
           </div>
-          {this._renderConfiguration()}
-        </div>
 
-        {screenType === screenTypes.addPainLevels && this._renderAddPainLevels()}
-        {screenType === screenTypes.addPainNotes && this._renderAddPainNotes()}
-        {screenType === screenTypes.addNotes && this._renderAddNotes()}
+          {screenType === screenTypes.addPainLevels && this._renderAddPainLevels()}
+          {screenType === screenTypes.addPainNotes && this._renderAddPainNotes()}
+          {screenType === screenTypes.addNotes && this._renderAddNotes()}
+        </div>
 
         <HelpModal
           ref={this.helpModalRef}
@@ -472,4 +495,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(AddEntry));
+)(withRouter(withWindowDimensions(AddEntry)));

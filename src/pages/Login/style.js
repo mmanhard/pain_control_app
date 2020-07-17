@@ -9,6 +9,7 @@ export default {
     ...AppStyles.center,
     alignItems: 'stretch',
     backgroundColor: AppColors.lilac,
+    minHeight: 500,
   },
   contentContainer: (isMobile, isSmallScreen) => {
     const mobileFlexStyle = {
@@ -20,7 +21,6 @@ export default {
       margin: isSmallScreen ? 0 : 80,
       backgroundColor: AppColors.blue,
       boxShadow: AppStyles.typBoxShadow,
-      minHeight: 350,
       minWidth: 400,
       ...flexStyle
     }

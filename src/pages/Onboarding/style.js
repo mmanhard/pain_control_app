@@ -6,21 +6,22 @@ import AppFonts from 'Common/AppFonts';
 export default {
   container: {
     ...AppStyles.fill,
-    ...AppStyles.center,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
+    ...AppStyles.columnStart,
     backgroundColor: AppColors.lilac,
+    minHeight: 700
   },
-  titleContainer: {
-    height: 150,
-    width: 600,
-    backgroundColor: AppColors.blue,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    boxShadow: AppStyles.typBoxShadow,
+  titleContainer: (isMobile) => {
+    return {
+      height: 150,
+      marginTop: isMobile ? 0 : 20,
+      width: isMobile ? '100%' : 576,
+      backgroundColor: AppColors.blue,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      boxShadow: AppStyles.typBoxShadow,
+    };
   },
   titleTxt: {
     ...AppFonts.Raleway.bold,
@@ -37,10 +38,13 @@ export default {
     textAlign: 'center',
     marginTop: 0
   },
-  contentContainer: {
-    ...AppStyles.typContentContainer,
-    marginTop: 20,
-    width: 600,
+  contentContainer: (isMobile) => {
+    return {
+      ...AppStyles.typContentContainer,
+      marginTop: 20,
+      width: isMobile ? '90%' : 576,
+      marginBottom: 20
+    };
   },
   infoContainer: {
     display: 'flex',
@@ -48,21 +52,24 @@ export default {
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 20,
-    paddingBottom: 40
+    paddingBottom: 40,
+    position: 'relative'
   },
   backBtn: {
     ...AppStyles.closeBtn,
     marginLeft: 15,
     marginTop: 15,
   },
-  txtInputContainer: {
-    height: 36,
-    marginBottom: 60,
-    width: '65%',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    borderBottom: `1px solid ${AppColors.blue}`
+  txtInputContainer: (isShortScreen) => {
+    return {
+      height: 36,
+      marginBottom: isShortScreen ? 30 : 60,
+      width: '65%',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      borderBottom: `1px solid ${AppColors.blue}`
+    };
   },
   txtInput: {
     ...AppFonts.Raleway.bold,
@@ -87,17 +94,15 @@ export default {
     color: AppColors.blue,
     backgroundColor: AppColors.lilac,
     borderRadius: 20,
+    width: '85%',
     marginBottom: 20,
     resize: 'none',
     boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
   },
-  partsContainer: (offset) => {
-    return {
-      marginLeft: offset,
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'center'
-    };
+  partsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center'
   },
   partContainer: {
     display: 'flex',
@@ -107,7 +112,7 @@ export default {
     marginLeft: 4,
     marginBottom: 16
   },
-  partButton: (selected) => {
+  partButton: (isMobile, selected) => {
     return {
       ...AppFonts.Raleway.bold,
       fontSize: AppFonts.size.medium,
@@ -116,7 +121,7 @@ export default {
       color: selected ? AppColors.lilac : AppColors.blue,
       borderRadius: 18,
       textAlign: 'center',
-      width: 120,
+      width: isMobile ? 100 : 120,
       height: 36,
       marginBottom: 4,
     };
@@ -166,8 +171,7 @@ export default {
   },
   counterText: {
     position: 'relative',
-    top: -70,
-    left: 200,
+    bottom: 70,
     ...AppFonts.Raleway.regular,
     color: AppColors.blue,
   }

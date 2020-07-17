@@ -5,6 +5,7 @@ import { withRouter } from 'react-router';
 
 import actions from 'Actions';
 import styles from './style';
+import withWindowDimensions from 'Common/AppDimens';
 
 import LogoIcon from 'Icons/icons8-p.png';
 import AddIcon from 'Icons/icons8-plus.png';
@@ -31,8 +32,9 @@ class Navbar extends React.Component {
   }
 
   _renderDropdown = () => {
+    const { isMobile } = this.props;
     return (
-      <div style={styles.dropdownMenu}>
+      <div style={styles.dropdownMenu(isMobile)}>
         <button style={{ ...styles.dropdownItem, borderBottom: 'solid 1px black' }} onClick={() => {this._goToPage('settings')}}>
           <img src={SettingsIcon} style={{ height: 24, width: 24 }} />
           <p style={{ flex: 1, marginLeft: 8 }}>Settings</p>
@@ -46,24 +48,24 @@ class Navbar extends React.Component {
   }
 
   render() {
-    const { userInfo } = this.props;
+    const { userInfo, isMobile } = this.props;
     const { dropdownVisible } = this.state;
 
     return (
       <div style={styles.container}>
         <div>
-          <a href="/dashboard"><img src={LogoIcon} style={{ height: 36, marginLeft: 64 }} /></a>
+          <a href="/dashboard"><img src={LogoIcon} style={{ height: 36, marginLeft: isMobile ? 18 : 64 }} /></a>
         </div>
         <div style={styles.rightContainer}>
-          <p style={styles.welcomeTxt}>
+          <div style={styles.welcomeTxt}>
             {userInfo.first_name
                 ? `Hi, ${userInfo.first_name}!`
                 : 'Hello there!' }
-          </p>
-          <button onClick={this._toggleDropdown} style={styles.dropdownToggle(dropdownVisible)}><img src={BackIcon} style={{ height: 21 }} /></button>
+          </div>
+          <button onClick={this._toggleDropdown} style={styles.dropdownToggle(isMobile, dropdownVisible)}><img src={BackIcon} style={{ height: 21 }} /></button>
           {dropdownVisible && this._renderDropdown()}
-          <button style={{ background: 'transparent', border: 'none' }} onClick={() => {this._goToPage('add_entry')}}>
-            <img src={AddIcon} style={{height: 36, marginRight: 64 }} />
+          <button style={styles.addIconBtn(isMobile)} onClick={() => {this._goToPage('add_entry')}}>
+            <img src={AddIcon} style={{height: 36 }} />
           </button>
         </div>
       </div>
@@ -71,4 +73,4 @@ class Navbar extends React.Component {
   }
 }
 
-export default withRouter(Navbar);
+export default withWindowDimensions(withRouter(Navbar));

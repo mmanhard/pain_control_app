@@ -6,6 +6,8 @@ import { withRouter } from 'react-router';
 import styles from './style';
 import actions from 'Actions';
 import Utils from 'Utils';
+import withWindowDimensions from 'Common/AppDimens';
+import BubbleList from 'Components/BubbleList';
 
 import BackIcon from 'Icons/icons8-back.png';
 import PhoneIcon from 'Icons/icons8-phone.png';
@@ -100,7 +102,7 @@ class Onboarding extends React.Component {
       birthday: '',
       hometown: '',
       medicalHistory: '',
-      screenType: screenTypes.addInfo,
+      screenType: screenTypes.addParts,
       selectOtherBodyParts: false,
       otherBodyParts: []
     };
@@ -250,10 +252,11 @@ class Onboarding extends React.Component {
   }
 
   _renderAddInfo = () => {
+    const { isMobile, isShortScreen } = this.props;
     return (
-      <div style={styles.contentContainer}>
+      <div style={styles.contentContainer(isMobile)}>
         <div style={styles.infoContainer}>
-          <div style={{...styles.txtInputContainer, marginTop: 40 }}>
+          <div style={{...styles.txtInputContainer(isShortScreen), marginTop: 40 }}>
             <img src={PhoneIcon} style={{height: 24, margin: 'auto' }} />
             <input
               name="phone"
@@ -264,7 +267,7 @@ class Onboarding extends React.Component {
               onChange={this._handlePhoneChange}
             />
           </div>
-          <div style={styles.txtInputContainer}>
+          <div style={styles.txtInputContainer(isShortScreen)}>
             <img src={BirthdayIcon} style={{height: 24, margin: 'auto' }} />
             <input
               name="birthday"
@@ -275,7 +278,7 @@ class Onboarding extends React.Component {
               onChange={this._handleBirthdayChange}
             />
           </div>
-          <div style={styles.txtInputContainer}>
+          <div style={styles.txtInputContainer(isShortScreen)}>
             <img src={HomeIcon} style={{height: 24, margin: 'auto' }} />
             <input
               name="hometown"
@@ -310,63 +313,73 @@ class Onboarding extends React.Component {
     this.setState({ [part.name]: { ...oldPartState, locations: locations }});
   }
 
-  _renderPartsRow = (parts, offset = 0, addPartButton = false) => {
+  _renderItem = (part) => {
+    const { isMobile } = this.props;
     const { selectOtherBodyParts } = this.state;
-    return (
-      <div style={styles.partsContainer(offset)}>
-        {parts.map((part) => {
-          const selected = this.state[part.name].selected
-          return (
-            <div key={part.name} style={styles.partContainer}>
-              <button
-                style={styles.partButton(selected)}
-                onClick={() => this._selectBodyPart(part)}
-                >
-                {part.name}
-              </button>
 
-              <div>
-                {selected && part.locations
-                  ? part.locations.map((loc) => {
-                    const selected = this.state[part.name].locations.indexOf(loc) !== -1;
-                    return (
-                      <button
-                        key={`${loc} ${part.name}`}
-                        style={styles.locButton(selected)}
-                        onClick={() => this._selectBodyPartLocation(part, loc)}
-                        >
-                        {loc}
-                      </button>
-                    );
-                  })
-                  : <div style={{ height: 32 }}></div>}
-              </div>
-
-            </div>);
-        })}
-        {addPartButton && <div style={styles.partContainer}>
+    if (part.name) {
+      const selected = this.state[part.name].selected;
+      return (
+        <div
+          key={part.name}
+          style={styles.partContainer}>
           <button
-            style={styles.partButton(selectOtherBodyParts)}
-            onClick={this._handleAddOther}
-            >
-            {selectOtherBodyParts ? 'Add More' : 'Other'}
+            style={styles.partButton(isMobile, selected)}
+            onClick={() => this._selectBodyPart(part)}>
+            {part.name}
           </button>
-        </div>}
-      </div>
-    );
+          <div>
+            {selected && part.locations
+              ? part.locations.map((loc) => {
+                const selected = this.state[part.name].locations.indexOf(loc) !== -1;
+                return (
+                  <button
+                    key={`${loc} ${part.name}`}
+                    style={styles.locButton(selected)}
+                    onClick={() => this._selectBodyPartLocation(part, loc)}
+                    >
+                    {loc}
+                  </button>
+                );
+              })
+              : <div style={{ height: 32 }}></div>}
+          </div>
+        </div>);
+      } else {
+        return (
+          <div
+            key={'addMoreBtn'}
+            style={styles.partContainer}>
+            <button
+              style={styles.partButton(isMobile, selectOtherBodyParts)}
+              onClick={this._handleAddOther}
+              >
+              {selectOtherBodyParts ? 'Add More' : 'Other'}
+            </button>
+          </div>
+        );
+      }
   }
 
   _renderAddParts = () => {
+    const { isMobile } = this.props;
     const { selectOtherBodyParts, otherBodyParts } = this.state;
+
+    const bodyParts = [...defaultUpperJoints, ...defaultLowerJoints, ...defaultRegions, {}];
+
     return (
-      <div style={styles.contentContainer}>
+      <div style={styles.contentContainer(isMobile)}>
         <button style={styles.backBtn} onClick={() => { this._switchScreen(true) }}>
           <img src={BackIcon} style={{height: 32, margin: 'auto' }} />
         </button>
         <div style={{ ...styles.infoContainer}}>
-          {this._renderPartsRow(defaultUpperJoints, 30)}
-          {this._renderPartsRow(defaultLowerJoints, -30)}
-          {this._renderPartsRow(defaultRegions, 30, true)}
+          <BubbleList
+              rowContainerStyle={styles.partsContainer}
+              renderItem={this._renderItem}
+              items={bodyParts}
+              itemsPerRow={isMobile ? 3 : 4}
+              offset={isMobile ? 16 : 32}
+          />
           {selectOtherBodyParts && <div style={styles.addMoreContainer}>
             {otherBodyParts.map((part, i) => {
               return (
@@ -392,11 +405,12 @@ class Onboarding extends React.Component {
   }
 
   _renderAddNotes = () => {
+    const { isMobile } = this.props;
     return (
-      <div style={styles.contentContainer}>
+      <div style={styles.contentContainer(isMobile)}>
         <button style={styles.backBtn} onClick={() => { this._switchScreen(true) }}><img src={BackIcon} style={{height: 32}} /></button>
         <div style={styles.infoContainer}>
-          <textarea rows="14" cols="65" maxLength="500"
+          <textarea rows="15" cols="65" maxLength="500"
             name="medicalHistory"
             placeholder={'Please enter your medical history here!'}
             style={styles.medHistoryInput}
@@ -410,10 +424,11 @@ class Onboarding extends React.Component {
   }
 
   render() {
+    const { isMobile } = this.props;
     const { screenType } = this.state;
     return (
       <div style={styles.container}>
-        <div style={styles.titleContainer}>
+        <div style={styles.titleContainer(isMobile)}>
           {screenType === screenTypes.addInfo && (<div>
             <p style={styles.titleTxt}>Welcome to Pain Control, {this.props.userInfo?.first_name}!</p>
             <p style={styles.subtitleTxt}>Tell us a little more about yourself.</p>
@@ -451,4 +466,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(Onboarding));
+)(withRouter(withWindowDimensions(Onboarding)));
