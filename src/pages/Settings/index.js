@@ -108,19 +108,16 @@ class Settings extends React.Component {
 
   _renderEditAccount = () => {
     const { userInfo, isSmallScreen, isMediumScreen } = this.props;
+
+    const title = this._renderSettingsTitle(['Account', 'Settings']);
+
     return (
       <div style={{...styles.editInfoContainer(isMediumScreen), ...styles.mainContainer(isSmallScreen)}}>
         <div style={{...styles.editAccountLeft, order: isMediumScreen ? 3 : 1}}>
-          {!isMediumScreen && <div style={styles.settingsTitleContainer}>
-            <div>Account</div>
-            <div>Settings</div>
-          </div>}
+          {!isMediumScreen && title}
           <button style={{marginTop: isMediumScreen ? 0 : 72, ...styles.continueBtn, marginBottom: 20}} onClick={this._handleEditAccount}>Submit</button>
         </div>
-        {isMediumScreen && !isSmallScreen && <div style={{...styles.settingsTitleContainer, order: 1}}>
-          <div>Account</div>
-          <div>Settings</div>
-        </div>}
+        {isMediumScreen && !isSmallScreen && title}
         <div style={{...styles.formContainer, order: 2}}>
           <div style={styles.txtInputContainer}>
             <img src={NameIcon} style={{height: 24, margin: 'auto'}} />
@@ -213,10 +210,7 @@ class Settings extends React.Component {
     return (
       <div style={{...styles.editPartsContainer, ...styles.mainContainer(isSmallScreen)}}>
         {!isSmallScreen && <div style={{width: '100%', height: 110}}>
-          <div style={styles.settingsTitleContainer}>
-            <div>Edit Pain</div>
-            <div>Points</div>
-          </div>
+          {this._renderSettingsTitle(['Edit', 'Pain Points'])}
         </div>}
         <BubbleList
             contentContainerStyle={styles.bodyPartsContainer(isSmallScreen)}
@@ -300,19 +294,16 @@ class Settings extends React.Component {
 
   _renderChangePassword = () => {
     const { isSmallScreen, isMediumScreen } = this.props;
+
+    const title = this._renderSettingsTitle(['Change', 'Password']);
+
     return (
       <div style={{...styles.editInfoContainer(isMediumScreen), ...styles.mainContainer(isSmallScreen)}}>
         <div style={{...styles.changePwdLeft, order: isMediumScreen ? 3 : 1}}>
-          {!isMediumScreen && <div style={styles.settingsTitleContainer}>
-            <div>Change</div>
-            <div>Password</div>
-          </div>}
+          {!isMediumScreen && title}
           <button style={{marginTop: isMediumScreen ? 0 : 72, ...styles.continueBtn, marginBottom: 20}} onClick={this._handleChangePassword}>Submit</button>
         </div>
-        {isMediumScreen && !isSmallScreen && <div style={{...styles.settingsTitleContainer, order: 1}}>
-          <div>Change</div>
-          <div>Password</div>
-        </div>}
+        {isMediumScreen && !isSmallScreen && title}
         <div style={{...styles.formContainer, order: 2}}>
           <div style={{...styles.txtInputContainer}}>
             <img src={KeyIcon} style={{height: 24, margin: 'auto' }} />
@@ -350,6 +341,15 @@ class Settings extends React.Component {
         </div>
       </div>
     );
+  }
+
+  _renderSettingsTitle = (titleLines) => {
+    return (
+      <div style={styles.settingsTitleContainer}>
+        <div>{titleLines[0]}</div>
+        <div>{titleLines[1]}</div>
+      </div>
+    )
   }
 
   render() {
