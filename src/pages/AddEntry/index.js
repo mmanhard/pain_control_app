@@ -52,10 +52,17 @@ class AddEntry extends React.Component {
     const target = event.target;
 
     if (target.value.length > 0) {
-      bodyPartsIncluded[target.name] = {
-        pain_level: target.value,
-        notes: '' };
-      this.setState({ bodyPartsIncluded });
+      const value = Number(target.value);
+      if (isNaN(value)) {
+        alert('Please type in a number!');
+      } else if (value < 0 || value > 10) {
+        alert('Please type in a number between 0 and 10!');
+      } else {
+        bodyPartsIncluded[target.name] = {
+          pain_level: target.value.slice(0, 3),
+          notes: '' };
+        this.setState({ bodyPartsIncluded });
+      }
     } else {
       delete bodyPartsIncluded[target.name];
       this.setState({ bodyPartsIncluded });
