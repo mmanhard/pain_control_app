@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
+import validator from 'validator';
 
 import styles from './style';
 import actions from 'Actions';
@@ -12,6 +13,8 @@ import withWindowDimensions from 'Common/AppDimens';
 import EmailIcon from 'Icons/icons8-email.png';
 import KeyIcon from 'Icons/icons8-key.png';
 
+const minPwdLength = 8;
+
 class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -21,6 +24,8 @@ class Login extends React.Component {
       last_name: '',
       email: '',
       password: '',
+      email_login: '',
+      password_login: '',
       didRegister: false,
     };
 
@@ -49,16 +54,39 @@ class Login extends React.Component {
   }
 
   _handleRegister = (event) => {
+    const { first_name, last_name, email, password } = this.state;
+
     event.preventDefault();
 
-    this.setState({ didRegister: true });
-    this.props.register(this.state);
+    if (!first_name) {
+      alert('Please enter your first name!');
+    } else if (!last_name) {
+      alert('Please enter your last name!');
+    } else if (!validator.isEmail(email)) {
+      alert('Please enter a valid email address!');
+    } else if (password.length < minPwdLength) {
+      alert(`Password must be at least ${minPwdLength} characters long!`);
+    } else {
+      this.setState({ didRegister: true });
+
+      const data = { first_name, last_name, email, password };
+      this.props.register(data);
+    }
   }
 
   _handleLogin = (event) => {
+    const {email_login, password_login} = this.state;
+
     event.preventDefault();
 
-    this.props.login(this.state);
+    if (!validator.isEmail(email_login)) {
+      alert('Please enter a valid email address!');
+    } else if (password_login.length <= 0) {
+      alert('Please enter your password!');
+    } else {
+      const data = { email: email_login, password: password_login };
+      this.props.login(data);
+    }
   }
 
   _open = () => {
@@ -83,22 +111,22 @@ class Login extends React.Component {
               <div style={styles.txtInputContainer}>
                 <img src={EmailIcon} style={{height: 24, margin: 'auto'}} />
                 <input
-                  name="email"
+                  name="email_login"
                   style={styles.txtInput}
                   placeholder='Email'
                   type="text"
-                  value={this.state.email}
+                  value={this.state.email_login}
                   onChange={this._handleInputChange}
                 />
               </div>
               <div style={styles.txtInputContainer}>
                 <img src={KeyIcon} style={{height: 24, margin: 'auto' }} />
                 <input
-                  name="password"
+                  name="password_login"
                   style={styles.txtInput}
                   placeholder='Password'
                   type="password"
-                  value={this.state.password}
+                  value={this.state.password_login}
                   onChange={this._handleInputChange}
                 />
               </div>
