@@ -8,6 +8,7 @@ import styles from './style';
 import withWindowDimensions from 'Common/AppDimens';
 import Utils from 'Utils';
 import AppColors from 'Common/AppColors';
+import BubbleList from 'Components/BubbleList';
 
 import BackIcon from 'Icons/icons8-back.png';
 import NameIcon from 'Icons/icons8-name.png';
@@ -106,17 +107,21 @@ class Settings extends React.Component {
   }
 
   _renderEditAccount = () => {
-    const { userInfo } = this.props;
+    const { userInfo, isSmallScreen, isMediumScreen } = this.props;
     return (
-      <div style={styles.editAccountContainer}>
-        <div style={styles.editAccountLeft}>
-          <div style={styles.settingsTitleContainer}>
+      <div style={{...styles.editInfoContainer(isMediumScreen), ...styles.mainContainer(isSmallScreen)}}>
+        <div style={{...styles.editAccountLeft, order: isMediumScreen ? 3 : 1}}>
+          {!isMediumScreen && <div style={styles.settingsTitleContainer}>
             <div>Account</div>
             <div>Settings</div>
-          </div>
-          <button style={{position: 'absolute', left: '25%', top: '60%', ...styles.continueBtn}} onClick={this._handleEditAccount}>Submit</button>
+          </div>}
+          <button style={{marginTop: isMediumScreen ? 0 : 72, ...styles.continueBtn, marginBottom: 20}} onClick={this._handleEditAccount}>Submit</button>
         </div>
-        <div style={styles.formContainer}>
+        {isMediumScreen && !isSmallScreen && <div style={{...styles.settingsTitleContainer, order: 1}}>
+          <div>Account</div>
+          <div>Settings</div>
+        </div>}
+        <div style={{...styles.formContainer, order: 2}}>
           <div style={styles.txtInputContainer}>
             <img src={NameIcon} style={{height: 24, margin: 'auto'}} />
             <input
@@ -136,7 +141,7 @@ class Settings extends React.Component {
               onChange={this._handleInputChange}
             />
           </div>
-          <div style={{...styles.txtInputContainer}}>
+          <div style={styles.txtInputContainer}>
             <img src={PhoneIcon} style={{height: 24, margin: 'auto' }} />
             <input
               name="phone"
@@ -174,52 +179,53 @@ class Settings extends React.Component {
     );
   }
 
-  _renderPartsRow = (parts, offset = 0) => {
+  _renderPart = (part) => {
+    const { isSmallScreen } = this.props;
     const { currentBodyPart, addMoreParts } = this.state;
-    return (
-      <div style={styles.partsContainer(offset)}>
-        {parts.map((part) => {
-          const selected = currentBodyPart && currentBodyPart.id == part.id;
-          const displayName = part.location ? `${part.location} ${part.name}` : part.name;
-          return (
-            <button
-              key={part.id}
-              onClick={() => { this.setState({ currentBodyPart: part, addMoreParts: false, part_name: '', part_location: '', part_type: '' })}}
-              style={styles.partContainer(selected)}>
-              <div>{displayName}</div>
-              <div style={styles.editTxt}>Edit</div>
-            </button>
-          );
-        })}
-        {parts.length < 3 && (
-          <button
-            style={styles.addMorePartsBtn(addMoreParts)}
-            onClick={() => {this.setState({ currentBodyPart: null, addMoreParts: true, part_name: '', part_location: '', part_type: '' })}}>
-              Add More
-          </button>
-        )}
-      </div>
-    );
+    if (part.name) {
+      const selected = currentBodyPart && currentBodyPart.id == part.id;
+      const displayName = part.location ? `${part.location} ${part.name}` : part.name;
+      return (
+        <button
+          key={part.id}
+          onClick={() => { this.setState({ currentBodyPart: part, addMoreParts: false, part_name: '', part_location: '', part_type: '' })}}
+          style={styles.partContainer(isSmallScreen, selected)}>
+          <div>{displayName}</div>
+          <div style={styles.editTxt}>Edit</div>
+        </button>
+      );
+    } else {
+      return (
+        <button
+          key='addMoreBtn'
+          style={styles.addMorePartsBtn(addMoreParts)}
+          onClick={() => {this.setState({ currentBodyPart: null, addMoreParts: true, part_name: '', part_location: '', part_type: '' })}}>
+            Add More
+        </button>
+      );
+    }
   }
 
   _renderEditBodyParts = () => {
-    const { bodyParts } = this.props;
+    const { bodyParts, isMobile, isSmallScreen } = this.props;
     const { currentBodyPart: part, addMoreParts } = this.state;
 
     return (
-      <div style={styles.editPartsContainer}>
-        <div style={{width: '100%', position: 'relative', height: 110}}>
+      <div style={{...styles.editPartsContainer, ...styles.mainContainer(isSmallScreen)}}>
+        {!isSmallScreen && <div style={{width: '100%', height: 110}}>
           <div style={styles.settingsTitleContainer}>
             <div>Edit Pain</div>
             <div>Points</div>
           </div>
-        </div>
-        <div style={styles.bodyPartsContainer}>
-          {this._renderPartsRow(bodyParts.slice(0,3), 30)}
-          {this._renderPartsRow(bodyParts.slice(3,6), -30)}
-          {this._renderPartsRow(bodyParts.slice(6,9), 30)}
-          {this._renderPartsRow(bodyParts.slice(9,12), -30)}
-        </div>
+        </div>}
+        <BubbleList
+            contentContainerStyle={styles.bodyPartsContainer(isSmallScreen)}
+            rowContainerStyle={styles.partsContainer}
+            renderItem={this._renderPart}
+            items={[...bodyParts, {}]}
+            itemsPerRow={isMobile ? 2 : 3}
+            offset={30}
+        />
         {part && (
           <div style={styles.partDetailsContainer}>
             <div style={styles.partInputContainer}>
@@ -293,16 +299,21 @@ class Settings extends React.Component {
   }
 
   _renderChangePassword = () => {
+    const { isSmallScreen, isMediumScreen } = this.props;
     return (
-      <div style={styles.editPwdContainer}>
-        <div style={styles.changePwdLeft}>
-          <div style={styles.settingsTitleContainer}>
+      <div style={{...styles.editInfoContainer(isMediumScreen), ...styles.mainContainer(isSmallScreen)}}>
+        <div style={{...styles.changePwdLeft, order: isMediumScreen ? 3 : 1}}>
+          {!isMediumScreen && <div style={styles.settingsTitleContainer}>
             <div>Change</div>
             <div>Password</div>
-          </div>
-          <button style={{position: 'absolute', left: '25%', top: '60%', ...styles.continueBtn}} onClick={this._handleChangePassword}>Submit</button>
+          </div>}
+          <button style={{marginTop: isMediumScreen ? 0 : 72, ...styles.continueBtn, marginBottom: 20}} onClick={this._handleChangePassword}>Submit</button>
         </div>
-        <div style={styles.formContainer}>
+        {isMediumScreen && !isSmallScreen && <div style={{...styles.settingsTitleContainer, order: 1}}>
+          <div>Change</div>
+          <div>Password</div>
+        </div>}
+        <div style={{...styles.formContainer, order: 2}}>
           <div style={{...styles.txtInputContainer}}>
             <img src={KeyIcon} style={{height: 24, margin: 'auto' }} />
             <input
@@ -342,7 +353,7 @@ class Settings extends React.Component {
   }
 
   render() {
-    const { userInfo, windowWidth, logout } = this.props;
+    const { userInfo, windowWidth, logout, isSmallScreen } = this.props;
     const { screenType } = this.state;
 
     const showAccount = screenType == screenTypes.editAccount;
@@ -350,38 +361,40 @@ class Settings extends React.Component {
     const showPassword = screenType == screenTypes.editPassword;
 
     return (
-      <div style={styles.container}>
+      <div style={styles.container(isSmallScreen)}>
         <Navbar userInfo={userInfo} logout={logout}/>
-        <div style={styles.configContainer}>
-          <div style={styles.titleContainer}>
-            <div style={styles.titleTxt}>Settings</div>
-            <div style={{...styles.subtitleTxt, marginTop: 8}}>Modify your account here.</div>
+        <div style={styles.contentContainer(isSmallScreen)}>
+          <div style={styles.configContainer(isSmallScreen)}>
+            <div style={styles.titleContainer(isSmallScreen)}>
+              <div style={styles.titleTxt}>Settings</div>
+              <div style={{...styles.subtitleTxt, marginTop: 8}}>Modify your account here.</div>
+            </div>
+            <div style={styles.configContentContainer(isSmallScreen)}>
+              <button
+                onClick={() => {this.setState({ screenType: screenTypes.editAccount })}}
+                style={styles.configTitle(isSmallScreen, showAccount)}>
+                <div style={styles.configTitleTxt(isSmallScreen)}>Account</div>
+                <div style={styles.configTitleTxt(isSmallScreen)}>Settings</div>
+              </button>
+              <button
+                onClick={() => {this.setState({ screenType: screenTypes.editPainPoints })}}
+                style={styles.configTitle(isSmallScreen, showPainPoints)}>
+                <div style={styles.configTitleTxt(isSmallScreen)}>Edit</div>
+                <div style={styles.configTitleTxt(isSmallScreen)}>Pain Points</div>
+              </button>
+              <button
+                onClick={() => {this.setState({ screenType: screenTypes.editPassword })}}
+                style={styles.configTitle(isSmallScreen, showPassword)}>
+                <div style={styles.configTitleTxt(isSmallScreen)}>Change</div>
+                <div style={styles.configTitleTxt(isSmallScreen)}>Password</div>
+              </button>
+            </div>
           </div>
-          <div style={styles.configContentContainer}>
-            <button
-              onClick={() => {this.setState({ screenType: screenTypes.editAccount })}}
-              style={styles.configTitle(showAccount)}>
-              <div style={styles.configTitleTxt}>Account</div>
-              <div style={styles.configTitleTxt}>Settings</div>
-            </button>
-            <button
-              onClick={() => {this.setState({ screenType: screenTypes.editPainPoints })}}
-              style={styles.configTitle(showPainPoints)}>
-              <div style={styles.configTitleTxt}>Edit</div>
-              <div style={styles.configTitleTxt}>Pain Points</div>
-            </button>
-            <button
-              onClick={() => {this.setState({ screenType: screenTypes.editPassword })}}
-              style={styles.configTitle(showPassword)}>
-              <div style={styles.configTitleTxt}>Change</div>
-              <div style={styles.configTitleTxt}>Password</div>
-            </button>
-          </div>
-        </div>
-        <div style={styles.entriesContainer(windowWidth)}>
+
           {showAccount && this._renderEditAccount()}
           {showPainPoints && this._renderEditBodyParts()}
           {showPassword && this._renderChangePassword()}
+
         </div>
       </div>
     )

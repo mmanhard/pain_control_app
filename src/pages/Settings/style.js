@@ -4,123 +4,123 @@ import AppStyles from 'Common/AppStyles';
 import AppFonts from 'Common/AppFonts';
 
 export default {
-  container: {
-    position: 'relative',
-    padding: '110px 30px 30px 30px',
+  container: (isSmallScreen) => {
+    return {
+      ...AppStyles.fill,
+      padding: isSmallScreen ? '80px 0px 0px 0px' : '110px 30px 30px 30px',
+    }
   },
-  configContainer: {
-    width: 400,
-    top: 110,
-    left: 30,
-    position: 'fixed',
-    marginRight: 30,
-    height: '100%',
-    ...AppStyles.columnStart
+  contentContainer: (isSmallScreen) => {
+    const flexStyle = isSmallScreen ? AppStyles.columnStart : AppStyles.rowSpace;
+    return {
+      height: '100%',
+      width: '100%',
+      ...flexStyle,
+      alignItems: 'flex-start',
+    }
   },
-  titleContainer: {
-    height: 150,
-    width: '100%',
-    backgroundColor: AppColors.blue,
-    ...AppFonts.Raleway.bold,
-    color: AppColors.white,
-    textAlign: 'center',
+  configContainer: (isSmallScreen) => {
+    return {
+      width: isSmallScreen ? '100%' : 400,
+      marginRight: isSmallScreen ? 0 : 30,
+      ...AppStyles.columnStart,
+    }
+  },
+  titleContainer: (isSmallScreen) => {
+    return {
+      height: isSmallScreen ? 100 : 150,
+      width: '100%',
+      backgroundColor: isSmallScreen ? AppColors.white : AppColors.blue,
+      ...AppFonts.Raleway.bold,
+      color: isSmallScreen ? AppColors.blue : AppColors.white,
+      ...AppStyles.center
+    }
   },
   titleTxt: {
     fontSize: AppFonts.size.xLarge,
     textAlign: 'center',
-    marginTop: 40,
   },
   subtitleTxt: {
     fontSize: AppFonts.size.medium,
   },
-  configContentContainer: {
-    marginTop: 30,
-    height: 200,
-    width: 400,
-    ...AppStyles.typContentContainer,
-    ...AppStyles.rowCenter,
-    alignItems: 'center',
-    alignContent: 'center',
-    flexWrap: 'wrap',
+  configContentContainer: (isSmallScreen) => {
+    const contentContainer = isSmallScreen ? AppStyles.mobileContentContaner : AppStyles.typContentContainer;
+    return {
+      marginTop: isSmallScreen ? 0 : 30,
+      width: '100%',
+      ...contentContainer,
+      ...AppStyles.rowCenter,
+      alignItems: 'center',
+      alignContent: 'center',
+      flexWrap: 'wrap',
+    }
   },
-  configTitle: (selected) => {
+  configTitle: (isSmallScreen, selected) => {
     return {
       ...AppStyles.center,
       alignItems: 'flex-start',
-      width: 140,
-      height: 68,
-      borderRadius: 34,
-      margin: 10,
+      width: isSmallScreen ? 100 : 140,
+      height: isSmallScreen ? 48 : 68,
+      borderRadius: isSmallScreen ? 24 : 34,
+      margin: isSmallScreen ? '0px 10px 20px 10px' : '20px 10px 20px 10px',
       color: selected ? AppColors.white : AppColors.blue,
       backgroundColor: selected ? AppColors.blue : AppColors.lilac,
       border: 'none',
       boxShadow: AppStyles.typBoxShadow,
-      fontSize: AppFonts.size.medLarge,
+      fontSize: isSmallScreen ? AppFonts.size.small : AppFonts.size.medLarge,
       ...AppFonts.Raleway.bold,
     }
   },
-  configTitleTxt: {
-    marginLeft: 20,
-  },
-  entriesContainer: (windowWidth) => {
+  configTitleTxt: (isSmallScreen) => {
     return {
-      width: windowWidth - 550,
-      minWidth: 500,
-      top: 100,
-      bottom: 0,
-      right: 50,
-      position: 'absolute',
-      ...AppStyles.columnStart
+      marginLeft: isSmallScreen ? 8 : 20,
     }
   },
-  editAccountContainer: {
-    width: '100%',
-    padding: 30,
-    marginBottom: 30,
-    ...AppStyles.typContentContainer,
-    ...AppStyles.rowStart,
-    alignItems: 'center'
+  mainContainer: (isSmallScreen) => {
+    const controlWidth = isSmallScreen ? {width: '100%'} : {};
+    const contentContainer = isSmallScreen ? AppStyles.mobileContentContaner : AppStyles.typContentContainer;
+    return {
+      ...controlWidth,
+      flex: 1,
+      ...contentContainer,
+    }
+  },
+  editInfoContainer: (isMediumScreen) => {
+    const flexStyle = isMediumScreen ? AppStyles.center : AppStyles.rowStart;
+    return {
+      ...flexStyle,
+      alignItems: 'stretch'
+    }
   },
   editPartsContainer: {
-    width: '100%',
-    padding: 30,
-    marginBottom: 30,
-    ...AppStyles.typContentContainer,
-    ...AppStyles.center
+    ...AppStyles.columnStart
   },
-  editPwdContainer: {
-    width: '100%',
-    padding: 30,
-    marginBottom: 30,
-    ...AppStyles.typContentContainer,
-    ...AppStyles.rowStart,
-    alignItems: 'center'
-  },
-  bodyPartsContainer: {
-    width: '100%',
-    marginTop: 30,
-  },
-  partsContainer: (offset) => {
+  bodyPartsContainer: (isSmallScreen) => {
+    const minWidth = isSmallScreen ? {} : {minWidth: 500};
     return {
-      marginLeft: offset,
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'center'
-    };
+      width: '100%',
+      ...minWidth,
+      marginTop: isSmallScreen ? 10 : 48,
+    }
   },
-  partContainer: (selected) => {
+  partsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
+  partContainer: (isSmallScreen, selected) => {
     return {
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
       ...AppFonts.Raleway.bold,
-      fontSize: AppFonts.size.medium,
+      fontSize: isSmallScreen ? AppFonts.size.small : AppFonts.size.medium,
       border: 'none',
       backgroundColor: selected ? AppColors.blue : AppColors.lilac,
       color: selected ? AppColors.lilac : AppColors.blue,
       borderRadius: 18,
-      width: 140,
+      minWidth: 140,
       height: 36,
       marginLeft: 4,
       marginRight: 4,
@@ -146,7 +146,7 @@ export default {
   partDetailsContainer: {
     marginTop: 20,
     flex: 1,
-    width: '100%',
+    width: '90%',
     ...AppStyles.rowCenter
   },
   editTxt: {
@@ -163,16 +163,15 @@ export default {
   },
   editAccountLeft: {
     flex: 1,
-    height: '100%',
-    position: 'relative',
+    ...AppStyles.columnStart,
   },
   changePwdLeft: {
     flex: 1,
-    height: '100%',
-    position: 'relative',
+    ...AppStyles.columnStart,
   },
   formContainer: {
     ...AppStyles.center,
+    width: '100%',
     flex: 2,
     marginTop: 30,
   },
@@ -181,9 +180,7 @@ export default {
     marginBottom: 40,
     maxWidth: 320,
     width: '65%',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
+    ...AppStyles.rowStart,
     borderBottom: `1px solid ${AppColors.blue}`
   },
   txtInput: {
@@ -191,6 +188,7 @@ export default {
     flex: 1,
     paddingLeft: 10,
     border: 'none',
+    borderRadius: 0,
     backgroundColor: 'transparent',
     width: 50,
   },
@@ -210,14 +208,12 @@ export default {
     ...AppStyles.columnStart,
   },
   settingsTitleContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
     height: 110,
     width: 200,
     ...AppStyles.center,
     alignItems: 'flex-start',
     backgroundColor: AppColors.blue,
+    margin: 20,
     paddingLeft: 24,
     paddingRight: 24,
     fontSize: AppFonts.size.xLarge,

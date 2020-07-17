@@ -3,7 +3,7 @@ import React, { Component } from "react";
 const screenSizes = {
   xSmall: 576,
   small: 768,
-  medium: 992,
+  medium: 1096,
   large: 1200
 }
 
