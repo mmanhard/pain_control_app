@@ -2,6 +2,8 @@ import AppColors from 'Common/AppColors';
 import moment from 'moment';
 
 const formatPhoneInput = (input) => {
+  if (!input) return '';
+
   input = input.replace(/\D/g, '');
   input = input.substring(0, 10);
   if (input.length > 6) {
@@ -16,6 +18,8 @@ const formatPhoneInput = (input) => {
 }
 
 const formatDateInput = (dateInput) => {
+  if (!dateInput) return '';
+
   let input = dateInput.replace(/\D/g, '');
   input = input.substring(0, 8);
   const monthInput = input.substring(0, 2);
@@ -37,6 +41,8 @@ const formatDateInput = (dateInput) => {
 }
 
 const formatTwoDigitInput = (input, zeroAllowed, max) => {
+  if (!input) return '';
+
   input = input.substring(0,2);
 
   if (input.length == 1 && Number(input) > Math.floor( max / 10)) {
@@ -55,6 +61,8 @@ const formatTwoDigitInput = (input, zeroAllowed, max) => {
 }
 
 const formatYearInput = (yearInput) => {
+  if (!yearInput) return '';
+
   yearInput = yearInput.substring(0,4);
 
   const mill = yearInput[0];
@@ -87,6 +95,8 @@ const formatYearInput = (yearInput) => {
 }
 
 const formatTimeInput = (timeInput) => {
+  if (!timeInput) return '';
+
   let input = timeInput.replace(' ', '').replace(':','');
   const hourInput = input.substring(0, 2);
   const minuteInput = input.substring(2, 4);

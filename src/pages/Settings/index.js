@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import validator from 'validator';
 
 import actions from 'Actions';
 import Navbar from 'Components/Navbar';
@@ -23,6 +24,8 @@ const screenTypes = {
   editPassword: 'editPassword'
 }
 
+const validBirthdayLength = 10;
+
 class Settings extends React.Component {
   constructor(props) {
     super(props);
@@ -35,6 +38,11 @@ class Settings extends React.Component {
       old_password: '',
       new_password_1: '',
       new_password_2: '',
+      first_name: props?.userInfo ? props.userInfo.first_name : '',
+      last_name: props?.userInfo ? props.userInfo.last_name : '',
+      phone: Utils.formatPhoneInput(props?.userInfo?.phone),
+      birthday: Utils.formatDateInput(props?.userInfo?.birthday),
+      hometown: props?.userInfo ? props.userInfo.hometown : '',
       screenType: screenTypes.editAccount
     };
   }
@@ -61,13 +69,36 @@ class Settings extends React.Component {
     const { first_name, last_name, phone, birthday, hometown } = this.state;
     let userUpdates = {};
 
+    if (!first_name) {
+      alert('Please enter a first name!')
+    } else if (userInfo?.first_name !== first_name) {
+      userUpdates.first_name = first_name;
+    }
 
-    if (first_name?.length > 0) userUpdates.first_name = first_name;
-    if (last_name?.length > 0) userUpdates.last_name = last_name;
-    if (phone?.length > 0) userUpdates.phone = phone;
-    if (birthday?.length > 0) userUpdates.birthday = birthday;
-    if (hometown?.length > 0) userUpdates.hometown = hometown;
+    if (!last_name) {
+      alert('Please enter a first name!')
+    } else if (userInfo?.last_name !== last_name) {
+      userUpdates.last_name = last_name;
+    }
 
+    if (phone && !validator.isMobilePhone(phone)) {
+      alert('Please enter a valid phone number!')
+    } else if (userInfo?.phone !== phone) {
+      userUpdates.phone = phone;
+    }
+
+    if (birthday && birthday.length !== validBirthdayLength) {
+      alert('Please enter a valid date!')
+    } else if (userInfo?.birthday !== birthday) {
+      userUpdates.birthday = birthday;
+    }
+
+
+    if (userInfo?.hometown !== hometown) {
+      userUpdates.hometown = hometown;
+    }
+
+    console.log(userUpdates);
     this.props.updateUser(userInfo, userUpdates);
   }
 
@@ -126,7 +157,7 @@ class Settings extends React.Component {
               style={styles.txtInput}
               placeholder='First Name'
               type="text"
-              value={this.state.first_name ? this.state.first_name : userInfo.first_name}
+              value={this.state.first_name}
               onChange={this._handleInputChange}
             />
             <input
@@ -134,7 +165,7 @@ class Settings extends React.Component {
               style={styles.txtInput}
               placeholder='Last Name'
               type="text"
-              value={this.state.last_name ? this.state.last_name : userInfo.last_name}
+              value={this.state.last_name}
               onChange={this._handleInputChange}
             />
           </div>
@@ -145,7 +176,7 @@ class Settings extends React.Component {
               style={styles.txtInput}
               placeholder='Phone Number'
               type="text"
-              value={this.state.phone ? this.state.phone : userInfo.phone}
+              value={this.state.phone}
               onChange={this._handlePhoneChange}
             />
           </div>
@@ -156,7 +187,7 @@ class Settings extends React.Component {
               style={styles.txtInput}
               placeholder='mm/dd/yyyy'
               type="text"
-              value={this.state.birthday ? this.state.birthday : userInfo.birthday}
+              value={this.state.birthday}
               onChange={this._handleBirthdayChange}
             />
           </div>
@@ -167,7 +198,7 @@ class Settings extends React.Component {
               style={styles.txtInput}
               placeholder='Hometown'
               type="text"
-              value={this.state.hometown ? this.state.hometown : userInfo.hometown}
+              value={this.state.hometown}
               onChange={this._handleInputChange}
             />
           </div>
