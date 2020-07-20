@@ -7,6 +7,7 @@ import moment from 'moment';
 import actions from 'Actions';
 import Navbar from 'Components/Navbar';
 import BodyVisualizer from 'Components/BodyVisualizer';
+import AppStyles from 'Common/AppStyles';
 import styles from './style';
 
 import withWindowDimensions from 'Common/AppDimens';
@@ -111,6 +112,8 @@ class Entries extends React.Component {
   }
 
   _renderEntry = (entry) => {
+    const { isSmallScreen, isMediumScreen } = this.props;
+
     let visualizerBodyParts = entry.pain_subentries.map(subentry => {
       const part = subentry.body_part;
       const displayName = part.location ? `${part.location}_${part.name}` : part.name;
@@ -133,12 +136,12 @@ class Entries extends React.Component {
     }
 
     const date = moment(entry.date).utc();
-    return (<div key={entry.id} style={styles.entryContainer}>
-      <div style={styles.entryDetailsContainer}>
-        <div style={styles.entryTitleContainer}>
-          <div>{date.format('MMMM Do, YYYY')}</div>
-          <div>{date.format('h:mm a')}</div>
-        </div>
+
+    let entryContent = (
+      <div style={styles.entryContent}>
+        <BodyVisualizer
+          contentContainerStyle={styles.visualizer(isSmallScreen)}
+          bodyParts={visualizerBodyParts} />
         <div style={styles.statsRow}>
           <div style={styles.statContainer}>
             <div style={styles.statTxt}>{max}</div>
@@ -150,101 +153,153 @@ class Entries extends React.Component {
           </div>
           <div style={styles.statContainer}>
             <div style={styles.statTxt}>{entry.pain_subentries.length}</div>
-            <div style={styles.statTitle}># of Pain Points</div>
+            <div style={styles.statTitle}>Pain Points</div>
           </div>
         </div>
-        <button style={styles.continueBtn} onClick={() => { this._goToEntry(entry.id) }}>View Details</button>
-        <button style={styles.skipBtn} onClick={() => {  }}>Edit</button>
       </div>
+    );
+
+    let visualizer = (
       <BodyVisualizer
-        contentContainerStyle={styles.visualizer}
+        contentContainerStyle={styles.visualizer(isSmallScreen)}
         bodyParts={visualizerBodyParts} />
+    );
+
+    let stats = (
+      <div style={styles.statsRow(isSmallScreen)}>
+        <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{max}</div>
+          <div style={styles.statTitle(isSmallScreen)}>Max</div>
+        </div>
+        <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{min}</div>
+          <div style={styles.statTitle(isSmallScreen)}>Min</div>
+        </div>
+        {!isSmallScreen && <div style={styles.statContainer}>
+          <div style={styles.statTxt}>{entry.pain_subentries.length}</div>
+          <div style={styles.statTitle(isSmallScreen)}>Pain Points</div>
+        </div>}
+      </div>
+    );
+
+    return (<div key={entry.id} style={styles.entryContainer}>
+      <div style={styles.entryDetailsContainer(isSmallScreen, isMediumScreen)}>
+        <div style={styles.entryTitleContainer(isSmallScreen)}>
+          <div>{date.format('MMMM Do, YYYY')}</div>
+          <div>{date.format('h:mm a')}</div>
+        </div>
+        {isMediumScreen && visualizer}
+        {isMediumScreen && stats}
+        <button style={styles.continueBtn} onClick={() => { this._goToEntry(entry.id) }}>View Details</button>
+      </div>
+      {!isMediumScreen && <div style={styles.entryContent}>
+        {visualizer}
+        {stats}
+      </div>}
     </div>);
   }
 
-  render() {
-    const { userInfo, bodyParts, entries, logout, windowWidth } = this.props;
+  _renderConfiguration = () => {
+    const { bodyParts, entries, isSmallScreen, isMediumScreen } = this.props;
     const { sortBy } = this.state;
+
+    let filterTitle = (
+      <div style={styles.configTitle(isSmallScreen)}>
+        <div style={styles.configTitleTxt(isSmallScreen)}>Filter</div>
+        {!isSmallScreen && <div style={styles.configTitleTxt(isSmallScreen)}>Entries</div>}
+      </div>
+    );
+
+    let sortTitle = (
+      <div style={styles.configTitle(isSmallScreen)}>
+        <div style={styles.configTitleTxt(isSmallScreen)}>Sort</div>
+        {!isSmallScreen && <div style={styles.configTitleTxt(isSmallScreen)}>Entries</div>}
+      </div>
+    );
+
     return (
-      <div style={styles.container}>
-        <Navbar userInfo={userInfo} logout={logout}/>
-        <div style={styles.configContainer}>
-          <div style={styles.titleContainer}>
-            <div style={styles.titleTxt}>My Entry Feed</div>
-            <div style={{...styles.subtitleTxt, marginTop: 8}}>Scroll down to see more entries.</div>
-            <div style={styles.subtitleTxt}>Add filters below.</div>
+      <div style={styles.configContentContainer(isSmallScreen)}>
+        {!isSmallScreen && <div style={styles.configRow}>
+          {filterTitle}
+        </div>}
+        <div style={{...styles.configRow, ...AppStyles.rowSpace}}>
+          {isSmallScreen && filterTitle}
+          <div style={styles.filterOption}>
+            {!isSmallScreen && <div style={styles.filterOptionTitle}>Dates</div>}
+            <select name="dateRange" style={styles.filterOptionTxt(isSmallScreen)} onChange={this._handleDateRangeChange}>
+              {Object.entries(dateRanges).map(([key, value]) => {
+                return (
+                  <option key={key} value={key}>{value}</option>
+                );
+              })}
+            </select>
           </div>
-          <div style={styles.configContentContainer}>
-            <div style={styles.configRow}>
-              <div style={styles.configTitle}>
-                <div style={styles.configTitleTxt}>Filter</div>
-                <div style={styles.configTitleTxt}>Entries</div>
-              </div>
-            </div>
-            <div style={styles.configRow}>
-              <div style={styles.filterOptions}>
 
-                <div style={styles.filterOption}>
-                  <div style={styles.filterOptionTitle}>Dates</div>
-                  <select name="dateRange" style={styles.filterOptionTxt} onChange={this._handleDateRangeChange}>
-                    {Object.entries(dateRanges).map(([key, value]) => {
-                      return (
-                        <option key={key} value={key}>{value}</option>
-                      );
-                    })}
-                  </select>
-                </div>
+          <div style={styles.filterOption}>
+            {!isSmallScreen && <div style={styles.filterOptionTitle}>Pain Point</div>}
+            <select name="currentBodyPartID" style={styles.filterOptionTxt(isSmallScreen)} onChange={this._handleInputChange}>
+              <option key={'all_bps'} value={''}>All</option>
+              {bodyParts.map((part) => {
+                const displayName = part.location ? `${part.location} ${part.name}` : part.name;
+                return (
+                  <option key={part.id} value={part.id}>{displayName}</option>
+                );
+              })}
+            </select>
+          </div>
 
-                <div style={styles.filterOption}>
-                  <div style={styles.filterOptionTitle}>Pain Point</div>
-                  <select name="currentBodyPartID" style={styles.filterOptionTxt} onChange={this._handleInputChange}>
-                    <option key={'all_bps'} value={''}>All</option>
-                    {bodyParts.map((part) => {
-                      const displayName = part.location ? `${part.location} ${part.name}` : part.name;
-                      return (
-                        <option key={part.id} value={part.id}>{displayName}</option>
-                      );
-                    })}
-                  </select>
-                </div>
+          <div style={styles.filterOption}>
+            {!isSmallScreen && <div style={styles.filterOptionTitle}>Time of Day</div>}
+            <select name="daytime" style={styles.filterOptionTxt(isSmallScreen)} onChange={this._handleInputChange}>
+              {Object.entries(daytimes).map(([key, value]) => {
+                return (
+                  <option key={key} value={key}>{value}</option>
+                );
+              })}
+            </select>
+          </div>
 
-                <div style={styles.filterOption}>
-                  <div style={styles.filterOptionTitle}>Time of Day</div>
-                  <select name="daytime" style={styles.filterOptionTxt} onChange={this._handleInputChange}>
-                    {Object.entries(daytimes).map(([key, value]) => {
-                      return (
-                        <option key={key} value={key}>{value}</option>
-                      );
-                    })}
-                  </select>
-                </div>
-
-              </div>
-            </div>
-            <div style={styles.configRow}>
-              <div style={styles.configTitle}>
-                <div style={styles.configTitleTxt}>Sort</div>
-                <div style={styles.configTitleTxt}>Entries</div>
-              </div>
-              <div style={styles.sortOptions}>
-                {Object.entries(sortOptions).map(([key, value]) => {
-                  const selected = (sortBy == key);
-                  return (
-                    <button
-                      style={styles.sortOption(selected)}
-                      key={key}
-                      onClick={() => { this._handleSortChange(key) }}>
-                      {value}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-            <div style={styles.entryNumberText}># of Entries: {entries.length}</div>
+        </div>
+        <div style={{...styles.configRow, marginTop: isSmallScreen ? 18 : 32}}>
+          {!isSmallScreen && sortTitle}
+          <div style={styles.sortOptions(isSmallScreen)}>
+            {isSmallScreen && sortTitle}
+            {Object.entries(sortOptions).map(([key, value]) => {
+              const selected = (sortBy == key);
+              return (
+                <button
+                  style={styles.sortOption(isSmallScreen, selected)}
+                  key={key}
+                  onClick={() => { this._handleSortChange(key) }}>
+                  {isSmallScreen ? value.split(' ')[0] : value}
+                </button>
+              );
+            })}
           </div>
         </div>
-        <div style={styles.entriesContainer(windowWidth)}>
-          {entries.map(this._renderEntry)}
+        {!isSmallScreen && <div style={styles.entryNumberText}># of Entries: {entries.length}</div>}
+      </div>
+    );
+  }
+
+  render() {
+    const { userInfo, entries, logout, isSmallScreen, isMediumScreen } = this.props;
+
+    return (
+      <div style={styles.container(isSmallScreen)}>
+        <Navbar userInfo={userInfo} logout={logout}/>
+        <div style={styles.contentContainer(isSmallScreen)}>
+          <div style={styles.configContainer(isSmallScreen)}>
+            <div style={styles.titleContainer(isSmallScreen)}>
+              <div style={styles.titleTxt(isMediumScreen)}>My Entry Feed</div>
+              <div style={{...styles.subtitleTxt, marginTop: 8}}>Scroll down to see more entries.</div>
+              {!isSmallScreen && <div style={styles.subtitleTxt}>Add filters below.</div>}
+            </div>
+            {this._renderConfiguration()}
+          </div>
+          <div style={styles.entriesContainer(isSmallScreen, isMediumScreen)}>
+            {entries.map(this._renderEntry)}
+          </div>
         </div>
       </div>
     )

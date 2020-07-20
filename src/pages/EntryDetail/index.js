@@ -49,8 +49,6 @@ class EntryDetail extends React.Component {
       });
     });
 
-    console.log(visualizerBodyParts);
-
     let currentComparisons;
     if (currentBodyPartID) {
       currentComparisons = {};
@@ -75,9 +73,8 @@ class EntryDetail extends React.Component {
 
     }
 
-    console.log(currentSubentry);
-
     const date = moment(entryInfo.date).utc();
+
     return (
       <div style={styles.container}>
         <Navbar userInfo={userInfo} logout={logout}/>
