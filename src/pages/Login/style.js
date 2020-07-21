@@ -83,13 +83,11 @@ export default {
     backgroundColor: 'transparent',
   },
   loginBtn: {
-    ...AppStyles.largeBtn,
-    backgroundColor: AppColors.blue,
-    color: AppColors.white,
+    addStyles: AppStyles.largeBtn,
+    ...AppStyles.activeBtn
   },
   registerBtn: {
-    ...AppStyles.largeBtn,
-    backgroundColor: AppColors.lilac,
-    color: AppColors.blue,
+    addStyles: AppStyles.largeBtn,
+    ...AppStyles.inactiveBtn
   }
 }

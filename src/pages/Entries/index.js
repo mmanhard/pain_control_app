@@ -8,6 +8,7 @@ import actions from 'Actions';
 import Navbar from 'Components/Navbar';
 import BodyVisualizer from 'Components/BodyVisualizer';
 import AppStyles from 'Common/AppStyles';
+import Button from 'Components/Button';
 import styles from './style';
 
 import withWindowDimensions from 'Common/AppDimens';
@@ -190,7 +191,7 @@ class Entries extends React.Component {
         </div>
         {isMediumScreen && visualizer}
         {isMediumScreen && stats}
-        <button style={styles.continueBtn} onClick={() => { this._goToEntry(entry.id) }}>View Details</button>
+        <Button btnStyles={styles.continueBtn} onClick={() => { this._goToEntry(entry.id) }}>View Details</Button>
       </div>
       {!isMediumScreen && <div style={styles.entryContent}>
         {visualizer}
@@ -267,12 +268,12 @@ class Entries extends React.Component {
             {Object.entries(sortOptions).map(([key, value]) => {
               const selected = (sortBy == key);
               return (
-                <button
-                  style={styles.sortOption(isSmallScreen, selected)}
+                <Button
+                  btnStyles={styles.sortOption(isSmallScreen, selected)}
                   key={key}
                   onClick={() => { this._handleSortChange(key) }}>
                   {isSmallScreen ? value.split(' ')[0] : value}
-                </button>
+                </Button>
               );
             })}
           </div>

@@ -9,6 +9,7 @@ import actions from 'Actions';
 import AppColors from 'Common/AppColors';
 import RegistrationModal from 'Components/RegistrationModal';
 import withWindowDimensions from 'Common/AppDimens';
+import Button from 'Components/Button';
 
 import EmailIcon from 'Icons/icons8-email.png';
 import KeyIcon from 'Icons/icons8-key.png';
@@ -105,7 +106,7 @@ class Login extends React.Component {
           <div style={styles.formContainer(isMobile)}>
             <div style={styles.noLoginContainer}>
               <p style={{marginRight: 10 }}>Don't have an account?</p>
-              <button style={styles.registerBtn} onClick={this._open}>Register</button>
+              <Button btnStyles={styles.registerBtn} onClick={this._open}>Register</Button>
             </div>
             <div style={styles.loginContainer}>
               <div style={styles.txtInputContainer}>
@@ -130,7 +131,7 @@ class Login extends React.Component {
                   onChange={this._handleInputChange}
                 />
               </div>
-              <button style={styles.loginBtn} onClick={this._handleLogin}>Log In</button>
+              <Button btnStyles={styles.loginBtn} onClick={this._handleLogin}>Log In</Button>
               <p style={{textDecoration: 'underline'}}>Forgot password?</p>
             </div>
           </div>

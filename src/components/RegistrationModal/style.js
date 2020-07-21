@@ -48,8 +48,7 @@ export default {
     backgroundColor: 'transparent',
   },
   registerBtn: {
-    ...AppStyles.largeBtn,
-    backgroundColor: AppColors.blue,
-    color: AppColors.white,
+    addStyles: AppStyles.largeBtn,
+    ...AppStyles.activeBtn
   },
 }

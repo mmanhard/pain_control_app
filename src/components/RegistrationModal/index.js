@@ -3,6 +3,7 @@ import React from "react";
 import styles from './style';
 import AppColors from 'Common/AppColors';
 import Modal from 'Components/Modal';
+import Button from 'Components/Button';
 
 import NameIcon from 'Icons/icons8-name.png';
 import EmailIcon from 'Icons/icons8-email.png';
@@ -75,7 +76,7 @@ class RegistrationModal extends React.Component {
               onChange={handleInputChange}
             />
           </div>
-          <button style={styles.registerBtn} onClick={handleRegister}>Register</button>
+          <Button btnStyles={styles.registerBtn} onClick={handleRegister}>Register</Button>
         </div>
       </Modal>
     )

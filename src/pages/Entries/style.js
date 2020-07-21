@@ -122,21 +122,23 @@ export default {
     }
   },
   sortOption: (isMobile, selected) => {
+    const btnStyles = selected ? AppStyles.activeBtn : AppStyles.inactiveBtn;
     return {
-      textAlign: 'center',
-      ...AppFonts.Raleway.bold,
-      fontSize: AppFonts.size.medium,
-      border: 'none',
-      backgroundColor: selected ? AppColors.blue : AppColors.lilac,
-      color: selected ? AppColors.lilac : AppColors.blue,
-      borderRadius: 18,
-      height: isMobile ? 24 : 36,
-      width: isMobile ? 70 : 100,
-      borderRadius: isMobile ? 12 : 18,
-      marginLeft: 4,
-      marginRight: 4,
-      marginBottom: 16,
-      boxShadow : AppStyles.typBoxShadow
+      addStyles: {
+        textAlign: 'center',
+        ...AppFonts.Raleway.bold,
+        fontSize: AppFonts.size.medium,
+        border: 'none',
+        borderRadius: 18,
+        height: isMobile ? 24 : 36,
+        width: isMobile ? 70 : 100,
+        borderRadius: isMobile ? 12 : 18,
+        marginLeft: 4,
+        marginRight: 4,
+        marginBottom: 16,
+        boxShadow : AppStyles.typBoxShadow
+      },
+      ...btnStyles
     };
   },
   entryNumberText: {
@@ -201,10 +203,11 @@ export default {
     };
   },
   continueBtn: {
-    ...AppStyles.largeBtn,
-    backgroundColor: AppColors.blue,
-    color: AppColors.white,
-    marginBottom: 20,
+    addStyles: {
+      ...AppStyles.largeBtn,
+      marginBottom: 20,
+    },
+    ...AppStyles.activeBtn
   },
   entryContent: {
     ...AppStyles.center,

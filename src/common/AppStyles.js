@@ -1,6 +1,7 @@
 import AppFonts from 'Common/AppFonts';
 import AppColors from 'Common/AppColors';
 import AppStyles from 'Common/AppStyles';
+import color from 'color';
 
 export default {
   fill: {
@@ -87,6 +88,34 @@ export default {
     border: 'none',
     background: 'transparent',
     textDecoration: 'underline',
+  },
+  activeBtn: {
+    normalStyle: {
+      backgroundColor: AppColors.blue,
+      color: AppColors.white,
+    },
+    hoverStyle: {
+      backgroundColor: color(AppColors.blue).darken(0.01).hex(),
+      transform: 'scale(0.99) rotate(0.2deg) translateY(1px)',
+    },
+    activeStyle: {
+      backgroundColor: color(AppColors.blue).darken(0.05).hex(),
+      transform: 'scale(0.97) rotate(0.5deg) translateY(3px)',
+    }
+  },
+  inactiveBtn: {
+    normalStyle: {
+      backgroundColor: AppColors.lilac,
+      color: AppColors.blue,
+    },
+    hoverStyle: {
+      backgroundColor: color(AppColors.lilac).darken(0.01).hex(),
+      transform: 'scale(0.99) rotate(0.2deg) translateY(1px)',
+    },
+    activeStyle: {
+      backgroundColor: color(AppColors.lilac).darken(0.03).hex(),
+      transform: 'scale(0.97) rotate(0.5deg) translateY(3px)',
+    }
   },
   typBoxShadow: `0px 4px 4px rgba(0,0,0,0.25)`,
   typBorder: {
