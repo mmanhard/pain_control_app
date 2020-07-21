@@ -57,29 +57,31 @@ export default {
     ...AppStyles.center,
     alignItems: 'start'
   },
-  mainButtonInactive: {
-    ...AppFonts.Raleway.bold,
-    fontSize: AppFonts.size.medLarge,
-    border: 'none',
-    boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
-    height: 60,
-    width: 180,
-    borderRadius: 30,
-    color: AppColors.blue,
-    backgroundColor: AppColors.lilac,
-    margin: 10,
-  },
   mainButton: {
-    ...AppFonts.Raleway.bold,
-    fontSize: AppFonts.size.medLarge,
-    border: 'none',
-    boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
-    height: 60,
-    width: 180,
-    borderRadius: 30,
-    color: AppColors.white,
-    backgroundColor: AppColors.blue,
-    margin: 10,
+    addStyles: {
+      ...AppFonts.Raleway.bold,
+      fontSize: AppFonts.size.medLarge,
+      border: 'none',
+      boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
+      height: 60,
+      width: 180,
+      borderRadius: 30,
+      margin: 10,
+    },
+    ...AppStyles.activeBtn
+  },
+  mainButtonInactive: {
+    addStyles: {
+      ...AppFonts.Raleway.bold,
+      fontSize: AppFonts.size.medLarge,
+      border: 'none',
+      boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
+      height: 60,
+      width: 180,
+      borderRadius: 30,
+      margin: 10,
+    },
+    ...AppStyles.inactiveBtn
   },
   mainContentContainer: {
     ...AppStyles.typContentContainer,
@@ -161,16 +163,17 @@ export default {
     textDecoration: 'underline'
   },
   submitDateBtn: {
-    backgroundColor: AppColors.blue,
-    height: 32,
-    width: 80,
-    borderRadius: 16,
-    textAlign: 'center',
-    border: 'none',
-    color: AppColors.white,
-    ...AppFonts.Raleway.bold,
-    marginBottom: 12,
-    boxShadow: AppStyles.typBoxShadow
+    addStyles: {
+      height: 32,
+      width: 80,
+      borderRadius: 16,
+      textAlign: 'center',
+      border: 'none',
+      ...AppFonts.Raleway.bold,
+      marginBottom: 12,
+      boxShadow: AppStyles.typBoxShadow
+    },
+    ...AppStyles.activeBtn
   },
   miniVisualizer: {
     height: 110,

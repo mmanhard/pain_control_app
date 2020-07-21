@@ -12,6 +12,7 @@ import HistogramChart from 'Components/HistogramChart';
 import BodyVisualizer from 'Components/BodyVisualizer';
 import Utils from 'Utils';
 import AppStyles from 'Common/AppStyles';
+import Button from 'Components/Button';
 
 const chartTypes = {
   daytime: 'daytime',
@@ -180,11 +181,11 @@ class PainPointDetail extends React.Component {
             value={customEndDate}
             onChange={this._handleCustomDateChange}
           />
-          <button
-            style={styles.submitDateBtn}
+          <Button
+            btnStyles={styles.submitDateBtn}
             onClick={this._handleSubmitCustomDates}>
             Submit
-          </button>
+          </Button>
         </div>}
       </div>
     );
@@ -219,21 +220,21 @@ class PainPointDetail extends React.Component {
               <div>Toggle</div>
               <div>Chart Type</div>
             </div>
-            <button
-              style={chartType === chartTypes.daytime ? styles.mainButton : styles.mainButtonInactive}
+            <Button
+              btnStyles={chartType === chartTypes.daytime ? styles.mainButton : styles.mainButtonInactive}
               onClick={() => {this.setState({ statType: 'mean', chartType: chartTypes.daytime })}}>
               Time of Day
-            </button>
-            <button
-              style={chartType === chartTypes.calendar ? styles.mainButton : styles.mainButtonInactive}
+            </Button>
+            <Button
+              btnStyles={chartType === chartTypes.calendar ? styles.mainButton : styles.mainButtonInactive}
               onClick={() => {this.setState({ statType: 'mean', chartType: chartTypes.calendar })}}>
               Pain Over Time
-            </button>
-            <button
-              style={chartType === chartTypes.histogram ? styles.mainButton : styles.mainButtonInactive}
+            </Button>
+            <Button
+              btnStyles={chartType === chartTypes.histogram ? styles.mainButton : styles.mainButtonInactive}
               onClick={() => {this.setState({ statType: 'mean', chartType: chartTypes.histogram })}}>
               Histogram
-            </button>
+            </Button>
           </div>
         </div>
         <div style={styles.mainContentContainer}>
