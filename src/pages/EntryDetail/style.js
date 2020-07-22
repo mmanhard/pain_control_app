@@ -212,28 +212,34 @@ export default {
       ...AppStyles.rowSpace,
       alignItems: 'center'
     },
-    mainButtonInactive: {
-      ...AppFonts.Raleway.bold,
-      fontSize: AppFonts.size.medLarge,
-      border: 'none',
-      boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
-      height: 60,
-      width: 180,
-      borderRadius: 30,
-      color: AppColors.blue,
-      backgroundColor: AppColors.lilac,
-      margin: 10,
+    mainButton: (isSmallScreen) => {
+      return {
+        addStyles: {
+          ...AppFonts.Raleway.bold,
+          fontSize: isSmallScreen ? AppFonts.size.medSmall : AppFonts.size.medium,
+          border: 'none',
+          boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
+          height: isSmallScreen ? 50 : 60,
+          width: isSmallScreen ? 120 : 180,
+          borderRadius: isSmallScreen ? 25 : 30,
+          margin: 8,
+        },
+        ...AppStyles.activeBtn
+      }
     },
-    mainButton: {
-      ...AppFonts.Raleway.bold,
-      fontSize: AppFonts.size.medLarge,
-      border: 'none',
-      boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
-      height: 60,
-      width: 180,
-      borderRadius: 30,
-      color: AppColors.white,
-      backgroundColor: AppColors.blue,
-      margin: 10,
-    }
+    mainButtonInactive: (isSmallScreen) => {
+      return {
+        addStyles: {
+          ...AppFonts.Raleway.bold,
+          fontSize: isSmallScreen ? AppFonts.size.medSmall : AppFonts.size.medium,
+          border: 'none',
+          boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
+          height: isSmallScreen ? 50 : 60,
+          width: isSmallScreen ? 120 : 180,
+          borderRadius: isSmallScreen ? 25 : 30,
+          margin: 4,
+        },
+        ...AppStyles.inactiveBtn
+      }
+    },
 }

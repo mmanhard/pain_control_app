@@ -10,6 +10,8 @@ import styles from './style';
 import AppStyles from 'Common/AppStyles';
 import AppColors from 'Common/AppColors';
 import BodyVisualizer from 'Components/BodyVisualizer';
+import Button from 'Components/Button';
+import withWindowDimensions from 'Common/AppDimens';
 
 class EntryDetail extends React.Component {
   constructor(props) {
@@ -26,7 +28,7 @@ class EntryDetail extends React.Component {
   }
 
   render() {
-    const { userInfo, bodyParts, entryInfo, logout } = this.props;
+    const { userInfo, bodyParts, entryInfo, isSmallScreen, logout } = this.props;
     const { currentBodyPartID } = this.state;
 
     let subentry, currentSubentry, currentBodyPart;
@@ -165,17 +167,17 @@ class EntryDetail extends React.Component {
                       {currentSubentry.notes ? currentSubentry.notes : 'No notes with this pain point.'}
                     </div>
                     <div styles={styles.buttonContainer}>
-                      <button
+                      <Button
                         onClick={() => {
                           this.props.history.push('/');
                           this.props.history.push(`pain_points/${currentBodyPartID}`)}
                         }
-                        style={styles.mainButton}>
+                        btnStyles={styles.mainButton(isSmallScreen)}>
                         View Pain Point
-                      </button>
-                      <button style={styles.mainButtonInactive}>
+                      </Button>
+                      <Button btnStyles={styles.mainButtonInactive(isSmallScreen)}>
                         Edit Entry
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -205,9 +207,9 @@ class EntryDetail extends React.Component {
                       {entryInfo.notes}
                     </div>
                     <div styles={styles.buttonContainer}>
-                      <button style={styles.mainButtonInactive}>
+                      <Button btnStyles={styles.mainButtonInactive(isSmallScreen)}>
                         Edit Entry
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -234,4 +236,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(EntryDetail));
+)(withRouter(withWindowDimensions(EntryDetail)));
