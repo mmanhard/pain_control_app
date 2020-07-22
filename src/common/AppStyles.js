@@ -48,6 +48,11 @@ export default {
     flexDirection: 'row',
     justifyContent: 'space-evenly'
   },
+  rowBetween: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
   typContentContainer: {
     backgroundColor: AppColors.white,
     borderTopLeftRadius: 40,

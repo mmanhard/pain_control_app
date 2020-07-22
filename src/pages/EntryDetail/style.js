@@ -5,47 +5,62 @@ import AppFonts from 'Common/AppFonts';
 
 
 export default {
-    container: {
-      ...AppStyles.fill,
-      paddingTop: 80
+    container: (isSmallScreen) => {
+      return {
+        ...AppStyles.fill,
+        bottom: 0,
+        padding: isSmallScreen ? '80px 0px 0px 0px' : '110px 30px 30px 30px',
+      }
     },
-    contentContainer: {
-      ...AppStyles.rowCenter,
-      height: '100%'
+    contentContainer: (isSmallScreen, isMediumScreen) => {
+      const flexStyle = isSmallScreen ? AppStyles.columnStart : AppStyles.rowCenter;
+      return {
+        width: '100%',
+        ...flexStyle,
+        alignItems: 'flex-start',
+      }
     },
-    leftContentContainer: {
-      flex: 1,
-      margin: 30,
-      backgroundColor: 'white',
-      padding: 30,
-      minWidth: 500,
-      ...AppStyles.typContentContainer,
-      ...AppStyles.center,
+    leftContentContainer: (isSmallScreen) => {
+      const contentContainer = isSmallScreen ? AppStyles.mobileContentContaner : AppStyles.typContentContainer;
+      return {
+        flex: 1,
+        width: '100%',
+        ...contentContainer,
+        ...AppStyles.columnStart,
+      }
     },
-    titleContainer: {
-      ...AppStyles.center,
-      alignItems: 'flex-start',
-      backgroundColor: AppColors.blue,
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      height: 110,
-      minWidth: 200,
-      paddingLeft: 10,
-      paddingRight: 10,
-      ...AppFonts.Raleway.regular,
-      fontSize: AppFonts.size.xxLarge,
-      color: AppColors.white,
-      borderRadius: 20,
-      boxShadow: AppStyles.typBoxShadow
+    titleRow: (isSmallScreen, isMediumScreen) => {
+      const flexStyle = isSmallScreen ? AppStyles.center : AppStyles.rowBetween;
+      const controlWidth = isSmallScreen ? {flex: 1} : {width: '100%'}
+      return {
+        ...flexStyle,
+        height: isMediumScreen ? (isSmallScreen ? 180 : 80) : 110,
+        ...controlWidth,
+        marginTop: isSmallScreen ? 0 : 20
+      };
+    },
+    titleContainer: (isSmallScreen) => {
+      return {
+        ...AppStyles.center,
+        alignItems: 'flex-start',
+        backgroundColor: AppColors.blue,
+        height: isSmallScreen ? 80 : 110,
+        minWidth: isSmallScreen ? 160 : 200,
+        marginLeft: isSmallScreen ? 12 : 20,
+        paddingLeft: 10,
+        paddingRight: 10,
+        ...AppFonts.Raleway.regular,
+        fontSize: isSmallScreen ? AppFonts.size.large : AppFonts.size.xxLarge,
+        color: AppColors.white,
+        borderRadius: 20,
+        boxShadow: AppStyles.typBoxShadow
+      }
     },
     helpIcon: {
-      position: 'absolute',
-      top: 0,
-      right: 0,
       height: 24,
       width: 24,
       borderRadius: 14,
+      marginRight: 20,
       border: `solid 2px ${AppColors.blue}`,
       color: AppColors.blue,
       textAlign: 'center'
@@ -86,23 +101,25 @@ export default {
     filterDate: {
       textDecoration: 'underline'
     },
-    visualizer: {
-      backgroundColor: AppColors.white,
-      border: `solid 8px ${AppColors.blue}`,
-      boxShadow: AppStyles.typBoxShadow,
-      borderRadius: 40,
-      position: 'absolute',
-      top: '10%',
-      right: 0,
-      width: '50%',
-      height: '80%'
+    visualizer: (isSmallScreen, isMediumScreen) => {
+      return {
+        backgroundColor: AppColors.white,
+        border: `solid 8px ${AppColors.blue}`,
+        boxShadow: AppStyles.typBoxShadow,
+        borderRadius: 40,
+        height: isMediumScreen ? (isSmallScreen ? 250 : 350) : 400,
+        width: isMediumScreen ? (isSmallScreen ? 150 : 225) : 300,
+        marginBottom: isSmallScreen ? 0 : 30,
+      }
     },
     painLegend: {
       ...AppStyles.rowStart,
       ...AppStyles.typContentContainer,
       alignItems: 'center',
-      width: '100%',
+      maxWidth: 600,
+      width: '90%',
       height: 100,
+      marginBottom: 30,
       ...AppFonts.Raleway.bold,
       fontSize: AppFonts.size.medLarge,
       color: AppColors.blue,
@@ -117,38 +134,33 @@ export default {
       ...AppStyles.rowCenter,
       flex: 1,
     },
-    rightContentContainer: {
-      flex: 1,
-      margin: 30,
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
+    rightContentContainer: (isSmallScreen, isMediumScreen) => {
+      const contentContainer = isSmallScreen ? AppStyles.mobileContentContaner : AppStyles.typContentContainer;
+      return {
+        width: '100%',
+        ...contentContainer,
+        flex: 1,
+        marginLeft: 30,
+        marginRight: isSmallScreen ? 30 : 0,
+        marginBottom: 30,
+        minWidth: isMediumScreen ? 0 : 580,
+        ...AppStyles.columnStart
+      }
     },
-    basicStatsContainer: {
-      ...AppStyles.rowSpace,
-      alignItems: 'center',
-      backgroundColor: AppColors.lilac,
-      position: 'absolute',
-      top: 0,
-      right: 0,
-      height: 90,
-      width: 225,
-      padding: 10,
-      borderRadius: 20,
-    },
-    statsContainer: {
-      ...AppStyles.center,
-      ...AppStyles.typContentContainer,
-      flex: 1,
-      width: '100%',
-      marginTop: 30
+    statsContainer: (isSmallScreen) => {
+      return {
+        ...AppStyles.center,
+        marginTop: 30,
+        flex: 1,
+        width: '95%',
+      }
     },
     statsRow: {
-      ...AppStyles.rowStart,
-      paddingLeft: 30,
+      ...AppStyles.rowSpace,
       alignItems: 'center',
       flex: 1,
-      width: '95%',
+      width: '100%',
+      maxWidth: 500,
       marginTop: 10,
     },
     subtitleContainer: {
@@ -159,14 +171,18 @@ export default {
       borderRadius: 20,
       color: AppColors.blue
     },
-    painLevelTxt: {
-      ...AppStyles.center,
-      backgroundColor: AppColors.blue,
-      height: 110,
-      width: 110,
-      borderRadius: 55,
-      color: AppColors.white,
-      fontSize: AppFonts.size.xxLarge
+    painLevelTxt: (isSmallScreen) => {
+      return {
+        ...AppStyles.center,
+        backgroundColor: AppColors.blue,
+        height: 90,
+        width: 90,
+        borderRadius: 45,
+        marginRight: isSmallScreen ? 0 : 30,
+        marginTop: isSmallScreen ? 20 : 0,
+        color: AppColors.white,
+        fontSize: isSmallScreen ? AppFonts.size.large : AppFonts.size.xxLarge
+      }
     },
     statContainer: {
       ...AppStyles.center,
@@ -187,7 +203,8 @@ export default {
       fontSize: AppFonts.size.medSmall,
     },
     notesContainer: {
-      width: 250,
+      flex: 1,
+      minWidth: 200,
       height: 100,
       backgroundColor: AppColors.lilac,
       color: AppColors.blue,
@@ -195,51 +212,26 @@ export default {
       borderRadius: 20,
       padding: 10,
       border: `1px solid ${AppColors.blue}`,
-      marginTop: 20,
-      marginBottom: 20,
+      margin: 20,
     },
     buttonContainer: {
       ...AppStyles.center,
       flex: 1,
       height: '100%',
-      backgroundColor: 'red'
     },
-    mainButtonContainer: {
-      ...AppStyles.typContentContainer,
-      height: 120,
-      width: '100%',
-      marginTop: 20,
-      ...AppStyles.rowSpace,
-      alignItems: 'center'
-    },
-    mainButton: (isSmallScreen) => {
+    mainButton: (isSmallScreen, isMediumScreen) => {
       return {
         addStyles: {
           ...AppFonts.Raleway.bold,
           fontSize: isSmallScreen ? AppFonts.size.medSmall : AppFonts.size.medium,
           border: 'none',
           boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
-          height: isSmallScreen ? 50 : 60,
-          width: isSmallScreen ? 120 : 180,
-          borderRadius: isSmallScreen ? 25 : 30,
-          margin: 8,
+          height: isMediumScreen ? 40 : 60,
+          width: isMediumScreen ? 100 : 180,
+          borderRadius: isMediumScreen ? 20 : 30,
+          margin: 16,
         },
         ...AppStyles.activeBtn
-      }
-    },
-    mainButtonInactive: (isSmallScreen) => {
-      return {
-        addStyles: {
-          ...AppFonts.Raleway.bold,
-          fontSize: isSmallScreen ? AppFonts.size.medSmall : AppFonts.size.medium,
-          border: 'none',
-          boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
-          height: isSmallScreen ? 50 : 60,
-          width: isSmallScreen ? 120 : 180,
-          borderRadius: isSmallScreen ? 25 : 30,
-          margin: 4,
-        },
-        ...AppStyles.inactiveBtn
       }
     },
 }

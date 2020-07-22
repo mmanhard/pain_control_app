@@ -23,23 +23,51 @@ class EntryDetail extends React.Component {
   }
 
   componentDidMount() {
-    const { userInfo, entryID } = this.props;
+    const { userInfo, entryID, isSmallScreen } = this.props;
     this.props.getEntry(userInfo, entryID, {});
   }
 
-  render() {
-    const { userInfo, bodyParts, entryInfo, isSmallScreen, logout } = this.props;
-    const { currentBodyPartID } = this.state;
+  _renderPainLegend = () => {
+    return (
+      <div style={styles.painLegend}>
+        <div>
+          <p style={{marginLeft: 40, marginBottom: 0  }}>Pain</p>
+          <p style={{marginLeft: 40, marginTop: 0 }}>Legend</p>
+        </div>
+        <div style={{flex: 1}}>
+          <div style={styles.painLegendNumbers}>
+            <div style={{flex: 0.5}}></div>
+            {Object.entries(AppColors.painLevelColors).map(([type, color]) => {
+              if (type === 'none') {
+                return (
+                  <div key={type} style={{flex: 1.5, ...AppStyles.rowEnd, paddingRight: 18}}>
+                    <div style={{ ...styles.painLegendColor, backgroundColor: color}}></div>
+                  </div>
+                );
+              }
+              return (
+                <div key={type} style={{flex: 1, ...AppStyles.rowCenter}}>
+                  <div style={{ ...styles.painLegendColor, backgroundColor: color}}></div>
+                </div>
+              );
+            })}
+          </div>
+          <div style={styles.painLegendNumbers}>
+            <span style={{flex: 1, textAlign: 'center'}}>0</span>
+            <span style={{flex: 1, textAlign: 'center'}}>2</span>
+            <span style={{flex: 1, textAlign: 'center'}}>4</span>
+            <span style={{flex: 1, textAlign: 'center'}}>6</span>
+            <span style={{flex: 1, textAlign: 'center'}}>8</span>
+            <span style={{flex: 1, textAlign: 'center'}}>10</span>
+            <span style={{flex: 1, textAlign: 'end', paddingRight: 16}}>N/A</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-    let subentry, currentSubentry, currentBodyPart;
-    for (subentry of entryInfo.pain_subentries) {
-      const part = subentry.body_part;
-      if (currentBodyPartID && part.id == currentBodyPartID) {
-        currentBodyPart = part;
-        currentSubentry = subentry;
-        break;
-      }
-    }
+  _renderLeftContainer = (currentBodyPart, currentSubentry) => {
+    const { entryInfo, isSmallScreen, isMediumScreen } = this.props;
 
     const visualizerBodyParts = entryInfo.pain_subentries.map(subentry => {
       const part = subentry.body_part;
@@ -50,6 +78,37 @@ class EntryDetail extends React.Component {
         stats: subentry.pain_level
       });
     });
+
+    const date = moment(entryInfo.date).utc();
+
+    return (
+      <div style={styles.leftContentContainer(isSmallScreen)}>
+        <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', marginTop: 20, marginBottom: 20}}>
+          <div style={styles.titleContainer(isSmallScreen)}>
+            <div>{date.format('MMMM Do, YYYY')}</div>
+            <div>{date.format('h:mm a')}</div>
+          </div>
+          <button style={styles.helpIcon}>?</button>
+        </div>
+        <div style={{width: '90%', ...AppStyles.rowSpace, alignItems: 'center'}}>
+          <BodyVisualizer
+            contentContainerStyle={styles.visualizer(isSmallScreen, isMediumScreen)}
+            bodyParts={visualizerBodyParts}
+            clickBackground={() => { this.setState({currentBodyPartID: undefined })}}
+            clickBodyPartFound={(part) => { this.setState({currentBodyPartID: part.id})}}
+            clickBodyPartNotFound={this._displayAddBodyPart} />
+          {!isSmallScreen && isMediumScreen && this._renderRightContainer(currentBodyPart, currentSubentry)}
+          {isSmallScreen && this._renderTitle(currentBodyPart, currentSubentry)}
+        </div>
+        {isSmallScreen && this._renderRightContainer(currentBodyPart, currentSubentry)}
+        {!isSmallScreen && this._renderPainLegend()}
+      </div>
+    );
+  }
+
+  _renderBodyPartStats = (currentSubentry) => {
+    const { entryInfo, isSmallScreen, isMediumScreen } = this.props;
+    const { currentBodyPartID } = this.state;
 
     let currentComparisons;
     if (currentBodyPartID) {
@@ -75,147 +134,130 @@ class EntryDetail extends React.Component {
 
     }
 
-    const date = moment(entryInfo.date).utc();
+    return (
+      <div style={styles.statsContainer(isSmallScreen)}>
+        <div style={styles.statsRow}>
+          <div style={styles.subtitleContainer}>Changes</div>
+
+          <div style={styles.statContainer}>
+            <div style={styles.statTxt}>{currentComparisons.lastEntry}</div>
+            <div style={styles.statTitle}>Last Entry</div>
+          </div>
+
+          <div style={styles.statContainer}>
+            <div style={styles.statTxt}>{currentComparisons.yesterday}</div>
+            <div style={styles.statTitle}>Yesterday</div>
+          </div>
+
+          <div style={styles.statContainer}>
+            <div style={styles.statTxt}>{currentComparisons.lastWeek}</div>
+            <div style={styles.statTitle}>Last Week</div>
+          </div>
+        </div>
+
+        <div style={styles.statsRow}>
+          <div style={styles.notesContainer}>
+            {currentSubentry.notes ? currentSubentry.notes : 'No notes with this pain point.'}
+          </div>
+          <Button
+            onClick={() => {
+              this.props.history.push('/');
+              this.props.history.push(`pain_points/${currentBodyPartID}`)}
+            }
+            btnStyles={styles.mainButton(isSmallScreen, isMediumScreen)}>
+            View Pain Point
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  _renderGeneralStats = () => {
+    const { entryInfo, isSmallScreen, isMediumScreen } = this.props;
 
     return (
-      <div style={styles.container}>
+      <div style={styles.statsContainer(isSmallScreen)}>
+        <div style={styles.statsRow}>
+          <div style={styles.subtitleContainer}>Stats</div>
+
+          <div style={styles.statContainer}>
+            <div style={styles.statTxt}>{Number(entryInfo.stats?.high).toFixed(1)}</div>
+            <div style={{...styles.statTitle, marginBottom: 0}}>Max</div>
+            <div style={{...styles.statTitle, marginTop: 0}}>Pain Level</div>
+          </div>
+
+          <div style={styles.statContainer}>
+            <div style={styles.statTxt}>{Number(entryInfo.stats?.low).toFixed(1)}</div>
+            <div style={{...styles.statTitle, marginBottom: 0}}>Min</div>
+            <div style={{...styles.statTitle, marginTop: 0}}>Pain Level</div>
+          </div>
+
+          <div style={styles.statContainer}>
+            <div style={styles.statTxt}>{Number(entryInfo.stats?.avg).toFixed(1)}</div>
+            <div style={{...styles.statTitle, marginBottom: 0}}>Mean</div>
+            <div style={{...styles.statTitle, marginTop: 0}}>Pain Level</div>
+          </div>
+
+          {!isMediumScreen && <div style={styles.statContainer}>
+            <div style={styles.statTxt}>{entryInfo.stats?.num_body_parts}</div>
+            <div style={{...styles.statTitle, marginBottom: 0}}># of Pain</div>
+            <div style={{...styles.statTitle, marginTop: 0}}>Points</div>
+          </div>}
+        </div>
+
+        <div style={styles.statsRow}>
+          <div style={styles.notesContainer}>
+            {entryInfo.notes}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  _renderTitle = (currentBodyPart, currentSubentry) => {
+    const { isSmallScreen, isMediumScreen } = this.props;
+
+    return (
+      <div style={styles.titleRow(isSmallScreen, isMediumScreen)}>
+        <div style={styles.titleContainer(isMediumScreen)}>
+          <div>{currentBodyPart ? `${currentBodyPart.location} ${currentBodyPart.name}` : 'General'}</div>
+        </div>
+        {currentSubentry && <div style={styles.painLevelTxt(isSmallScreen)}>{currentSubentry.pain_level.toFixed(1)}</div>}
+      </div>
+    )
+  }
+
+  _renderRightContainer = (currentBodyPart, currentSubentry) => {
+    const { isSmallScreen, isMediumScreen } = this.props;
+
+    return (
+      <div style={styles.rightContentContainer(isSmallScreen, isMediumScreen)}>
+        {!isSmallScreen && this._renderTitle(currentBodyPart, currentSubentry)}
+        {currentSubentry ? this._renderBodyPartStats(currentSubentry) : this._renderGeneralStats()}
+      </div>
+    );
+  }
+
+  render() {
+    const { userInfo, entryInfo, isSmallScreen, isMediumScreen, logout } = this.props;
+    const { currentBodyPartID } = this.state;
+
+    let subentry, currentSubentry, currentBodyPart;
+    for (subentry of entryInfo.pain_subentries) {
+      const part = subentry.body_part;
+      if (currentBodyPartID && part.id == currentBodyPartID) {
+        currentBodyPart = part;
+        currentSubentry = subentry;
+        break;
+      }
+    }
+
+    return (
+      <div style={styles.container(isSmallScreen)}>
         <Navbar userInfo={userInfo} logout={logout}/>
-        <div style={styles.contentContainer}>
-          <div style={styles.leftContentContainer}>
-            <div style={{ flex: 1, width: '100%', position: 'relative'}}>
-              <div style={styles.titleContainer}>
-                <div>{date.format('MMMM Do, YYYY')}</div>
-                <div>{date.format('h:mm a')}</div>
-              </div>
-              <button style={styles.helpIcon}>?</button>
-              <BodyVisualizer
-                contentContainerStyle={styles.visualizer}
-                bodyParts={visualizerBodyParts}
-                clickBackground={() => { this.setState({currentBodyPartID: undefined })}}
-                clickBodyPartFound={(part) => { this.setState({currentBodyPartID: part.id})}}
-                clickBodyPartNotFound={this._displayAddBodyPart} />
-            </div>
-            <div style={styles.painLegend}>
-              <div>
-                <p style={{marginLeft: 40, marginBottom: 0  }}>Pain</p>
-                <p style={{marginLeft: 40, marginTop: 0 }}>Legend</p>
-              </div>
-              <div style={{flex: 1}}>
-                <div style={styles.painLegendNumbers}>
-                  <div style={{flex: 0.5}}></div>
-                  {Object.entries(AppColors.painLevelColors).map(([type, color]) => {
-                    if (type === 'none') {
-                      return (
-                        <div key={type} style={{flex: 1.5, ...AppStyles.rowEnd, paddingRight: 18}}>
-                          <div style={{ ...styles.painLegendColor, backgroundColor: color}}></div>
-                        </div>
-                      );
-                    }
-                    return (
-                      <div key={type} style={{flex: 1, ...AppStyles.rowCenter}}>
-                        <div style={{ ...styles.painLegendColor, backgroundColor: color}}></div>
-                      </div>
-                    );
-                  })}
-                </div>
-                <div style={styles.painLegendNumbers}>
-                  <span style={{flex: 1, textAlign: 'center'}}>0</span>
-                  <span style={{flex: 1, textAlign: 'center'}}>2</span>
-                  <span style={{flex: 1, textAlign: 'center'}}>4</span>
-                  <span style={{flex: 1, textAlign: 'center'}}>6</span>
-                  <span style={{flex: 1, textAlign: 'center'}}>8</span>
-                  <span style={{flex: 1, textAlign: 'center'}}>10</span>
-                  <span style={{flex: 1, textAlign: 'end', paddingRight: 16}}>N/A</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div style={styles.rightContentContainer}>
-            <div style={{ ...AppStyles.typContentContainer, padding: 30, flex: 1, ...AppStyles.columnStart }}>
-              <div style={{ ...AppStyles.rowEnd, height: 110, width: '100%', position: 'relative'}}>
-                <div style={styles.titleContainer}>
-                  <div>{currentBodyPart ? `${currentBodyPart.location} ${currentBodyPart.name}` : 'General'}</div>
-                </div>
-                {currentSubentry && <div style={styles.painLevelTxt}>{currentSubentry.pain_level.toFixed(1)}</div>}
-              </div>
-              {currentSubentry ? (
-                <div style={styles.statsContainer}>
-                  <div style={styles.statsRow}>
-                    <div style={styles.subtitleContainer}>Stats</div>
-                    <div style={styles.statContainer}>
-                      <div style={styles.statTxt}>{currentSubentry.pain_level.toFixed(1)}</div>
-                      <div style={styles.statTitle}>Pain Level</div>
-                    </div>
-                    <div style={styles.statContainer}>
-                      <div style={styles.statTxt}>{currentComparisons.lastEntry}</div>
-                      <div style={{...styles.statTitle, marginBottom: 0}}>Change From</div>
-                      <div style={{...styles.statTitle, marginTop: 0}}>Last Entry</div>
-                    </div>
-                    <div style={styles.statContainer}>
-                      <div style={styles.statTxt}>{currentComparisons.yesterday}</div>
-                      <div style={{...styles.statTitle, marginBottom: 0}}>Change From</div>
-                      <div style={{...styles.statTitle, marginTop: 0}}>Yesterday</div>
-                    </div>
-                    <div style={styles.statContainer}>
-                      <div style={styles.statTxt}>{currentComparisons.lastWeek}</div>
-                      <div style={{...styles.statTitle, marginBottom: 0}}>Change From</div>
-                      <div style={{...styles.statTitle, marginTop: 0}}>Last Week</div>
-                    </div>
-                  </div>
-                  <div style={styles.statsRow}>
-                    <div style={styles.notesContainer}>
-                      {currentSubentry.notes ? currentSubentry.notes : 'No notes with this pain point.'}
-                    </div>
-                    <div styles={styles.buttonContainer}>
-                      <Button
-                        onClick={() => {
-                          this.props.history.push('/');
-                          this.props.history.push(`pain_points/${currentBodyPartID}`)}
-                        }
-                        btnStyles={styles.mainButton(isSmallScreen)}>
-                        View Pain Point
-                      </Button>
-                      <Button btnStyles={styles.mainButtonInactive(isSmallScreen)}>
-                        Edit Entry
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div style={styles.statsContainer}>
-                  <div style={styles.statsRow}>
-                    <div style={styles.subtitleContainer}>Stats</div>
-                    <div style={styles.statContainer}>
-                      <div style={styles.statTxt}>{Number(entryInfo.stats?.high).toFixed(1)}</div>
-                      <div style={styles.statTitle}>Max Pain Level</div>
-                    </div>
-                    <div style={styles.statContainer}>
-                      <div style={styles.statTxt}>{Number(entryInfo.stats?.low).toFixed(1)}</div>
-                      <div style={styles.statTitle}>Min Pain Level</div>
-                    </div>
-                    <div style={styles.statContainer}>
-                      <div style={styles.statTxt}>{Number(entryInfo.stats?.avg).toFixed(1)}</div>
-                      <div style={styles.statTitle}>Mean Pain Level</div>
-                    </div>
-                    <div style={styles.statContainer}>
-                      <div style={styles.statTxt}>{entryInfo.stats?.num_body_parts}</div>
-                      <div style={styles.statTitle}># of Pain Points</div>
-                    </div>
-                  </div>
-                  <div style={styles.statsRow}>
-                    <div style={styles.notesContainer}>
-                      {entryInfo.notes}
-                    </div>
-                    <div styles={styles.buttonContainer}>
-                      <Button btnStyles={styles.mainButtonInactive(isSmallScreen)}>
-                        Edit Entry
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+        <div style={styles.contentContainer(isSmallScreen, isMediumScreen)}>
+          {this._renderLeftContainer(currentBodyPart, currentSubentry)}
+          {!isMediumScreen && this._renderRightContainer(currentBodyPart, currentSubentry)}
         </div>
 
       </div>
@@ -225,7 +267,6 @@ class EntryDetail extends React.Component {
 
 const mapStateToProps = state => ({
   userInfo: state.users.userInfo,
-  bodyParts: state.bodyParts.bodyParts,
   entryInfo: state.entries.entryInfo
 });
 
