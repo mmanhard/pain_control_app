@@ -29,18 +29,9 @@ const histogramStatTypes = {
 }
 
 class HistogramChart extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-    };
-  }
-
-  componentDidMount() {
-  }
-
+  
   render() {
-    const { histograms, statType } = this.props;
+    const { histograms, statType, width, height, fontSize } = this.props;
 
     const statDisplayName = histogramStatTypes[statType];
 
@@ -66,14 +57,14 @@ class HistogramChart extends React.Component {
 
 
     return (
-      <div style={{...AppStyles.rowCenter}}>
-        <div style={{...AppStyles.center, height: 400}}>
+      <div style={AppStyles.rowCenter}>
+        <div style={{...AppStyles.center, height: height}}>
           <div style={styles.yLabel}># of Daily Occurences</div>
         </div>
         <div style={AppStyles.center}>
-          <BarChart width={730} height={400} data={data} margin={{ top: 8, right: 0, bottom: 8, left: 0 }}>
+          <BarChart width={width} height={height} data={data} margin={{ top: 8, right: 0, bottom: 8, left: 0 }}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey='bucketName' />
+            <XAxis tick={{fontSize}} dataKey='bucketName' />
             <YAxis domain={[0, Math.ceil(1.25 * maxCount)]} type='number' />
             <Tooltip />
             {histograms.map((_, index) => {

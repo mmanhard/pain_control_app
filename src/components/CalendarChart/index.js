@@ -13,23 +13,15 @@ const calendarStatTypes = {
 }
 
 class CalendarChart extends React.Component {
-  constructor(props) {
-    super(props);
-
-  }
-
-  componentDidMount() {
-  }
 
   _formatXAxisTick = (firstEntryMoment, daysAfter) => {
 
     let tickMoment = moment(firstEntryMoment).add(daysAfter, 'days');
-    console.log(tickMoment);
     return tickMoment.format('MM/DD');
   }
 
   render() {
-    const { movingStats, calendarStats, statType } = this.props;
+    const { movingStats, calendarStats, statType, width, height, fontSize } = this.props;
 
     const statDisplayName = calendarStatTypes[statType];
 
@@ -76,13 +68,13 @@ class CalendarChart extends React.Component {
     });
 
     return (
-      <div style={{...AppStyles.rowCenter}}>
-        <div style={{...AppStyles.center, height: 400}}>
+      <div style={AppStyles.rowCenter}>
+        <div style={{...AppStyles.center, height: height}}>
           <div style={styles.yLabel}>{statDisplayName} Pain Level</div>
         </div>
-        <ComposedChart width={730} height={400} data={data} margin={{ top: 8, right: 0, bottom: 8, left: 0 }}>
+        <ComposedChart width={width} height={height} data={data} margin={{ top: 8, right: 0, bottom: 8, left: 0 }}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey='timeDiff' type='number' tickFormatter={v => { return this._formatXAxisTick(firstEntryMoment, v) }} padding={{left: 30, right: 30}}/>
+          <XAxis tick={{fontSize}} dataKey='timeDiff' type='number' tickFormatter={v => { return this._formatXAxisTick(firstEntryMoment, v) }} padding={{left: 30, right: 30}}/>
           <YAxis domain={[0, 10]} ticks={[0, 2, 4, 6, 8, 10]} />
           <Tooltip labelFormatter={v => { return this._formatXAxisTick(firstEntryMoment, v) }}/>
           <Legend height={36}/>

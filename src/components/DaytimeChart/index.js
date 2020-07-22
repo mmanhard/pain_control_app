@@ -33,18 +33,9 @@ const daytimeStatTypes = {
 }
 
 class DaytimeChart extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-    };
-  }
-
-  componentDidMount() {
-  }
 
   render() {
-    const { daytimeDatasets, statType, graphStyle } = this.props;
+    const { daytimeDatasets, statType, graphStyle, width, height, fontSize } = this.props;
 
     const statDisplayName = daytimeStatTypes[statType];
 
@@ -67,18 +58,18 @@ class DaytimeChart extends React.Component {
     });
 
     return (
-      <div style={{...AppStyles.rowCenter}}>
-        <div style={{...AppStyles.center, height: 400}}>
+      <div style={AppStyles.rowCenter}>
+        <div style={{...AppStyles.center, height: height}}>
           <div style={styles.yLabel}>{statDisplayName} Pain Level</div>
         </div>
-        <BarChart width={800} height={400} data={data} style={graphStyle} margin={{ top: 8, right: 0, bottom: 8, left: 0 }}>
+        <BarChart width={width} height={height} data={data} margin={{ top: 8, right: 0, bottom: 8, left: 0 }}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey='daytimeName' />
+          <XAxis tick={{fontSize}} dataKey='daytimeName' />
           <YAxis domain={[0, 10]} ticks={[0, 2, 4, 6, 8, 10]} />
           <Tooltip />
           {daytimeDatasets.map((_, index) => {
             const key = statDisplayName
-            return <Bar key={key} dataKey={key} fill={AppColors.barSeries[index % AppColors.barSeries.length]} />
+            return <Bar key={key} dataKey={key} barSize={5} fill={AppColors.barSeries[index % AppColors.barSeries.length]} />
           })}
         </BarChart>
       </div>
