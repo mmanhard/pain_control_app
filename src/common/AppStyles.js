@@ -122,6 +122,18 @@ export default {
       transform: 'scale(0.97) rotate(0.5deg) translateY(3px)',
     }
   },
+  insetBtn: {
+    normalStyle: {
+      border: 'none',
+      background: 'transparent',
+    },
+    hoverStyle: {
+      boxShadow: 'inset 0px 0px 3px #111'
+    },
+    activeStyle: {
+      boxShadow: 'inset 0px 0px 5px #111'
+    }
+  },
   typBoxShadow: `0px 4px 4px rgba(0,0,0,0.25)`,
   typBorder: {
     borderStyle: 'solid',
