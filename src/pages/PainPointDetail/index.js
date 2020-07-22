@@ -13,6 +13,7 @@ import BodyVisualizer from 'Components/BodyVisualizer';
 import Utils from 'Utils';
 import AppStyles from 'Common/AppStyles';
 import Button from 'Components/Button';
+import withWindowDimensions from 'Common/AppDimens';
 
 const chartTypes = {
   daytime: 'daytime',
@@ -132,7 +133,111 @@ class PainPointDetail extends React.Component {
     }
   }
 
+  _renderTitleContainer = () => {
+    const { bodyPartInfo, isSmallScreen } = this.props;
+
+    const displayName = bodyPartInfo?.location ? `${bodyPartInfo.location} ${bodyPartInfo.name}` : bodyPartInfo.name;
+    const visualizerName = bodyPartInfo?.location ? `${bodyPartInfo.location}_${bodyPartInfo.name}` : bodyPartInfo.name;
+
+    return (
+      <div style={styles.titleContainer(isSmallScreen)}>
+        <div style={styles.titleTxt(isSmallScreen)}>My {displayName}</div>
+        {!isSmallScreen && <BodyVisualizer
+          clickBodyPartFound={() => {}}
+          clickBodyPartNotFound={() => {}}
+          contentContainerStyle={styles.miniVisualizer}
+          bodyParts={[{name: visualizerName, stats: 1}]}/>}
+      </div>
+    );
+  }
+
+  _renderConfigContainer = () => {
+    const { isSmallScreen } = this.props;
+    const { chartType } = this.state;
+
+    const mainBtnStyles = styles.mainButton(isSmallScreen);
+    const inactiveBtnStyles = styles.mainButtonInactive(isSmallScreen);
+
+    return (
+      <div style={styles.configContentContainer(isSmallScreen)}>
+        <div style={styles.toggleTxtContainer(isSmallScreen)}>Toggle Chart Type</div>
+        <Button
+          btnStyles={chartType === chartTypes.daytime ? mainBtnStyles : inactiveBtnStyles}
+          onClick={() => {this.setState({ statType: 'mean', chartType: chartTypes.daytime })}}>
+          Time of Day
+        </Button>
+        <Button
+          btnStyles={chartType === chartTypes.calendar ? mainBtnStyles : inactiveBtnStyles}
+          onClick={() => {this.setState({ statType: 'mean', chartType: chartTypes.calendar })}}>
+          Pain Over Time
+        </Button>
+        <Button
+          btnStyles={chartType === chartTypes.histogram ? mainBtnStyles : inactiveBtnStyles}
+          onClick={() => {this.setState({ statType: 'mean', chartType: chartTypes.histogram })}}>
+          Histogram
+        </Button>
+      </div>
+    );
+  }
+
+  _renderGraphContainer = () => {
+    const { bodyPartInfo, isMobile, isSmallScreen, isMediumScreen, windowWidth } = this.props;
+    const { chartType, statType } = this.state;
+
+    let daytimeStats = bodyPartInfo?.stats.daytime;
+    let calendarStats = bodyPartInfo?.stats.calendar;
+    let movingStats = bodyPartInfo?.stats.moving;
+    let histogram =  bodyPartInfo?.stats.histogram;
+
+    let graphWidth = isSmallScreen ? 0.8 * windowWidth : 0.6 * windowWidth;
+    let graphHeight = styles.graphHeight(isMobile, isSmallScreen);
+    let graphFontSize = isSmallScreen ? 10 : 16;
+
+    return (
+      <div style={styles.mainContentContainer(isSmallScreen, isMediumScreen)}>
+        <div style={styles.graphContainer(isSmallScreen)}>
+          <div style={styles.graphTitle}>
+            {chartType === chartTypes.daytime && 'Pain Throughout the Day'}
+            {chartType === chartTypes.calendar && 'Pain Over Time'}
+            {chartType === chartTypes.histogram && 'Frequency of Pain'}
+          </div>
+          {chartType === chartTypes.daytime &&
+            <DaytimeChart
+              fontSize={graphFontSize}
+              width={graphWidth}
+              height={graphHeight}
+              graphStyle={styles.graph}
+              daytimeDatasets={[daytimeStats]}
+              statType={statType} />}
+
+          {chartType === chartTypes.calendar &&
+            <CalendarChart
+              fontSize={graphFontSize}
+              width={graphWidth}
+              height={graphHeight}
+              graphStyle={styles.graph}
+              movingStats={[...movingStats].reverse()}
+              calendarStats={[...calendarStats].reverse()}
+              statType={statType} />}
+
+          {chartType === chartTypes.histogram &&
+            <HistogramChart
+              fontSize={graphFontSize}
+              width={graphWidth}
+              height={graphHeight}
+              graphStyle={styles.graph}
+              histograms={[histogram]}
+              statType={statType} />}
+        </div>
+
+        {this._renderFilterContainer()}
+
+      </div>
+    );
+  }
+
   _renderFilterContainer = () => {
+    const { isSmallScreen } = this.props;
     const { chartType, customStartDate, customEndDate } = this.state;
 
     let currentStatTypes;
@@ -148,7 +253,7 @@ class PainPointDetail extends React.Component {
         break;
     }
     return (
-      <div style={styles.filterContainer(customStartDate)}>
+      <div style={styles.filterContainer(isSmallScreen, customStartDate)}>
         <div style={styles.filterTxt}>Show:</div>
         <select name="statType" style={styles.filterOptionTxt} onChange={this._handleInputChange}>
           {Object.entries(currentStatTypes).map(([key, value]) => {
@@ -164,19 +269,20 @@ class PainPointDetail extends React.Component {
             );
           })}
         </select>
-        {(typeof customStartDate !== 'undefined') && <div style={AppStyles.center}>
-          <div style={styles.filterTxt}>Start Date</div>
+        {(typeof customStartDate !== 'undefined') && <div style={isSmallScreen ? AppStyles.rowSpace : AppStyles.center}>
+          {!isSmallScreen && <div style={styles.filterTxt}>Start Date</div>}
           <input
             type='text'
-            style={styles.configTimeTxt}
+            style={styles.configTimeTxt(isSmallScreen)}
             name='customStartDate'
             value={customStartDate}
             onChange={this._handleCustomDateChange}
           />
-          <div style={styles.filterTxt}>End Date</div>
+          {!isSmallScreen && <div style={styles.filterTxt}>End Date</div>}
+          {isSmallScreen && <div style={styles.filterTxt}>to</div>}
           <input
             type='text'
-            style={styles.configTimeTxt}
+            style={styles.configTimeTxt(isSmallScreen)}
             name='customEndDate'
             value={customEndDate}
             onChange={this._handleCustomDateChange}
@@ -192,79 +298,24 @@ class PainPointDetail extends React.Component {
   }
 
   render() {
-    const { userInfo, bodyPartInfo, logout } = this.props;
+    const { userInfo, bodyPartInfo, isSmallScreen, logout } = this.props;
     const { chartType, statType } = this.state;
 
-    let daytimeStats = bodyPartInfo.stats.daytime;
-    let calendarStats = bodyPartInfo.stats.calendar;
-    let movingStats = bodyPartInfo.stats.moving;
-    let histogram =  bodyPartInfo.stats.histogram;
-
-    const displayName = bodyPartInfo.location ? `${bodyPartInfo.location} ${bodyPartInfo.name}` : bodyPartInfo.name;
-    const visualizerName = bodyPartInfo.location ? `${bodyPartInfo.location}_${bodyPartInfo.name}` : bodyPartInfo.name;
+    // console.log(bodyPartInfo);
 
     return (
-      <div style={styles.container}>
+      <div style={styles.container(isSmallScreen)}>
+
         <Navbar userInfo={userInfo} logout={logout}/>
-        <div style={styles.configContainer}>
-          <div style={styles.titleContainer}>
-            <div style={styles.titleTxt}>My {displayName}</div>
-            {true && <BodyVisualizer
-              clickBodyPartFound={() => {}}
-              clickBodyPartNotFound={() => {}}
-              contentContainerStyle={styles.miniVisualizer}
-              bodyParts={[{name: visualizerName, stats: 1}]}/>}
-          </div>
-          <div style={styles.configContentContainer}>
-            <div style={styles.toggleTxtContainer}>
-              <div>Toggle</div>
-              <div>Chart Type</div>
-            </div>
-            <Button
-              btnStyles={chartType === chartTypes.daytime ? styles.mainButton : styles.mainButtonInactive}
-              onClick={() => {this.setState({ statType: 'mean', chartType: chartTypes.daytime })}}>
-              Time of Day
-            </Button>
-            <Button
-              btnStyles={chartType === chartTypes.calendar ? styles.mainButton : styles.mainButtonInactive}
-              onClick={() => {this.setState({ statType: 'mean', chartType: chartTypes.calendar })}}>
-              Pain Over Time
-            </Button>
-            <Button
-              btnStyles={chartType === chartTypes.histogram ? styles.mainButton : styles.mainButtonInactive}
-              onClick={() => {this.setState({ statType: 'mean', chartType: chartTypes.histogram })}}>
-              Histogram
-            </Button>
-          </div>
-        </div>
-        <div style={styles.mainContentContainer}>
-          <div style={styles.graphContainer}>
-            <div style={styles.graphTitle}>
-              {chartType === chartTypes.daytime && 'Pain Throughout the Day'}
-              {chartType === chartTypes.calendar && 'Pain Over Time'}
-              {chartType === chartTypes.histogram && 'Frequency of Pain'}
-            </div>
-            {chartType === chartTypes.daytime &&
-              <DaytimeChart
-                graphStyle={styles.graph}
-                daytimeDatasets={[daytimeStats]}
-                statType={statType} />}
 
-            {chartType === chartTypes.calendar &&
-              <CalendarChart
-                graphStyle={styles.graph}
-                movingStats={[...movingStats].reverse()}
-                calendarStats={[...calendarStats].reverse()}
-                statType={statType} />}
+        <div style={styles.contentContainer(isSmallScreen)}>
 
-            {chartType === chartTypes.histogram &&
-              <HistogramChart
-                graphStyle={styles.graph}
-                histograms={[histogram]}
-                statType={statType} />}
+          <div style={styles.configContainer(isSmallScreen)}>
+            {this._renderTitleContainer()}
+            {this._renderConfigContainer()}
           </div>
 
-          {this._renderFilterContainer()}
+          {this._renderGraphContainer()}
 
         </div>
 
@@ -285,4 +336,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(PainPointDetail);
+)(withWindowDimensions(PainPointDetail));
