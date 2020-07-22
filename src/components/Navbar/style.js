@@ -2,7 +2,7 @@ import AppColors from 'Common/AppColors';
 import AppConst from 'Common/AppConst';
 import AppStyles from 'Common/AppStyles';
 import AppFonts from 'Common/AppFonts';
-
+import color from 'color';
 
 export default {
     container: {
@@ -20,6 +20,18 @@ export default {
       justifyContent: 'space-between',
       alignItems: 'center'
     },
+    homeBtn: (isMobile) => {
+      return {
+        addStyles: {
+          ...AppStyles.center,
+          height: 60,
+          width: 48,
+          borderRadius: 10,
+          marginLeft: isMobile ? 18 : 48
+        },
+        ...AppStyles.insetBtn
+      }
+    },
     rightContainer: {
       ...AppStyles.rowEnd,
       alignItems: 'center',
@@ -33,24 +45,18 @@ export default {
     },
     dropdownToggle: (isMobile, dropdownVisible) => {
       return ({
-        ...AppStyles.center,
-        transform: dropdownVisible ? 'rotate(90deg)' : 'rotate(-90deg)',
-        marginRight: isMobile ? 0 : 12,
-        border: 'none',
-        background: 'transparent',
-        width: 28,
-        height: 28
+        addStyles: {
+          ...AppStyles.center,
+          transform: dropdownVisible ? 'rotate(90deg)' : 'rotate(-90deg)',
+          marginLeft: isMobile ? 0 : 4,
+          marginRight: isMobile ? 0 : 12,
+          paddingBottom: 1,
+          width: 28,
+          height: 27,
+          borderRadius: 6,
+        },
+        ...AppStyles.insetBtn
       });
-    },
-    dropdownContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'flex-start'
-    },
-    row: {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'flex-start'
     },
     dropdownMenu: (isMobile) => {
       return {
@@ -70,25 +76,31 @@ export default {
       }
     },
     dropdownItem: {
-      height: 48,
-      ...AppFonts.Raleway.regular,
-      fontSize: AppFonts.size.medium,
-      border: 'none',
-      textAlign: 'start',
-      color: AppFonts.lightGrey,
-      textDecoration: 'none',
-      background: 'transparent',
-      width: '100%',
-      ...AppStyles.rowStart,
-      alignItems: 'center'
+      addStyles: {
+        height: 48,
+        borderRadius: 24,
+        ...AppFonts.Raleway.regular,
+        fontSize: AppFonts.size.medium,
+        textAlign: 'start',
+        color: AppFonts.lightGrey,
+        textDecoration: 'none',
+        paddingLeft: 16,
+        width: '100%',
+        ...AppStyles.rowStart,
+        alignItems: 'center'
+      },
+      ...AppStyles.insetBtn
     },
     addIconBtn: (isMobile) => {
       return {
-        ...AppStyles.center,
-        width: 40,
-        background: 'transparent',
-        border: 'none',
-        marginRight: isMobile ? 12 : 64
+        addStyles: {
+          ...AppStyles.center,
+          height: 42,
+          width: 42,
+          borderRadius: 21,
+          marginRight: isMobile ? 12 : 64
+        },
+        ...AppStyles.insetBtn
       }
     }
 }
