@@ -223,11 +223,6 @@ export default {
       border: `1px solid ${AppColors.blue}`,
       margin: 20,
     },
-    buttonContainer: {
-      ...AppStyles.center,
-      flex: 1,
-      height: '100%',
-    },
     mainButton: (isSmallScreen, isMediumScreen) => {
       return {
         addStyles: {
