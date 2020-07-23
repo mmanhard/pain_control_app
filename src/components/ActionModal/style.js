@@ -23,13 +23,15 @@ export default {
     width: '100%'
   },
   okBtn: {
-    ...AppStyles.largeBtn,
-    backgroundColor: AppColors.blue,
-    color: AppColors.white,
+    addStyles: {
+      ...AppStyles.largeBtn,
+    },
+    ...AppStyles.activeBtn
   },
   cancelBtn: {
-    ...AppStyles.largeBtn,
-    backgroundColor: AppColors.lilac,
-    color: AppColors.blue,
+    addStyles: {
+      ...AppStyles.largeBtn,
+    },
+    ...AppStyles.inactiveBtn
   },
 }
