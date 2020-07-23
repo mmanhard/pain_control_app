@@ -5,15 +5,17 @@ import { withRouter } from 'react-router';
 import moment from 'moment';
 
 import actions from 'Actions';
+import AppColors from 'Common/AppColors';
+import withWindowDimensions from 'Common/AppDimens';
+import AppStyles from 'Common/AppStyles';
+import BodyVisualizer from 'Components/BodyVisualizer';
+import BubbleList from 'Components/BubbleList';
+import Button from 'Components/Button';
+import HelpModal from 'Components/HelpModal';
 import Navbar from 'Components/Navbar';
 import styles from './style';
-import BodyVisualizer from 'Components/BodyVisualizer';
-import AppStyles from 'Common/AppStyles';
-import BubbleList from 'Components/BubbleList';
-import HelpModal from 'Components/HelpModal';
 import Utils from 'Utils';
-import withWindowDimensions from 'Common/AppDimens';
-import AppColors from 'Common/AppColors';
+
 
 import BackIcon from 'Icons/icons8-back.png';
 
@@ -221,7 +223,13 @@ class AddEntry extends React.Component {
     );
 
     let continueBtn = (
-        <button style={{...styles.continueBtn, marginTop: 20, marginBottom: isSmallScreen ? 40 : 0}} onClick={this._handleSubmitPainLevels}>Continue</button>
+      <div style={{marginTop: 20, marginBottom: isSmallScreen ? 40 : 0}}>
+        <Button
+          btnStyles={styles.continueBtn}
+          onClick={this._handleSubmitPainLevels}>
+          Continue
+        </Button>
+      </div>
     );
 
     let visualizer = (
@@ -250,9 +258,11 @@ class AddEntry extends React.Component {
 
     return (
       <div style={styles.entryContainer(isSmallScreen)}>
-        {!isSmallScreen && <button style={{...styles.backBtn, marginBottom: 20}} onClick={() => { this._switchScreen(true) }}>
-          <img src={BackIcon} style={{ height: 32, margin: 'auto' }} />
-        </button>}
+        {!isSmallScreen && <div style={{marginBottom: 20}}>
+            <Button btnStyles={styles.backBtn} onClick={() => { this._switchScreen(true) }}>
+              <img src={BackIcon} style={{ height: 32, margin: 'auto' }} />
+            </Button>
+          </div>}
         <div style={styles.bodyPartNoteContainer}>
           {bodyPartList.map((part, index) => {
             const displayName = part.location ? `${part.location} ${part.name}` : part.name;
@@ -274,10 +284,10 @@ class AddEntry extends React.Component {
               </div>
             );
           })}
-          <button style={styles.continueBtn} onClick={this._handleSubmitPainNotes}>Continue</button>
+          <Button btnStyles={styles.continueBtn} onClick={this._handleSubmitPainNotes}>Continue</Button>
           <div style={{...AppStyles.rowSpace, marginBottom: isSmallScreen ? 30 : 0}}>
-            {isSmallScreen && <button style={styles.skipBtn} onClick={() => { this._switchScreen(true) }}>Back</button>}
-            <button style={styles.skipBtn} onClick={() => { this._switchScreen() }}>Skip</button>
+            {isSmallScreen && <Button btnStyles={styles.skipBtn} onClick={() => { this._switchScreen(true) }}>Back</Button>}
+            <Button btnStyles={styles.skipBtn} onClick={() => { this._switchScreen() }}>Skip</Button>
           </div>
         </div>
       </div>
@@ -289,9 +299,9 @@ class AddEntry extends React.Component {
     const { notes } = this.state;
     return (
       <div style={styles.entryContainer(isSmallScreen)}>
-        {!isSmallScreen && <button style={styles.backBtn} onClick={() => { this._switchScreen(true) }}>
+        {!isSmallScreen && <Button btnStyles={styles.backBtn} onClick={() => { this._switchScreen(true) }}>
           <img src={BackIcon} style={{height: 32, margin: 'auto' }} />
-        </button>}
+        </Button>}
         <div style={styles.addNotesContainer}>
           <textarea rows="15" cols="65" maxLength="500"
             name="notes"
@@ -300,8 +310,14 @@ class AddEntry extends React.Component {
             style={styles.entryNotesInput}
             onChange={this._handleInputChange} />
           <p style={styles.counterText}>{notes.length}/500</p>
-          <button style={styles.continueBtn} onClick={this._handleSubmitEntry}>Submit Entry</button>
-          {isSmallScreen && <button style={{...styles.skipBtn, marginBottom: 30}} onClick={() => { this._switchScreen(true) }}>Back</button>}
+          <Button btnStyles={styles.continueBtn} onClick={this._handleSubmitEntry}>Submit Entry</Button>
+          {isSmallScreen && <div style={{marginBottom: 30}}>
+            <Button
+              btnStyles={styles.skipBtn}
+              onClick={() => { this._switchScreen(true) }}>
+              Back
+            </Button>
+          </div>}
         </div>
       </div>
     );
@@ -411,16 +427,16 @@ class AddEntry extends React.Component {
               </button>
             </div>
             <div style={{...AppStyles.rowSpace, flexWrap: 'wrap', marginTop: 10}}>
-              <button
-                style={!highDetail ? styles.mainButtonInactive : styles.mainButton}
+              <Button
+                btnStyles={styles.mainButton(highDetail)}
                 onClick={() => {this.setState({ highDetail: true })}}>
                 High Detail
-              </button>
-              <button
-                style={highDetail ? styles.mainButtonInactive : styles.mainButton}
+              </Button>
+              <Button
+                btnStyles={styles.mainButton(!highDetail)}
                 onClick={() => {this.setState({ highDetail: false })}}>
                 Low Detail
-              </button>
+              </Button>
             </div>
           </div>}
         </div>

@@ -184,9 +184,12 @@ export default {
       }
     },
     backBtn: {
-      ...AppStyles.closeBtn,
-      marginLeft: 15,
-      marginTop: 15,
+      addStyles: {
+        ...AppStyles.closeBtn,
+        marginLeft: 15,
+        marginTop: 15,
+      },
+      ...AppStyles.activeBtn
     },
     bodyPartNoteContainer: {
       ...AppStyles.center,
@@ -234,13 +237,20 @@ export default {
       boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
     },
     continueBtn: {
-      ...AppStyles.largeBtn,
-      backgroundColor: AppColors.blue,
-      color: AppColors.white,
+      addStyles: {
+        ...AppStyles.largeBtn,
+      },
+      ...AppStyles.activeBtn
     },
     skipBtn: {
-      ...AppStyles.subtleBtn,
-      marginTop: 10,
+      addStyles: {
+        ...AppStyles.subtleBtn,
+        marginTop: 10,
+        height: 24,
+        width: 60,
+        borderRadius: 12,
+      },
+      ...AppStyles.insetBtn
     },
     addNotesContainer: {
       paddingTop: 20,
@@ -264,28 +274,19 @@ export default {
       ...AppFonts.Raleway.regular,
       color: AppColors.blue,
     },
-    mainButtonInactive: {
-      ...AppFonts.Raleway.bold,
-      fontSize: AppFonts.size.medLarge,
-      border: 'none',
-      boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
-      height: 60,
-      width: 180,
-      borderRadius: 30,
-      color: AppColors.blue,
-      backgroundColor: AppColors.lilac,
-      margin: 10,
+    mainButton: (selected) => {
+      const btnType = selected ? AppStyles.activeBtn : AppStyles.inactiveBtn;
+      return {
+        addStyles: {
+            ...AppFonts.Raleway.bold,
+          fontSize: AppFonts.size.medLarge,
+          boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
+          height: 60,
+          width: 180,
+          borderRadius: 30,
+          margin: 10
+        },
+        ...btnType
+      }
     },
-    mainButton: {
-      ...AppFonts.Raleway.bold,
-      fontSize: AppFonts.size.medLarge,
-      border: 'none',
-      boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
-      height: 60,
-      width: 180,
-      borderRadius: 30,
-      color: AppColors.white,
-      backgroundColor: AppColors.blue,
-      margin: 10,
-    }
 }
