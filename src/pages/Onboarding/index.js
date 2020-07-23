@@ -3,11 +3,12 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 
-import styles from './style';
 import actions from 'Actions';
-import Utils from 'Utils';
 import withWindowDimensions from 'Common/AppDimens';
 import BubbleList from 'Components/BubbleList';
+import Button from 'Components/Button';
+import styles from './style';
+import Utils from 'Utils';
 
 import BackIcon from 'Icons/icons8-back.png';
 import PhoneIcon from 'Icons/icons8-phone.png';
@@ -102,7 +103,7 @@ class Onboarding extends React.Component {
       birthday: '',
       hometown: '',
       medicalHistory: '',
-      screenType: screenTypes.addParts,
+      screenType: screenTypes.addInfo,
       selectOtherBodyParts: false,
       otherBodyParts: []
     };
@@ -289,8 +290,8 @@ class Onboarding extends React.Component {
               onChange={this._handleInputChange}
             />
           </div>
-          <button style={styles.continueBtn} onClick={this._handleSubmitInfo}>Continue</button>
-          <button style={styles.skipBtn} onClick={() => { this._switchScreen() }}>Skip</button>
+          <Button btnStyles={styles.continueBtn} onClick={this._handleSubmitInfo}>Continue</Button>
+          <Button btnStyles={styles.skipBtn} onClick={() => { this._switchScreen() }}>Skip</Button>
         </div>
       </div>
     );
@@ -323,23 +324,23 @@ class Onboarding extends React.Component {
         <div
           key={part.name}
           style={styles.partContainer}>
-          <button
-            style={styles.partButton(isMobile, selected)}
+          <Button
+            btnStyles={styles.partButton(isMobile, selected)}
             onClick={() => this._selectBodyPart(part)}>
             {part.name}
-          </button>
+          </Button>
           <div>
             {selected && part.locations
               ? part.locations.map((loc) => {
                 const selected = this.state[part.name].locations.indexOf(loc) !== -1;
                 return (
-                  <button
+                  <Button
                     key={`${loc} ${part.name}`}
-                    style={styles.locButton(selected)}
+                    btnStyles={styles.locButton(selected)}
                     onClick={() => this._selectBodyPartLocation(part, loc)}
                     >
                     {loc}
-                  </button>
+                  </Button>
                 );
               })
               : <div style={{ height: 32 }}></div>}
@@ -350,12 +351,12 @@ class Onboarding extends React.Component {
           <div
             key={'addMoreBtn'}
             style={styles.partContainer}>
-            <button
-              style={styles.partButton(isMobile, selectOtherBodyParts)}
+            <Button
+              btnStyles={styles.partButton(isMobile, selectOtherBodyParts)}
               onClick={this._handleAddOther}
               >
               {selectOtherBodyParts ? 'Add More' : 'Other'}
-            </button>
+            </Button>
           </div>
         );
       }
@@ -369,9 +370,9 @@ class Onboarding extends React.Component {
 
     return (
       <div style={styles.contentContainer(isMobile)}>
-        <button style={styles.backBtn} onClick={() => { this._switchScreen(true) }}>
+        <Button btnStyles={styles.backBtn} onClick={() => { this._switchScreen(true) }}>
           <img src={BackIcon} style={{height: 32, margin: 'auto' }} />
-        </button>
+        </Button>
         <div style={{ ...styles.infoContainer}}>
           <BubbleList
               rowContainerStyle={styles.partsContainer}
@@ -392,13 +393,13 @@ class Onboarding extends React.Component {
                     value={part.name}
                     onChange={(event) => this._handleOtherChange(event, i)}
                   />
-                  <button style={styles.removePartBtn} onClick={() => {this._handleRemoveOther(i)}}><span>x</span></button>
+                  <Button btnStyles={styles.removePartBtn} onClick={() => {this._handleRemoveOther(i)}}><span>x</span></Button>
                 </div>
               );
             })}
           </div>}
-          <button style={styles.continueBtn} onClick={this._handleSubmitBodyParts}>Continue</button>
-          <button style={styles.skipBtn} onClick={() => { this._switchScreen() }}>Skip</button>
+          <Button btnStyles={styles.continueBtn} onClick={this._handleSubmitBodyParts}>Continue</Button>
+          <Button btnStyles={styles.skipBtn} onClick={() => { this._switchScreen() }}>Skip</Button>
         </div>
       </div>
     );
@@ -408,7 +409,7 @@ class Onboarding extends React.Component {
     const { isMobile } = this.props;
     return (
       <div style={styles.contentContainer(isMobile)}>
-        <button style={styles.backBtn} onClick={() => { this._switchScreen(true) }}><img src={BackIcon} style={{height: 32}} /></button>
+        <Button btnStyles={styles.backBtn} onClick={() => { this._switchScreen(true) }}><img src={BackIcon} style={{height: 32}} /></Button>
         <div style={styles.infoContainer}>
           <textarea rows="15" cols="65" maxLength="500"
             name="medicalHistory"
@@ -416,8 +417,8 @@ class Onboarding extends React.Component {
             style={styles.medHistoryInput}
             onChange={this._handleInputChange} />
           <p style={styles.counterText}>{this.state.medicalHistory.length}/500</p>
-          <button style={styles.continueBtn} onClick={this._handleSubmitNotes}>Finish!</button>
-          <button style={styles.skipBtn} onClick={() => { this._switchScreen() }}>Skip</button>
+          <Button btnStyles={styles.continueBtn} onClick={this._handleSubmitNotes}>Finish!</Button>
+          <Button btnStyles={styles.skipBtn} onClick={() => { this._switchScreen() }}>Skip</Button>
         </div>
       </div>
     );

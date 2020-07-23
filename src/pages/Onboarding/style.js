@@ -56,9 +56,12 @@ export default {
     position: 'relative'
   },
   backBtn: {
-    ...AppStyles.closeBtn,
-    marginLeft: 15,
-    marginTop: 15,
+    addStyles: {
+      ...AppStyles.closeBtn,
+      marginLeft: 15,
+      marginTop: 15,
+    },
+    ...AppStyles.activeBtn
   },
   txtInputContainer: (isShortScreen) => {
     return {
@@ -79,13 +82,20 @@ export default {
     backgroundColor: 'transparent',
   },
   continueBtn: {
-    ...AppStyles.largeBtn,
-    backgroundColor: AppColors.blue,
-    color: AppColors.white,
+    addStyles: {
+      ...AppStyles.largeBtn,
+    },
+    ...AppStyles.activeBtn
   },
   skipBtn: {
-    ...AppStyles.subtleBtn,
-    marginTop: 10,
+    addStyles: {
+      ...AppStyles.subtleBtn,
+      marginTop: 10,
+      height: 24,
+      width: 60,
+      borderRadius: 12,
+    },
+    ...AppStyles.insetBtn
   },
   medHistoryInput: {
     border: 'none',
@@ -113,32 +123,34 @@ export default {
     marginBottom: 16
   },
   partButton: (isMobile, selected) => {
+    const btnType = selected ? AppStyles.activeBtn : AppStyles.inactiveBtn;
     return {
-      ...AppFonts.Raleway.bold,
-      fontSize: AppFonts.size.medium,
-      border: 'none',
-      backgroundColor: selected ? AppColors.blue : AppColors.lilac,
-      color: selected ? AppColors.lilac : AppColors.blue,
-      borderRadius: 18,
-      textAlign: 'center',
-      width: isMobile ? 100 : 120,
-      height: 36,
-      marginBottom: 4,
+      addStyles: {
+        ...AppFonts.Raleway.bold,
+        fontSize: AppFonts.size.medium,
+        borderRadius: 18,
+        textAlign: 'center',
+        width: isMobile ? 100 : 120,
+        height: 36,
+        marginBottom: 4,
+      },
+      ...btnType
     };
   },
   locButton: (selected) => {
+    const btnType = selected ? AppStyles.activeBtn : AppStyles.inactiveBtn;
     return {
-      ...AppFonts.Raleway.bold,
-      fontSize: AppFonts.size.medSmall,
-      border: 'none',
-      backgroundColor: selected ? AppColors.blue : AppColors.lilac,
-      color: selected ? AppColors.lilac : AppColors.blue,
-      borderRadius: 16,
-      textAlign: 'center',
-      width: 32,
-      height: 32,
-      marginLeft: 2,
-      marginRight: 2,
+      addStyles: {
+        ...AppFonts.Raleway.bold,
+        fontSize: AppFonts.size.medSmall,
+        borderRadius: 16,
+        textAlign: 'center',
+        width: 32,
+        height: 32,
+        marginLeft: 2,
+        marginRight: 2,
+      },
+      ...btnType
     };
   },
   addMoreContainer: {
