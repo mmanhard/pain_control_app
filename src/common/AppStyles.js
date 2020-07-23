@@ -96,6 +96,7 @@ export default {
   },
   activeBtn: {
     normalStyle: {
+      border: 'none',
       backgroundColor: AppColors.blue,
       color: AppColors.white,
     },
@@ -110,6 +111,7 @@ export default {
   },
   inactiveBtn: {
     normalStyle: {
+      border: 'none',
       backgroundColor: AppColors.lilac,
       color: AppColors.blue,
     },

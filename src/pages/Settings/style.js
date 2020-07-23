@@ -56,19 +56,20 @@ export default {
     }
   },
   configTitle: (isSmallScreen, selected) => {
+    const btnType = selected ? AppStyles.activeBtn : AppStyles.inactiveBtn;
     return {
-      ...AppStyles.center,
-      alignItems: 'flex-start',
-      width: isSmallScreen ? 100 : 140,
-      height: isSmallScreen ? 48 : 68,
-      borderRadius: isSmallScreen ? 24 : 34,
-      margin: isSmallScreen ? '0px 10px 20px 10px' : '20px 10px 20px 10px',
-      color: selected ? AppColors.white : AppColors.blue,
-      backgroundColor: selected ? AppColors.blue : AppColors.lilac,
-      border: 'none',
-      boxShadow: AppStyles.typBoxShadow,
-      fontSize: isSmallScreen ? AppFonts.size.small : AppFonts.size.medLarge,
-      ...AppFonts.Raleway.bold,
+      addStyles: {
+        ...AppStyles.center,
+        alignItems: 'flex-start',
+        width: isSmallScreen ? 100 : 140,
+        height: isSmallScreen ? 48 : 68,
+        borderRadius: isSmallScreen ? 24 : 34,
+        margin: isSmallScreen ? '0px 10px 20px 10px' : '20px 10px 20px 10px',
+        boxShadow: AppStyles.typBoxShadow,
+        fontSize: isSmallScreen ? AppFonts.size.small : AppFonts.size.medLarge,
+        ...AppFonts.Raleway.bold,
+      },
+      ...btnType
     }
   },
   configTitleTxt: (isSmallScreen) => {
@@ -109,38 +110,38 @@ export default {
     justifyContent: 'center'
   },
   partContainer: (isSmallScreen, selected) => {
+    const btnType = selected ? AppStyles.activeBtn : AppStyles.inactiveBtn;
     return {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      ...AppFonts.Raleway.bold,
-      fontSize: isSmallScreen ? AppFonts.size.small : AppFonts.size.medium,
-      border: 'none',
-      backgroundColor: selected ? AppColors.blue : AppColors.lilac,
-      color: selected ? AppColors.lilac : AppColors.blue,
-      borderRadius: 18,
-      minWidth: 140,
-      height: 36,
-      marginLeft: 4,
-      marginRight: 4,
-      marginBottom: 16,
-      paddingLeft: 10,
+      addStyles: {
+        ...AppStyles.rowBetween,
+        alignItems: 'center',
+        ...AppFonts.Raleway.bold,
+        fontSize: isSmallScreen ? AppFonts.size.small : AppFonts.size.medium,
+        borderRadius: 18,
+        minWidth: 140,
+        height: 36,
+        marginLeft: 4,
+        marginRight: 4,
+        marginBottom: 16,
+        paddingLeft: 10,
+      },
+      ...btnType
     };
   },
   addMorePartsBtn: (selected) => {
+    const btnType = selected ? AppStyles.activeBtn : AppStyles.inactiveBtn;
     return {
-      ...AppFonts.Raleway.bold,
-      fontSize: AppFonts.size.medium,
-      border: 'none',
-      backgroundColor: selected ? AppColors.blue : AppColors.lilac,
-      color: selected ? AppColors.lilac : AppColors.blue,
-      borderRadius: 18,
-      width: 140,
-      height: 36,
-      marginLeft: 4,
-      marginRight: 4,
-      marginBottom: 16,
+      addStyles: {
+        ...AppFonts.Raleway.bold,
+        fontSize: AppFonts.size.medium,
+        borderRadius: 18,
+        width: 140,
+        height: 36,
+        marginLeft: 4,
+        marginRight: 4,
+        marginBottom: 16,
+      },
+      ...btnType
     };
   },
   partDetailsContainer: {
@@ -222,8 +223,9 @@ export default {
     boxShadow: AppStyles.typBoxShadow
   },
   continueBtn: {
-    ...AppStyles.largeBtn,
-    backgroundColor: AppColors.blue,
-    color: AppColors.white,
+    addStyles: {
+      ...AppStyles.largeBtn,
+    },
+    ...AppStyles.activeBtn
   },
 }

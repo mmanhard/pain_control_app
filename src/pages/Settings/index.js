@@ -10,6 +10,7 @@ import withWindowDimensions from 'Common/AppDimens';
 import Utils from 'Utils';
 import AppColors from 'Common/AppColors';
 import BubbleList from 'Components/BubbleList';
+import Button from 'Components/Button';
 
 import BackIcon from 'Icons/icons8-back.png';
 import NameIcon from 'Icons/icons8-name.png';
@@ -146,7 +147,9 @@ class Settings extends React.Component {
       <div style={{...styles.editInfoContainer(isMediumScreen), ...styles.mainContainer(isSmallScreen)}}>
         <div style={{...styles.editAccountLeft, order: isMediumScreen ? 3 : 1}}>
           {!isMediumScreen && title}
-          <button style={{marginTop: isMediumScreen ? 0 : 72, ...styles.continueBtn, marginBottom: 20}} onClick={this._handleEditAccount}>Submit</button>
+          <div style={{marginTop: isMediumScreen ? 0 : 72, marginBottom: 20}}>
+            <Button btnStyles={styles.continueBtn} onClick={this._handleEditAccount}>Submit</Button>
+          </div>
         </div>
         {isMediumScreen && !isSmallScreen && title}
         <div style={{...styles.formContainer, order: 2}}>
@@ -214,22 +217,22 @@ class Settings extends React.Component {
       const selected = currentBodyPart && currentBodyPart.id == part.id;
       const displayName = part.location ? `${part.location} ${part.name}` : part.name;
       return (
-        <button
+        <Button
           key={part.id}
           onClick={() => { this.setState({ currentBodyPart: part, addMoreParts: false, part_name: '', part_location: '', part_type: '' })}}
-          style={styles.partContainer(isSmallScreen, selected)}>
+          btnStyles={styles.partContainer(isSmallScreen, selected)}>
           <div>{displayName}</div>
           <div style={styles.editTxt}>Edit</div>
-        </button>
+        </Button>
       );
     } else {
       return (
-        <button
+        <Button
           key='addMoreBtn'
-          style={styles.addMorePartsBtn(addMoreParts)}
+          btnStyles={styles.addMorePartsBtn(addMoreParts)}
           onClick={() => {this.setState({ currentBodyPart: null, addMoreParts: true, part_name: '', part_location: '', part_type: '' })}}>
             Add More
-        </button>
+        </Button>
       );
     }
   }
@@ -283,7 +286,7 @@ class Settings extends React.Component {
                 onChange={this._handleInputChange}
               />
             </div>
-            <button style={styles.continueBtn} onClick={this._handleEditBodyPart}>Submit</button>
+            <Button btnStyles={styles.continueBtn} onClick={this._handleEditBodyPart}>Submit</Button>
           </div>)}
           {addMoreParts && (
             <div style={styles.partDetailsContainer}>
@@ -317,7 +320,7 @@ class Settings extends React.Component {
                   onChange={this._handleInputChange}
                 />
               </div>
-              <button style={styles.continueBtn} onClick={this._handleAddBodyPart}>Submit</button>
+              <Button btnStyles={styles.continueBtn} onClick={this._handleAddBodyPart}>Submit</Button>
             </div>)}
       </div>
     );
@@ -332,7 +335,9 @@ class Settings extends React.Component {
       <div style={{...styles.editInfoContainer(isMediumScreen), ...styles.mainContainer(isSmallScreen)}}>
         <div style={{...styles.changePwdLeft, order: isMediumScreen ? 3 : 1}}>
           {!isMediumScreen && title}
-          <button style={{marginTop: isMediumScreen ? 0 : 72, ...styles.continueBtn, marginBottom: 20}} onClick={this._handleChangePassword}>Submit</button>
+          <div style={{marginTop: isMediumScreen ? 0 : 72, marginBottom: 20}}>
+            <Button btnStyles={styles.continueBtn} onClick={this._handleChangePassword}>Submit</Button>
+          </div>
         </div>
         {isMediumScreen && !isSmallScreen && title}
         <div style={{...styles.formContainer, order: 2}}>
@@ -401,24 +406,24 @@ class Settings extends React.Component {
               <div style={{...styles.subtitleTxt, marginTop: 8}}>Modify your account here.</div>
             </div>
             <div style={styles.configContentContainer(isSmallScreen)}>
-              <button
+              <Button
                 onClick={() => {this.setState({ screenType: screenTypes.editAccount })}}
-                style={styles.configTitle(isSmallScreen, showAccount)}>
+                btnStyles={styles.configTitle(isSmallScreen, showAccount)}>
                 <div style={styles.configTitleTxt(isSmallScreen)}>Account</div>
                 <div style={styles.configTitleTxt(isSmallScreen)}>Settings</div>
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => {this.setState({ screenType: screenTypes.editPainPoints })}}
-                style={styles.configTitle(isSmallScreen, showPainPoints)}>
+                btnStyles={styles.configTitle(isSmallScreen, showPainPoints)}>
                 <div style={styles.configTitleTxt(isSmallScreen)}>Edit</div>
                 <div style={styles.configTitleTxt(isSmallScreen)}>Pain Points</div>
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => {this.setState({ screenType: screenTypes.editPassword })}}
-                style={styles.configTitle(isSmallScreen, showPassword)}>
+                btnStyles={styles.configTitle(isSmallScreen, showPassword)}>
                 <div style={styles.configTitleTxt(isSmallScreen)}>Change</div>
                 <div style={styles.configTitleTxt(isSmallScreen)}>Password</div>
-              </button>
+              </Button>
             </div>
           </div>
 
