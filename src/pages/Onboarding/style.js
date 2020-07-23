@@ -174,12 +174,16 @@ export default {
     alignItems: 'center',
   },
   removePartBtn: {
-    border: 'none',
-    background: 'transparent',
-    ...AppFonts.Raleway.regular,
-    fontSize: AppFonts.size.medium,
-    textDecoration: 'none',
-    width: 36
+    addStyles: {
+      background: 'transparent',
+      ...AppFonts.Raleway.regular,
+      fontSize: AppFonts.size.medium,
+      textDecoration: 'none',
+      width: 36,
+      height: 24,
+      borderRadius: 12,
+    },
+    ...AppStyles.insetBtn
   },
   counterText: {
     position: 'relative',
