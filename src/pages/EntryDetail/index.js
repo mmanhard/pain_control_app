@@ -88,7 +88,9 @@ class EntryDetail extends React.Component {
             <div>{date.format('MMMM Do, YYYY')}</div>
             <div>{date.format('h:mm a')}</div>
           </div>
-          <button style={styles.helpIcon}>?</button>
+          <Button btnStyles={styles.helpBtn}>
+            <div style={styles.helpIcon}>?</div>
+          </Button>
         </div>
         <div style={{width: '90%', ...AppStyles.rowSpace, alignItems: 'center'}}>
           <BodyVisualizer

@@ -56,14 +56,23 @@ export default {
         boxShadow: AppStyles.typBoxShadow
       }
     },
+    helpBtn: {
+      addStyles: {
+        height: 36,
+        width: 36,
+        borderRadius: 18,
+        marginRight: 20,
+        ...AppStyles.center
+      },
+      ...AppStyles.insetBtn
+    },
     helpIcon: {
       height: 24,
       width: 24,
       borderRadius: 14,
-      marginRight: 20,
       border: `solid 2px ${AppColors.blue}`,
       color: AppColors.blue,
-      textAlign: 'center'
+      ...AppStyles.center,
     },
     filterContaienr: {
       ...AppStyles.center,
