@@ -209,9 +209,122 @@ class Dashboard extends React.Component {
     );
   }
 
-  render() {
-    const { userInfo, bodyParts, token, history, logout, entries } = this.props;
-    const { statType, daytime, currentBodyPartID, newBodyPart, customStartDate, customEndDate } = this.state;
+  _renderPainLegend = () => {
+    return (
+      <div style={styles.painLegend}>
+        <div>
+          <p style={{marginLeft: 40, marginBottom: 0  }}>Pain</p>
+          <p style={{marginLeft: 40, marginTop: 0 }}>Legend</p>
+        </div>
+        <div style={{flex: 1}}>
+          <div style={styles.painLegendNumbers}>
+            <div style={{flex: 0.5}}></div>
+            {Object.entries(AppColors.painLevelColors).map(([type, color]) => {
+              if (type === 'none') {
+                return (
+                  <div key={type} style={{flex: 1.5, ...AppStyles.rowEnd, paddingRight: 18}}>
+                    <div style={{ ...styles.painLegendColor, backgroundColor: color}}></div>
+                  </div>
+                );
+              }
+              return (
+                <div key={type} style={{flex: 1, ...AppStyles.rowCenter}}>
+                  <div style={{ ...styles.painLegendColor, backgroundColor: color}}></div>
+                </div>
+              );
+            })}
+          </div>
+          <div style={styles.painLegendNumbers}>
+            <span style={{flex: 1, textAlign: 'center'}}>0</span>
+            <span style={{flex: 1, textAlign: 'center'}}>2</span>
+            <span style={{flex: 1, textAlign: 'center'}}>4</span>
+            <span style={{flex: 1, textAlign: 'center'}}>6</span>
+            <span style={{flex: 1, textAlign: 'center'}}>8</span>
+            <span style={{flex: 1, textAlign: 'center'}}>10</span>
+            <span style={{flex: 1, textAlign: 'end', paddingRight: 16}}>N/A</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  _renderLeftContainer = (visualizerBodyParts) => {
+    const { customStartDate, customEndDate } = this.state;
+
+    return (
+      <div style={styles.leftContentContainer}>
+        <div style={{ flex: 1, width: '100%', position: 'relative'}}>
+          <div style={styles.titleContainer}>
+            <div>My</div>
+            <div>Pain Map</div>
+          </div>
+          <button
+            onClick={() => {this.helpModalRef.current.open()}}
+            style={styles.helpIcon}>
+            ?
+          </button>
+          <div style={styles.filterContainer}>
+            <div style={styles.filterTxt}>Show:</div>
+            <select name="statType" style={styles.filterOptionTxt} onChange={this._handleInputChange}>
+              {Object.entries(statTypes).map(([key, value]) => {
+                return (
+                  <option key={key} value={key}>{value}</option>
+                );
+              })}
+            </select>
+            <select name="daytime" style={styles.filterOptionTxt} onChange={this._handleInputChange}>
+              {Object.entries(daytimes).map(([key, value]) => {
+                return (
+                  <option key={key} value={key}>{value}</option>
+                );
+              })}
+            </select>
+            <select name="dateRange" style={styles.filterOptionTxt} onChange={this._handleDateRangeChange}>
+              {Object.entries(dateRanges).map(([key, value]) => {
+                return (
+                  <option key={key} value={key}>{value}</option>
+                );
+              })}
+            </select>
+            {(typeof customStartDate !== 'undefined') && <div style={AppStyles.center}>
+              <div style={styles.filterTxt}>Start Date</div>
+              <input
+                type='text'
+                style={styles.configTimeTxt}
+                name='customStartDate'
+                value={customStartDate}
+                onChange={this._handleCustomDateChange}
+              />
+              <div style={styles.filterTxt}>End Date</div>
+              <input
+                type='text'
+                style={styles.configTimeTxt}
+                name='customEndDate'
+                value={customEndDate}
+                onChange={this._handleCustomDateChange}
+              />
+              <button
+                style={styles.submitDateBtn}
+                onClick={this._handleSubmitCustomDates}>
+                Submit
+              </button>
+            </div>}
+          </div>
+          <BodyVisualizer
+            contentContainerStyle={styles.visualizer}
+            bodyParts={visualizerBodyParts}
+            clickBackground={() => { this.setState({currentBodyPartID: undefined })}}
+            clickBodyPartFound={(part) => { this.setState({currentBodyPartID: part.id})}}
+            clickBodyPartNotFound={this._displayAddBodyPart} />
+        </div>
+        {this._renderPainLegend()}
+      </div>
+    );
+  }
+
+  _renderRightContainer = (visualizerBodyParts) => {
+    const { history, bodyParts, entries } = this.props;
+    const { currentBodyPartID } = this.state;
 
     let part, currentBodyPart;
     for (part of bodyParts) {
@@ -226,9 +339,76 @@ class Dashboard extends React.Component {
     const last_entry = moment(dateEntries[0]?.date).utc().format('MM/DD/YY');
     const oldest_entry = moment(dateEntries[dateEntries.length-1]?.date).utc().format('MM/DD/YY');
 
-    const bodyPartDisplayNames = bodyParts.map(part => {
-      return part.location ? `${part.location}_${part.name}` : part.name;
-    });
+    return (
+      <div style={styles.rightContentContainer}>
+        <div style={{ ...AppStyles.typContentContainer, padding: 30, flex: 1, ...AppStyles.columnStart }}>
+          <div style={{ ...AppStyles.rowSpace, height: 110, width: '100%', position: 'relative'}}>
+            <div style={styles.titleContainer}>
+              <div>{currentBodyPart ? currentBodyPart.displayName : 'General'}</div>
+              <div>Stats</div>
+            </div>
+            {(!currentBodyPart || currentBodyPart.stats?.total?.num_entries)
+            ? (
+                <div style={styles.basicStatsContainer}>
+                  <div style={{height: '100%', flex: 1.2, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'flex-start'}}>
+                    <div>Total # of Entries:</div>
+                    <div>Last Entry:</div>
+                    <div>Tracking Since:</div>
+                  </div>
+                  <div style={{height: '100%', flex: 0.8, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'flex-end'}}>
+                    <div>{currentBodyPart
+                      ? (currentBodyPart.stats?.total?.num_entries ? currentBodyPart.stats.total.num_entries : 0 )
+                      : entries.length}
+                    </div>
+                    <div>{last_entry}</div>
+                    <div>{oldest_entry}</div>
+                  </div>
+                </div>)
+            : (<div style={styles.basicStatsContainer}>No entries for this pain point in this timeframe!</div>)}
+          </div>
+          {(currentBodyPart) ? (
+            <div style={styles.statsContainer}>
+              {this._renderOverviewStats(currentBodyPart)}
+              <hr style={{width: '85%', height: 0, borderTop: `solid 2px ${AppColors.blue}`}}/>
+              {this._renderDaytimeStats(currentBodyPart)}
+              <div style={AppStyles.rowSpace}>
+                <button
+                  onClick={() => {this.setState({ currentBodyPartID: undefined })}}
+                  style={styles.mainButtonInactive}>
+                  View General
+                </button>
+                <button
+                  onClick={() => { history.push(`pain_points/${currentBodyPart.id}`)}}
+                  style={styles.mainButtonInactive}>
+                  View Details
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div style={styles.statsContainer}>
+              {this._renderGeneralStats(visualizerBodyParts)}
+            </div>
+          )}
+        </div>
+        <div style={styles.mainButtonContainer}>
+          <button
+            onClick={() => { history.push('entries')}}
+            style={styles.mainButtonInactive}>
+            View All Entries
+          </button>
+          <button
+            onClick={() => { history.push('add_entry')}}
+            style={styles.mainButton}>
+            Add An Entry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    const { userInfo, bodyParts, logout } = this.props;
+    const { statType, daytime, newBodyPart } = this.state;
 
     const visualizerBodyParts = bodyParts.map(part => {
       const displayName = part.location ? `${part.location}_${part.name}` : part.name;
@@ -252,171 +432,12 @@ class Dashboard extends React.Component {
 
     return (
       <div style={styles.container}>
+
         <Navbar userInfo={userInfo} logout={logout}/>
+
         <div style={styles.contentContainer}>
-          <div style={styles.leftContentContainer}>
-            <div style={{ flex: 1, width: '100%', position: 'relative'}}>
-              <div style={styles.titleContainer}>
-                <div>My</div>
-                <div>Pain Map</div>
-              </div>
-              <button
-                onClick={() => {this.helpModalRef.current.open()}}
-                style={styles.helpIcon}>
-                ?
-              </button>
-              <div style={styles.filterContainer}>
-                <div style={styles.filterTxt}>Show:</div>
-                <select name="statType" style={styles.filterOptionTxt} onChange={this._handleInputChange}>
-                  {Object.entries(statTypes).map(([key, value]) => {
-                    return (
-                      <option key={key} value={key}>{value}</option>
-                    );
-                  })}
-                </select>
-                <select name="daytime" style={styles.filterOptionTxt} onChange={this._handleInputChange}>
-                  {Object.entries(daytimes).map(([key, value]) => {
-                    return (
-                      <option key={key} value={key}>{value}</option>
-                    );
-                  })}
-                </select>
-                <select name="dateRange" style={styles.filterOptionTxt} onChange={this._handleDateRangeChange}>
-                  {Object.entries(dateRanges).map(([key, value]) => {
-                    return (
-                      <option key={key} value={key}>{value}</option>
-                    );
-                  })}
-                </select>
-                {(typeof customStartDate !== 'undefined') && <div style={AppStyles.center}>
-                  <div style={styles.filterTxt}>Start Date</div>
-                  <input
-                    type='text'
-                    style={styles.configTimeTxt}
-                    name='customStartDate'
-                    value={customStartDate}
-                    onChange={this._handleCustomDateChange}
-                  />
-                  <div style={styles.filterTxt}>End Date</div>
-                  <input
-                    type='text'
-                    style={styles.configTimeTxt}
-                    name='customEndDate'
-                    value={customEndDate}
-                    onChange={this._handleCustomDateChange}
-                  />
-                  <button
-                    style={styles.submitDateBtn}
-                    onClick={this._handleSubmitCustomDates}>
-                    Submit
-                  </button>
-                </div>}
-              </div>
-              <BodyVisualizer
-                contentContainerStyle={styles.visualizer}
-                bodyParts={visualizerBodyParts}
-                clickBackground={() => { this.setState({currentBodyPartID: undefined })}}
-                clickBodyPartFound={(part) => { this.setState({currentBodyPartID: part.id})}}
-                clickBodyPartNotFound={this._displayAddBodyPart} />
-            </div>
-            <div style={styles.painLegend}>
-              <div>
-                <p style={{marginLeft: 40, marginBottom: 0  }}>Pain</p>
-                <p style={{marginLeft: 40, marginTop: 0 }}>Legend</p>
-              </div>
-              <div style={{flex: 1}}>
-                <div style={styles.painLegendNumbers}>
-                  <div style={{flex: 0.5}}></div>
-                  {Object.entries(AppColors.painLevelColors).map(([type, color]) => {
-                    if (type === 'none') {
-                      return (
-                        <div key={type} style={{flex: 1.5, ...AppStyles.rowEnd, paddingRight: 18}}>
-                          <div style={{ ...styles.painLegendColor, backgroundColor: color}}></div>
-                        </div>
-                      );
-                    }
-                    return (
-                      <div key={type} style={{flex: 1, ...AppStyles.rowCenter}}>
-                        <div style={{ ...styles.painLegendColor, backgroundColor: color}}></div>
-                      </div>
-                    );
-                  })}
-                </div>
-                <div style={styles.painLegendNumbers}>
-                  <span style={{flex: 1, textAlign: 'center'}}>0</span>
-                  <span style={{flex: 1, textAlign: 'center'}}>2</span>
-                  <span style={{flex: 1, textAlign: 'center'}}>4</span>
-                  <span style={{flex: 1, textAlign: 'center'}}>6</span>
-                  <span style={{flex: 1, textAlign: 'center'}}>8</span>
-                  <span style={{flex: 1, textAlign: 'center'}}>10</span>
-                  <span style={{flex: 1, textAlign: 'end', paddingRight: 16}}>N/A</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div style={styles.rightContentContainer}>
-            <div style={{ ...AppStyles.typContentContainer, padding: 30, flex: 1, ...AppStyles.columnStart }}>
-              <div style={{ ...AppStyles.rowSpace, height: 110, width: '100%', position: 'relative'}}>
-                <div style={styles.titleContainer}>
-                  <div>{currentBodyPart ? currentBodyPart.displayName : 'General'}</div>
-                  <div>Stats</div>
-                </div>
-                {(!currentBodyPart || currentBodyPart.stats?.total?.num_entries)
-                ? (
-                    <div style={styles.basicStatsContainer}>
-                      <div style={{height: '100%', flex: 1.2, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'flex-start'}}>
-                        <div>Total # of Entries:</div>
-                        <div>Last Entry:</div>
-                        <div>Tracking Since:</div>
-                      </div>
-                      <div style={{height: '100%', flex: 0.8, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'flex-end'}}>
-                        <div>{currentBodyPart
-                          ? (currentBodyPart.stats?.total?.num_entries ? currentBodyPart.stats.total.num_entries : 0 )
-                          : entries.length}
-                        </div>
-                        <div>{last_entry}</div>
-                        <div>{oldest_entry}</div>
-                      </div>
-                    </div>)
-                : (<div style={styles.basicStatsContainer}>No entries for this pain point in this timeframe!</div>)}
-              </div>
-              {(currentBodyPart) ? (
-                <div style={styles.statsContainer}>
-                  {this._renderOverviewStats(currentBodyPart)}
-                  <hr style={{width: '85%', height: 0, borderTop: `solid 2px ${AppColors.blue}`}}/>
-                  {this._renderDaytimeStats(currentBodyPart)}
-                  <div style={AppStyles.rowSpace}>
-                    <button
-                      onClick={() => {this.setState({ currentBodyPartID: undefined })}}
-                      style={styles.mainButtonInactive}>
-                      View General
-                    </button>
-                    <button
-                      onClick={() => {this.props.history.push(`pain_points/${currentBodyPart.id}`)}}
-                      style={styles.mainButtonInactive}>
-                      View Details
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div style={styles.statsContainer}>
-                  {this._renderGeneralStats(visualizerBodyParts)}
-                </div>
-              )}
-            </div>
-            <div style={styles.mainButtonContainer}>
-              <button
-                onClick={() => { this.props.history.push('entries')}}
-                style={styles.mainButtonInactive}>
-                View All Entries
-              </button>
-              <button
-                onClick={() => { this.props.history.push('add_entry')}}
-                style={styles.mainButton}>
-                Add An Entry
-              </button>
-            </div>
-          </div>
+          {this._renderLeftContainer(visualizerBodyParts)}
+          {this._renderRightContainer(visualizerBodyParts)}
         </div>
 
         <ActionModal
@@ -424,8 +445,7 @@ class Dashboard extends React.Component {
           contentStyle={styles.formModalContainer}
           action={() => {
             this.props.addBodyPart(userInfo, newBodyPart)
-          }}
-        >
+          }}>
           <p style={styles.actionModalTxt}>
             Would you like to start tracking your {newBodyPart && newBodyPart.displayName}?
           </p>
@@ -433,9 +453,8 @@ class Dashboard extends React.Component {
 
         <HelpModal
           ref={this.helpModalRef}
-          contentStyle={styles.formModalContainer}
-        >
-        </HelpModal>
+          contentStyle={styles.formModalContainer} />
+          
       </div>
     )
   }
