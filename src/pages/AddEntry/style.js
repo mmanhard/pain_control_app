@@ -104,14 +104,23 @@ export default {
       ...AppFonts.Raleway.bold,
       fontSize: AppFonts.size.medium,
     },
+    helpBtn: {
+      addStyles: {
+        height: 36,
+        width: 36,
+        borderRadius: 18,
+        marginLeft: 10,
+        ...AppStyles.center
+      },
+      ...AppStyles.insetBtn
+    },
     helpIcon: {
       height: 24,
       width: 24,
       borderRadius: 14,
-      marginLeft: 10,
       border: `solid 2px ${AppColors.blue}`,
       color: AppColors.blue,
-      textAlign: 'center'
+      ...AppStyles.center,
     },
     configDisplayTxt: {
       height: 32,

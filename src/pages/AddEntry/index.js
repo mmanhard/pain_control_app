@@ -418,13 +418,13 @@ class AddEntry extends React.Component {
             </div>
           </div>
           {!isSmallScreen && <div style={{ ...AppStyles.center, marginBottom: 20}}>
-            <div style={AppStyles.rowSpace}>
+            <div style={{...AppStyles.rowSpace, alignItems: 'center'}}>
               <div style={styles.configSubtitleTxt}>Level of Detail</div>
-              <button
+              <Button
                 onClick={() => {this.helpModalRef.current.open()}}
-                style={styles.helpIcon}>
-                ?
-              </button>
+                btnStyles={styles.helpBtn}>
+                <div style={styles.helpIcon}>?</div>
+              </Button>
             </div>
             <div style={{...AppStyles.rowSpace, flexWrap: 'wrap', marginTop: 10}}>
               <Button
@@ -455,13 +455,13 @@ class AddEntry extends React.Component {
             <div style={styles.configDisplayTxt}>{entryMoment?.format('MM/DD/YY hh:mm a')}</div>
           </div>
           {!isSmallScreen && <div style={{flex: 1, ...AppStyles.rowSpace, flexWrap: 'wrap', width: '100%', margin: 20, alignItems: 'center'}}>
-            <div style={{...AppStyles.rowSpace }}>
+            <div style={{...AppStyles.rowSpace, alignItems: 'center'}}>
               <div style={styles.configSubtitleTxt}>Level of Detail</div>
-              <button
+              <Button
                 onClick={() => {this.helpModalRef.current.open()}}
-                style={styles.helpIcon}>
-                ?
-              </button>
+                btnStyles={styles.helpBtn}>
+                <div style={styles.helpIcon}>?</div>
+              </Button>
             </div>
             <div style={styles.configDisplayTxt}>{highDetail ? 'High Detail' : 'Low Detail'}</div>
           </div>}
