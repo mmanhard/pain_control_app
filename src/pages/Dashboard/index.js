@@ -5,13 +5,14 @@ import { withRouter } from 'react-router';
 import moment from 'moment';
 
 import actions from 'Actions';
-import Navbar from 'Components/Navbar';
-import BodyVisualizer from 'Components/BodyVisualizer';
-import styles from './style';
-import AppStyles from 'Common/AppStyles';
 import AppColors from 'Common/AppColors';
+import AppStyles from 'Common/AppStyles';
 import ActionModal from 'Components/ActionModal';
+import BodyVisualizer from 'Components/BodyVisualizer';
+import Button from 'Components/Button';
 import HelpModal from 'Components/HelpModal';
+import Navbar from 'Components/Navbar';
+import styles from './style';
 import Utils from 'Utils';
 
 const statTypes = {
@@ -141,11 +142,11 @@ class Dashboard extends React.Component {
         {bodyParts.map(part => {
           return (
             <li key={part.id} style={styles.statContainer}>
-              <button
+              <Button
                 onClick={() => {this.setState({ currentBodyPartID: part.id })}}
-                style={styles.statTxtBtn}>
+                btnStyles={styles.statTxtBtn}>
                 {part.stats ? Number(part.stats).toFixed(1) : '-'}
-              </button>
+              </Button>
               <div style={styles.statTitle}>{part.name.replace('_', ' ')}</div>
             </li>
           )
@@ -258,11 +259,11 @@ class Dashboard extends React.Component {
             <div>My</div>
             <div>Pain Map</div>
           </div>
-          <button
+          <Button
             onClick={() => {this.helpModalRef.current.open()}}
-            style={styles.helpIcon}>
-            ?
-          </button>
+            btnStyles={styles.helpBtn}>
+            <div style={styles.helpIcon}>?</div>
+          </Button>
           <div style={styles.filterContainer}>
             <div style={styles.filterTxt}>Show:</div>
             <select name="statType" style={styles.filterOptionTxt} onChange={this._handleInputChange}>
@@ -303,11 +304,11 @@ class Dashboard extends React.Component {
                 value={customEndDate}
                 onChange={this._handleCustomDateChange}
               />
-              <button
-                style={styles.submitDateBtn}
+              <Button
+                btnStyles={styles.submitDateBtn}
                 onClick={this._handleSubmitCustomDates}>
                 Submit
-              </button>
+              </Button>
             </div>}
           </div>
           <BodyVisualizer
@@ -372,16 +373,16 @@ class Dashboard extends React.Component {
               <hr style={{width: '85%', height: 0, borderTop: `solid 2px ${AppColors.blue}`}}/>
               {this._renderDaytimeStats(currentBodyPart)}
               <div style={AppStyles.rowSpace}>
-                <button
+                <Button
                   onClick={() => {this.setState({ currentBodyPartID: undefined })}}
-                  style={styles.mainButtonInactive}>
+                  btnStyles={styles.mainButtonInactive}>
                   View General
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => { history.push(`pain_points/${currentBodyPart.id}`)}}
-                  style={styles.mainButtonInactive}>
+                  btnStyles={styles.mainButtonInactive}>
                   View Details
-                </button>
+                </Button>
               </div>
             </div>
           ) : (
@@ -391,16 +392,16 @@ class Dashboard extends React.Component {
           )}
         </div>
         <div style={styles.mainButtonContainer}>
-          <button
+          <Button
             onClick={() => { history.push('entries')}}
-            style={styles.mainButtonInactive}>
+            btnStyles={styles.mainButtonInactive}>
             View All Entries
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => { history.push('add_entry')}}
-            style={styles.mainButton}>
+            btnStyles={styles.mainButton}>
             Add An Entry
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -454,7 +455,7 @@ class Dashboard extends React.Component {
         <HelpModal
           ref={this.helpModalRef}
           contentStyle={styles.formModalContainer} />
-          
+
       </div>
     )
   }

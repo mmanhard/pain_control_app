@@ -39,16 +39,25 @@ export default {
       borderRadius: 20,
       boxShadow: AppStyles.typBoxShadow
     },
+    helpBtn: {
+      addStyles: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        height: 36,
+        width: 36,
+        borderRadius: 18,
+        ...AppStyles.center
+      },
+      ...AppStyles.insetBtn
+    },
     helpIcon: {
-      position: 'absolute',
-      top: 0,
-      right: 0,
       height: 24,
       width: 24,
       borderRadius: 14,
       border: `solid 2px ${AppColors.blue}`,
       color: AppColors.blue,
-      textAlign: 'center'
+      ...AppStyles.center,
     },
     filterContainer: {
       ...AppStyles.center,
@@ -100,16 +109,16 @@ export default {
       textDecoration: 'underline'
     },
     submitDateBtn: {
-      backgroundColor: AppColors.blue,
-      height: 32,
-      width: 80,
-      borderRadius: 16,
-      textAlign: 'center',
-      border: 'none',
-      color: AppColors.white,
-      ...AppFonts.Raleway.bold,
-      marginBottom: 12,
-      boxShadow: AppStyles.typBoxShadow
+      addStyles: {
+        height: 32,
+        width: 80,
+        borderRadius: 16,
+        textAlign: 'center',
+        ...AppFonts.Raleway.bold,
+        marginBottom: 12,
+        boxShadow: AppStyles.typBoxShadow,
+      },
+      ...AppStyles.activeBtn
     },
     visualizer: {
       backgroundColor: AppColors.white,
@@ -200,16 +209,16 @@ export default {
       textAlign: 'center',
     },
     statTxtBtn: {
-      ...AppStyles.center,
-      ...AppFonts.Raleway.bold,
-      fontSize: AppFonts.size.medium,
-      backgroundColor: AppColors.blue,
-      height: 60,
-      width: 60,
-      borderRadius: 30,
-      color: AppColors.white,
-      border: 'none',
-      boxShadow: AppStyles.typBoxShadow
+      addStyles: {
+        ...AppStyles.center,
+        ...AppFonts.Raleway.bold,
+        fontSize: AppFonts.size.medium,
+        height: 60,
+        width: 60,
+        borderRadius: 30,
+        boxShadow: AppStyles.typBoxShadow,
+      },
+      ...AppStyles.activeBtn
     },
     statTxt: {
       ...AppStyles.center,
@@ -233,28 +242,28 @@ export default {
       alignItems: 'center'
     },
     mainButtonInactive: {
-      ...AppFonts.Raleway.bold,
-      fontSize: AppFonts.size.medLarge,
-      border: 'none',
-      boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
-      height: 60,
-      width: 180,
-      borderRadius: 30,
-      color: AppColors.blue,
-      backgroundColor: AppColors.lilac,
-      margin: 10,
+      addStyles: {
+        ...AppFonts.Raleway.bold,
+        fontSize: AppFonts.size.medLarge,
+        boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
+        height: 60,
+        width: 180,
+        borderRadius: 30,
+        margin: 10,
+      },
+      ...AppStyles.inactiveBtn
     },
     mainButton: {
-      ...AppFonts.Raleway.bold,
-      fontSize: AppFonts.size.medLarge,
-      border: 'none',
-      boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
-      height: 60,
-      width: 180,
-      borderRadius: 30,
-      color: AppColors.white,
-      backgroundColor: AppColors.blue,
-      margin: 10,
+      addStyles: {
+        ...AppFonts.Raleway.bold,
+        fontSize: AppFonts.size.medLarge,
+        boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
+        height: 60,
+        width: 180,
+        borderRadius: 30,
+        margin: 10,
+      },
+      ...AppStyles.activeBtn
     },
     actionModalTxt: {
       ...AppFonts.Raleway.bold,
