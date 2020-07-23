@@ -40,9 +40,10 @@ export default {
     border: 'none',
     backgroundColor: 'transparent',
   },
-  registerBtn: {
-    ...AppStyles.largeBtn,
-    backgroundColor: AppColors.blue,
-    color: AppColors.white,
+  okBtn: {
+    addStyles: {
+      ...AppStyles.largeBtn,
+    },
+    ...AppStyles.activeBtn
   },
 }

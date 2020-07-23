@@ -1,7 +1,8 @@
 import React from "react";
 
 import styles from './style';
-import Modal from 'Components/Modal'
+import Button from 'Components/Button';
+import Modal from 'Components/Modal';
 
 class HelpModal extends React.Component {
   constructor(props) {
@@ -29,7 +30,7 @@ class HelpModal extends React.Component {
       >
         <div style={styles.formContainer}>
           {children}
-          <button style={styles.registerBtn} onClick={close}>OK</button>
+          <Button btnStyles={styles.okBtn} onClick={this.close}>OK</Button>
         </div>
       </Modal>
     )
