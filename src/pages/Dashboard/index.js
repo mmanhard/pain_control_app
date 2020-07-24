@@ -12,6 +12,7 @@ import ActionModal from 'Components/ActionModal';
 import BodyVisualizer from 'Components/BodyVisualizer';
 import Button from 'Components/Button';
 import HelpModal from 'Components/HelpModal';
+import LoadingSpinner from 'Components/LoadingSpinner';
 import Navbar from 'Components/Navbar';
 import styles from './style';
 import Utils from 'Utils';
@@ -58,6 +59,32 @@ class Dashboard extends React.Component {
 
     this.actionModalRef = React.createRef();
     this.helpModalRef = React.createRef();
+  }
+
+  componentDidMount() {
+    const { userInfo } = this.props;
+
+    this.props.getUserData(userInfo);
+    this.props.getEntries(userInfo);
+    this.props.getBodyParts(userInfo);
+
+    document.body.style = `background: ${AppColors.lilac};`;
+  }
+
+  componentDidUpdate(prevProps) {
+    const { userInfo } = this.props;
+
+    if (this.props.userUpdate) {
+      this.props.getUserData(userInfo);
+    }
+
+    if (this.props.entryUpdate) {
+      this.props.getEntries(userInfo);
+    }
+
+    if (this.props.bodyPartUpdate) {
+      this.props.getBodyParts(userInfo);
+    }
   }
 
   _handleInputChange = (event) => {
@@ -431,41 +458,46 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    const { userInfo, bodyParts, logout, isSmallScreen, isMediumScreen } = this.props;
+    const { userInfo, bodyParts, entries, logout, isSmallScreen, isMediumScreen, isFetching } = this.props;
     const { statType, daytime, newBodyPart } = this.state;
 
-    const visualizerBodyParts = bodyParts.map(part => {
-      const displayName = part.location ? `${part.location}_${part.name}` : part.name;
-      let stats;
-      if (daytime !== 'all_day') {
-        if (part.stats?.daytime && part.stats?.daytime[daytime]) {
-          stats = part.stats.daytime[daytime][statType];
+    let visualizerBodyParts;
+    if (bodyParts) {
+      visualizerBodyParts = bodyParts.map(part => {
+        const displayName = part.location ? `${part.location}_${part.name}` : part.name;
+        let stats;
+        if (daytime !== 'all_day') {
+          if (part.stats?.daytime && part.stats?.daytime[daytime]) {
+            stats = part.stats.daytime[daytime][statType];
+          }
+        } else {
+          if (part.stats?.total) {
+            stats = part.stats.total[statType];
+          }
         }
-      } else {
-        if (part.stats?.total) {
-          stats = part.stats.total[statType];
-        }
-      }
-      return ({
-        name: displayName,
-        id: part.id,
-        stats
+        return ({
+          name: displayName,
+          id: part.id,
+          stats
+        });
       });
-    });
-
+    }
 
     return (
       <div style={styles.container(isSmallScreen)}>
 
         <Navbar userInfo={userInfo} logout={logout}/>
 
-        <div style={styles.contentContainer(isMediumScreen)}>
-          {this._renderLeftContainer(visualizerBodyParts)}
-          <div style={styles.rightContentContainer(isSmallScreen)}>
-            {!isMediumScreen && this._renderStatsContainer(visualizerBodyParts)}
-            {!isMediumScreen && this._renderMainButtonContainer()}
-          </div>
-        </div>
+        {(!userInfo || !bodyParts || !entries || isFetching) && <LoadingSpinner />}
+
+        {(userInfo && bodyParts && entries) &&
+          <div style={styles.contentContainer(isMediumScreen)}>
+            {this._renderLeftContainer(visualizerBodyParts)}
+            <div style={styles.rightContentContainer(isSmallScreen)}>
+              {!isMediumScreen && this._renderStatsContainer(visualizerBodyParts)}
+              {!isMediumScreen && this._renderMainButtonContainer()}
+            </div>
+          </div>}
 
         <ActionModal
           ref={this.actionModalRef}
@@ -487,14 +519,21 @@ class Dashboard extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  userInfo: state.users.userInfo,
-  userUpdate: state.users.userUpdate,
-  loginSuccess: state.users.loginSuccess,
-  bodyPartUpdate: state.bodyParts.bodyPartUpdate,
-  bodyParts: state.bodyParts.bodyParts,
-  entries: state.entries.entries
-});
+const mapStateToProps = state => {
+  const { users, bodyParts, entries } = state;
+
+  const isFetching = (users.isFetching || bodyParts.isFetching || entries.isFetching);
+
+  return {
+    isFetching,
+    userInfo: users.userInfo,
+    userUpdate: users.userUpdate,
+    loginSuccess: users.loginSuccess,
+    bodyPartUpdate: bodyParts.bodyPartUpdate,
+    bodyParts: bodyParts.bodyParts,
+    entries: entries.entries
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
   ...bindActionCreators(actions, dispatch),
