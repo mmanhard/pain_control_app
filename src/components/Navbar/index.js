@@ -62,7 +62,7 @@ class Navbar extends React.Component {
             <img src={LogoIcon} style={{ height: 36}} />
           </Button>
         </div>
-        <div style={styles.rightContainer}>
+        {userInfo && <div style={styles.rightContainer}>
           <div style={styles.welcomeTxt}>
             {userInfo.first_name
                 ? `Hi, ${userInfo.first_name}!`
@@ -73,7 +73,7 @@ class Navbar extends React.Component {
           <Button btnStyles={styles.addIconBtn(isMobile)} onClick={() => {this._goToPage('add_entry')}}>
             <img src={AddIcon} style={{height: 32 }} />
           </Button>
-        </div>
+        </div>}
       </div>
     );
   }
