@@ -5,19 +5,38 @@ const initialState = {
   isLogin: false,
   loginSuccess: false,
   userUpdate: false,
-  isFetching: false
+  isFetching: false,
+  isAwaitingResp: false
 };
 
 export default (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
+
+    case actions.userActions.USER_REGISTER_REQUEST:
+      return {
+        ...state,
+        isAwaitingResp: true,
+      };
     case actions.userActions.USER_REGISTER_SUCCESS:
       return {
         ...state,
         userInfo: payload.data.user_info,
         isLogin: true,
         userUpdate: true,
-        loginSuccess: true
+        loginSuccess: true,
+        isAwaitingResp: false,
+      };
+    case actions.userActions.USER_REGISTER_FAIL:
+      return {
+        ...state,
+        isAwaitingResp: false,
+      };
+
+    case actions.userActions.USER_LOGIN_REQUEST:
+      return {
+        ...state,
+        isAwaitingResp: true,
       };
     case actions.userActions.USER_LOGIN_SUCCESS:
       return {
@@ -25,7 +44,13 @@ export default (state = initialState, action) => {
         userInfo: payload.data.user_info,
         isLogin: true,
         userUpdate: true,
-        loginSuccess: true
+        loginSuccess: true,
+        isAwaitingResp: false,
+      };
+    case actions.userActions.USER_LOGIN_FAIL:
+      return {
+        ...state,
+        isAwaitingResp: false,
       };
 
     case actions.userActions.GET_USER_REQUEST:
@@ -51,6 +76,7 @@ export default (state = initialState, action) => {
         ...state,
         userUpdate: true,
       };
+
     case actions.userActions.LOG_OUT:
       return initialState;
     default:

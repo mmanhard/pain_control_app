@@ -7,6 +7,7 @@ import validator from 'validator';
 import styles from './style';
 import actions from 'Actions';
 import AppColors from 'Common/AppColors';
+import LoadingSpinner from 'Components/LoadingSpinner';
 import RegistrationModal from 'Components/RegistrationModal';
 import withWindowDimensions from 'Common/AppDimens';
 import Button from 'Components/Button';
@@ -95,7 +96,7 @@ class Login extends React.Component {
   }
 
   render() {
-    const {isMobile, isSmallScreen} = this.props;
+    const {isMobile, isSmallScreen, isAwaitingResp} = this.props;
     return (
       <div style={styles.container}>
         <div style={styles.contentContainer(isMobile, isSmallScreen)}>
@@ -136,6 +137,9 @@ class Login extends React.Component {
             </div>
           </div>
         </div>
+
+        {isAwaitingResp && <LoadingSpinner />}
+
         <RegistrationModal
           ref={this.modalRef}
           isMobile={isMobile}
@@ -148,6 +152,7 @@ class Login extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  isAwaitingResp: state.users.isAwaitingResp,
   loginSuccess: state.users.loginSuccess,
 });
 
