@@ -24,8 +24,6 @@ const userActions = {
   UPDATE_USER_REQUEST: 'UPDATE_' + USER_PREFIX + '_REQUEST',
   UPDATE_USER_SUCCESS: 'UPDATE_' + USER_PREFIX + '_SUCCESS',
   UPDATE_USER_FAIL: 'UPDATE_' + USER_PREFIX + '_FAIL',
-
-  LOG_OUT: 'LOG_OUT',
 };
 
 const register = (data) => {
@@ -72,20 +70,6 @@ const login = (data) => {
           type: userActions.USER_LOGIN_FAIL
         });
       }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-};
-
-const logout = () => {
-  return async dispatch => {
-    try {
-      const response = await API.logout();
-
-      dispatch({
-        type: userActions.LOG_OUT
-      });
     } catch (err) {
       console.log(err);
     }
@@ -168,7 +152,6 @@ export {
   userActions,
   register,
   login,
-  logout,
   changePassword,
   getUserData,
   updateUser
