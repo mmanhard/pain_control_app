@@ -57,7 +57,7 @@ export default (state = initialState, action) => {
         entryUpdate: true,
         isAwaitingResp: false
       };
-    case actions.entryActions.ADD_ENTRY_REQUEST:
+    case actions.entryActions.ADD_ENTRY_FAIL:
       return {
         ...state,
         isAwaitingResp: false
