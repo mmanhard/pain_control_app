@@ -3,7 +3,8 @@ import actions from '../actions'
 const initialState = {
   entries: null,
   entryUpdate: false,
-  isFetching: false
+  isFetching: false,
+  isAwaitingResp: false
 };
 
 export default (state = initialState, action) => {
@@ -45,11 +46,23 @@ export default (state = initialState, action) => {
         isFetching: false,
       };
 
+    case actions.entryActions.ADD_ENTRY_REQUEST:
+      return {
+        ...state,
+        isAwaitingResp: true
+      };
     case actions.entryActions.ADD_ENTRY_SUCCESS:
       return {
         ...state,
-        entryUpdate: true
+        entryUpdate: true,
+        isAwaitingResp: false
       };
+    case actions.entryActions.ADD_ENTRY_REQUEST:
+      return {
+        ...state,
+        isAwaitingResp: false
+      };
+
     default:
       return state;
   }
