@@ -6,6 +6,7 @@ import moment from 'moment';
 
 import actions from 'Actions';
 import AppColors from 'Common/AppColors';
+import withWindowDimensions from 'Common/AppDimens';
 import AppStyles from 'Common/AppStyles';
 import ActionModal from 'Components/ActionModal';
 import BodyVisualizer from 'Components/BodyVisualizer';
@@ -250,12 +251,13 @@ class Dashboard extends React.Component {
   }
 
   _renderLeftContainer = (visualizerBodyParts) => {
+    const { isMobile, isSmallScreen, isMediumScreen } = this.props;
     const { customStartDate, customEndDate } = this.state;
 
     return (
-      <div style={styles.leftContentContainer}>
-        <div style={{ flex: 1, width: '100%', position: 'relative'}}>
-          <div style={styles.titleContainer}>
+      <div style={styles.leftContentContainer(isSmallScreen)}>
+        <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', marginTop: 20, marginBottom: 20}}>
+          <div style={styles.titleContainer(isSmallScreen)}>
             <div>My</div>
             <div>Pain Map</div>
           </div>
@@ -264,7 +266,9 @@ class Dashboard extends React.Component {
             btnStyles={styles.helpBtn}>
             <div style={styles.helpIcon}>?</div>
           </Button>
-          <div style={styles.filterContainer}>
+        </div>
+        <div style={{width: '90%', ...AppStyles.rowSpace, alignItems: 'center'}}>
+          <div style={styles.filterContainer(isSmallScreen)}>
             <div style={styles.filterTxt}>Show:</div>
             <select name="statType" style={styles.filterOptionTxt} onChange={this._handleInputChange}>
               {Object.entries(statTypes).map(([key, value]) => {
@@ -309,22 +313,76 @@ class Dashboard extends React.Component {
                 onClick={this._handleSubmitCustomDates}>
                 Submit
               </Button>
-            </div>}
+              </div>}
           </div>
           <BodyVisualizer
-            contentContainerStyle={styles.visualizer}
+            contentContainerStyle={styles.visualizer(isSmallScreen, isMediumScreen)}
             bodyParts={visualizerBodyParts}
             clickBackground={() => { this.setState({currentBodyPartID: undefined })}}
             clickBodyPartFound={(part) => { this.setState({currentBodyPartID: part.id})}}
             clickBodyPartNotFound={this._displayAddBodyPart} />
         </div>
-        {this._renderPainLegend()}
+        {!isMobile && this._renderPainLegend()}
+        {isMediumScreen && this._renderStatsContainer(visualizerBodyParts)}
+        {isMediumScreen && this._renderMainButtonContainer()}
       </div>
     );
   }
 
-  _renderRightContainer = (visualizerBodyParts) => {
-    const { history, bodyParts, entries } = this.props;
+  _renderMainButtonContainer = () => {
+    const { history, isMobile, isMediumScreen } = this.props;
+    return (
+      <div style={styles.mainButtonContainer(isMediumScreen)}>
+        <Button
+          onClick={() => { history.push('entries')}}
+          btnStyles={styles.mainButtonInactive(isMobile)}>
+          View All Entries
+        </Button>
+        <Button
+          onClick={() => { history.push('add_entry')}}
+          btnStyles={styles.mainButton(isMobile)}>
+          Add An Entry
+        </Button>
+      </div>
+    );
+  }
+
+  _renderBasicStats = (currentBodyPart) => {
+    const { entries } = this.props;
+
+    const dateEntries = currentBodyPart?.stats?.calendar ? currentBodyPart?.stats?.calendar : entries;
+    const last_entry = moment(dateEntries[0]?.date).utc().format('MM/DD/YY');
+    const oldest_entry = moment(dateEntries[dateEntries.length-1]?.date).utc().format('MM/DD/YY');
+
+    if (!currentBodyPart || currentBodyPart.stats?.total?.num_entries) {
+      return (
+        <div style={styles.basicStatsContainer}>
+          <div style={{height: '100%', flex: 1.2, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'flex-start'}}>
+            <div># of Entries:</div>
+            <div>Last Entry:</div>
+            <div>Tracking Since:</div>
+          </div>
+          <div style={{height: '100%', flex: 0.8, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'flex-end'}}>
+            <div>{currentBodyPart
+              ? (currentBodyPart.stats?.total?.num_entries ? currentBodyPart.stats.total.num_entries : 0 )
+              : entries.length}
+            </div>
+            <div>{last_entry}</div>
+            <div>{oldest_entry}</div>
+          </div>
+        </div>
+        );
+      } else {
+        return (
+          <div style={styles.basicStatsContainer}>
+            No entries for this pain point in this timeframe!
+          </div>
+        );
+      }
+  }
+
+  _renderStatsContainer = (visualizerBodyParts) => {
+    const { history, bodyParts, entries, isMobile, isSmallScreen, isMediumScreen } = this.props;
     const { currentBodyPartID } = this.state;
 
     let part, currentBodyPart;
@@ -336,39 +394,17 @@ class Dashboard extends React.Component {
       }
     }
 
-    const dateEntries = currentBodyPart?.stats?.calendar ? currentBodyPart?.stats?.calendar : entries;
-    const last_entry = moment(dateEntries[0]?.date).utc().format('MM/DD/YY');
-    const oldest_entry = moment(dateEntries[dateEntries.length-1]?.date).utc().format('MM/DD/YY');
-
     return (
-      <div style={styles.rightContentContainer}>
-        <div style={{ ...AppStyles.typContentContainer, padding: 30, flex: 1, ...AppStyles.columnStart }}>
-          <div style={{ ...AppStyles.rowSpace, height: 110, width: '100%', position: 'relative'}}>
-            <div style={styles.titleContainer}>
+        <div style={styles.mainStatsContainer(isMediumScreen)}>
+          <div style={{ ...AppStyles.rowBetween, height: 110, width: '95%', marginTop: 20}}>
+            <div style={styles.titleContainer(isSmallScreen)}>
               <div>{currentBodyPart ? currentBodyPart.displayName : 'General'}</div>
               <div>Stats</div>
             </div>
-            {(!currentBodyPart || currentBodyPart.stats?.total?.num_entries)
-            ? (
-                <div style={styles.basicStatsContainer}>
-                  <div style={{height: '100%', flex: 1.2, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'flex-start'}}>
-                    <div>Total # of Entries:</div>
-                    <div>Last Entry:</div>
-                    <div>Tracking Since:</div>
-                  </div>
-                  <div style={{height: '100%', flex: 0.8, display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'flex-end'}}>
-                    <div>{currentBodyPart
-                      ? (currentBodyPart.stats?.total?.num_entries ? currentBodyPart.stats.total.num_entries : 0 )
-                      : entries.length}
-                    </div>
-                    <div>{last_entry}</div>
-                    <div>{oldest_entry}</div>
-                  </div>
-                </div>)
-            : (<div style={styles.basicStatsContainer}>No entries for this pain point in this timeframe!</div>)}
+            {!isMobile && this._renderBasicStats(currentBodyPart)}
           </div>
           {(currentBodyPart) ? (
-            <div style={styles.statsContainer}>
+            <div style={styles.statsContainer(isSmallScreen)}>
               {this._renderOverviewStats(currentBodyPart)}
               <hr style={{width: '85%', height: 0, borderTop: `solid 2px ${AppColors.blue}`}}/>
               {this._renderDaytimeStats(currentBodyPart)}
@@ -386,29 +422,16 @@ class Dashboard extends React.Component {
               </div>
             </div>
           ) : (
-            <div style={styles.statsContainer}>
+            <div style={styles.statsContainer(isSmallScreen)}>
               {this._renderGeneralStats(visualizerBodyParts)}
             </div>
           )}
         </div>
-        <div style={styles.mainButtonContainer}>
-          <Button
-            onClick={() => { history.push('entries')}}
-            btnStyles={styles.mainButtonInactive}>
-            View All Entries
-          </Button>
-          <Button
-            onClick={() => { history.push('add_entry')}}
-            btnStyles={styles.mainButton}>
-            Add An Entry
-          </Button>
-        </div>
-      </div>
     );
   }
 
   render() {
-    const { userInfo, bodyParts, logout } = this.props;
+    const { userInfo, bodyParts, logout, isSmallScreen, isMediumScreen } = this.props;
     const { statType, daytime, newBodyPart } = this.state;
 
     const visualizerBodyParts = bodyParts.map(part => {
@@ -432,13 +455,16 @@ class Dashboard extends React.Component {
 
 
     return (
-      <div style={styles.container}>
+      <div style={styles.container(isSmallScreen)}>
 
         <Navbar userInfo={userInfo} logout={logout}/>
 
-        <div style={styles.contentContainer}>
+        <div style={styles.contentContainer(isMediumScreen)}>
           {this._renderLeftContainer(visualizerBodyParts)}
-          {this._renderRightContainer(visualizerBodyParts)}
+          <div style={styles.rightContentContainer(isSmallScreen)}>
+            {!isMediumScreen && this._renderStatsContainer(visualizerBodyParts)}
+            {!isMediumScreen && this._renderMainButtonContainer()}
+          </div>
         </div>
 
         <ActionModal
@@ -477,4 +503,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(Dashboard));
+)(withRouter(withWindowDimensions(Dashboard)));
