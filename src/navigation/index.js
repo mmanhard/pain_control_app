@@ -16,29 +16,7 @@ import AppColors from 'Common/AppColors';
 
 class Navigation extends React.Component {
   componentDidMount() {
-    const { userInfo } = this.props;
-
-    this.props.getUserData(userInfo);
-    this.props.getEntries(userInfo);
-    this.props.getBodyParts(userInfo);
-
     document.body.style = `background: ${AppColors.lilac};`;
-  }
-
-  componentDidUpdate(prevProps) {
-    const { userInfo } = this.props;
-
-    if (this.props.userUpdate) {
-      this.props.getUserData(userInfo);
-    }
-
-    if (this.props.entryUpdate) {
-      this.props.getEntries(userInfo);
-    }
-
-    if (this.props.bodyPartUpdate) {
-      this.props.getBodyParts(userInfo);
-    }
   }
 
   render() {
