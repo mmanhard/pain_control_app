@@ -4,7 +4,8 @@ const initialState = {
   bodyPartInfo: null,
   bodyParts: null,
   bodyPartUpdate: false,
-  isFetching: false
+  isFetching: false,
+  isAwaitingResp: false,
 };
 
 export default (state = initialState, action) => {
@@ -45,16 +46,40 @@ export default (state = initialState, action) => {
         isFetching: false,
       };
 
+    case actions.bodyPartActions.ADD_BODY_PART_REQUEST:
+      return {
+        ...state,
+        isAwaitingResp: true,
+      };
     case actions.bodyPartActions.ADD_BODY_PART_SUCCESS:
       return {
         ...state,
+        isAwaitingResp: false,
         bodyPartUpdate: true
+      };
+    case actions.bodyPartActions.ADD_BODY_PART_FAIL:
+      return {
+        ...state,
+        isAwaitingResp: false,
+      };
+
+    case actions.bodyPartActions.EDIT_BODY_PART_REQUEST:
+      return {
+        ...state,
+        isAwaitingResp: true,
       };
     case actions.bodyPartActions.EDIT_BODY_PART_SUCCESS:
       return {
         ...state,
-        bodyPartUpdate: true
+        bodyPartUpdate: true,
+        isAwaitingResp: false,
       };
+    case actions.bodyPartActions.EDIT_BODY_PART_FAIL:
+      return {
+        ...state,
+        isAwaitingResp: false,
+      };
+
     default:
       return state;
   }

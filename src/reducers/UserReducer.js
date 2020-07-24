@@ -71,10 +71,21 @@ export default (state = initialState, action) => {
         isFetching: false
       };
 
+    case actions.userActions.UPDATE_USER_REQUEST:
+      return {
+        ...state,
+        isAwaitingResp: true,
+      };
     case actions.userActions.UPDATE_USER_SUCCESS:
       return {
         ...state,
         userUpdate: true,
+        isAwaitingResp: false,
+      };
+    case actions.userActions.UPDATE_USER_REQUEST:
+      return {
+        ...state,
+        isAwaitingResp: false,
       };
 
     case actions.userActions.LOG_OUT:
