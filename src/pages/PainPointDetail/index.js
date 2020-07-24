@@ -4,16 +4,17 @@ import { bindActionCreators } from 'redux';
 import moment from 'moment';
 
 import actions from 'Actions';
+import AppStyles from 'Common/AppStyles';
+import withWindowDimensions from 'Common/AppDimens';
+import BodyVisualizer from 'Components/BodyVisualizer';
+import Button from 'Components/Button';
+import CalendarChart from 'Components/CalendarChart';
+import DaytimeChart from 'Components/DaytimeChart';
+import HistogramChart from 'Components/HistogramChart';
+import LoadingSpinner from 'Components/LoadingSpinner';
 import Navbar from 'Components/Navbar';
 import styles from './style';
-import DaytimeChart from 'Components/DaytimeChart';
-import CalendarChart from 'Components/CalendarChart';
-import HistogramChart from 'Components/HistogramChart';
-import BodyVisualizer from 'Components/BodyVisualizer';
 import Utils from 'Utils';
-import AppStyles from 'Common/AppStyles';
-import Button from 'Components/Button';
-import withWindowDimensions from 'Common/AppDimens';
 
 const chartTypes = {
   daytime: 'daytime',
@@ -298,17 +299,15 @@ class PainPointDetail extends React.Component {
   }
 
   render() {
-    const { userInfo, bodyPartInfo, isSmallScreen, logout } = this.props;
+    const { userInfo, bodyPartInfo, isFetching, isSmallScreen, logout } = this.props;
     const { chartType, statType } = this.state;
-
-    // console.log(bodyPartInfo);
 
     return (
       <div style={styles.container(isSmallScreen)}>
 
         <Navbar userInfo={userInfo} logout={logout}/>
 
-        <div style={styles.contentContainer(isSmallScreen)}>
+        {bodyPartInfo && <div style={styles.contentContainer(isSmallScreen)}>
 
           <div style={styles.configContainer(isSmallScreen)}>
             {this._renderTitleContainer()}
@@ -317,7 +316,9 @@ class PainPointDetail extends React.Component {
 
           {this._renderGraphContainer()}
 
-        </div>
+        </div>}
+
+        {(!bodyPartInfo || isFetching) && <LoadingSpinner />}
 
       </div>
     )
@@ -325,6 +326,7 @@ class PainPointDetail extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  isFetching: state.bodyParts.isFetching,
   userInfo: state.users.userInfo,
   bodyPartInfo: state.bodyParts.bodyPartInfo
 });
