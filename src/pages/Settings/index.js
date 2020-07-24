@@ -4,13 +4,14 @@ import { bindActionCreators } from 'redux';
 import validator from 'validator';
 
 import actions from 'Actions';
-import Navbar from 'Components/Navbar';
-import styles from './style';
-import withWindowDimensions from 'Common/AppDimens';
-import Utils from 'Utils';
 import AppColors from 'Common/AppColors';
+import withWindowDimensions from 'Common/AppDimens';
 import BubbleList from 'Components/BubbleList';
 import Button from 'Components/Button';
+import LoadingSpinner from 'Components/LoadingSpinner';
+import Navbar from 'Components/Navbar';
+import styles from './style';
+import Utils from 'Utils';
 
 import BackIcon from 'Icons/icons8-back.png';
 import NameIcon from 'Icons/icons8-name.png';
@@ -23,7 +24,7 @@ const screenTypes = {
   editAccount: 'editAccount',
   editPainPoints: 'editPainPoints',
   editPassword: 'editPassword'
-}
+};
 
 const validBirthdayLength = 10;
 
@@ -46,6 +47,15 @@ class Settings extends React.Component {
       hometown: props?.userInfo ? props.userInfo.hometown : '',
       screenType: screenTypes.editAccount
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    const { userInfo, isAwaitingResp } = this.props;
+
+    if (prevProps.isAwaitingResp & !isAwaitingResp) {
+      this.props.getUserData(userInfo);
+      this.props.getBodyParts(userInfo);
+    }
   }
 
   _handleInputChange = (event) => {
@@ -389,7 +399,7 @@ class Settings extends React.Component {
   }
 
   render() {
-    const { userInfo, windowWidth, logout, isSmallScreen } = this.props;
+    const { userInfo, windowWidth, isAwaitingResp, logout, isSmallScreen } = this.props;
     const { screenType } = this.state;
 
     const showAccount = screenType == screenTypes.editAccount;
@@ -431,16 +441,22 @@ class Settings extends React.Component {
           {showPainPoints && this._renderEditBodyParts()}
           {showPassword && this._renderChangePassword()}
 
+          {isAwaitingResp && <LoadingSpinner />}
+
         </div>
       </div>
     )
   }
 }
 
-const mapStateToProps = state => ({
-  userInfo: state.users.userInfo,
-  bodyParts: state.bodyParts.bodyParts
-});
+const mapStateToProps = state => {
+  const isAwaitingResp = state.users.isAwaitingResp || state.bodyParts.isAwaitingResp;
+  return {
+    isAwaitingResp,
+    userInfo: state.users.userInfo,
+    bodyParts: state.bodyParts.bodyParts
+  }
+};
 
 const mapDispatchToProps = dispatch => ({
   ...bindActionCreators(actions, dispatch),
