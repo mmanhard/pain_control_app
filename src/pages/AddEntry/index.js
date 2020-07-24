@@ -12,6 +12,7 @@ import BodyVisualizer from 'Components/BodyVisualizer';
 import BubbleList from 'Components/BubbleList';
 import Button from 'Components/Button';
 import HelpModal from 'Components/HelpModal';
+import LoadingSpinner from 'Components/LoadingSpinner';
 import Navbar from 'Components/Navbar';
 import styles from './style';
 import Utils from 'Utils';
@@ -41,6 +42,19 @@ class AddEntry extends React.Component {
     };
 
     this.helpModalRef = React.createRef();
+  }
+
+  componentDidMount() {
+    const { userInfo } = this.props;
+
+    this.props.getUserData(userInfo);
+    this.props.getBodyParts(userInfo);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!prevProps.entryUpdate && this.props.entryUpdate) {
+      this.props.history.push('/dashboard');
+    }
   }
 
   _handleInputChange = (event) => {
@@ -143,7 +157,6 @@ class AddEntry extends React.Component {
     });
 
     this.props.addEntry(userInfo, entry);
-    this.props.history.push('/dashboard');
   }
 
   _switchScreen = (backward = false) => {
@@ -472,7 +485,7 @@ class AddEntry extends React.Component {
   }
 
   render() {
-    const { userInfo, bodyParts, logout, isSmallScreen, isMediumScreen } = this.props;
+    const { userInfo, bodyParts, logout, isSmallScreen, isMediumScreen, isAwaitingResp } = this.props;
     const { screenType, highDetail } = this.state;
 
     return (
@@ -495,6 +508,8 @@ class AddEntry extends React.Component {
           {screenType === screenTypes.addNotes && this._renderAddNotes()}
         </div>
 
+        {isAwaitingResp && <LoadingSpinner />}
+
         <HelpModal
           ref={this.helpModalRef}
           contentStyle={styles.formModalContainer}
@@ -507,6 +522,8 @@ class AddEntry extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  isAwaitingResp: state.entries.isAwaitingResp,
+  entryUpdate: state.entries.entryUpdate,
   userInfo: state.users.userInfo,
   bodyParts: state.bodyParts.bodyParts,
 });
