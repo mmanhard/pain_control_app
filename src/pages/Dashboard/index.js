@@ -74,15 +74,15 @@ class Dashboard extends React.Component {
   componentDidUpdate(prevProps) {
     const { userInfo } = this.props;
 
-    if (this.props.userUpdate) {
+    if (!prevProps.userUpdate && this.props.userUpdate) {
       this.props.getUserData(userInfo);
     }
 
-    if (this.props.entryUpdate) {
+    if (!prevProps.entryUpdate && this.props.entryUpdate) {
       this.props.getEntries(userInfo);
     }
 
-    if (this.props.bodyPartUpdate) {
+    if (!prevProps.bodyPartUpdate && this.props.bodyPartUpdate) {
       this.props.getBodyParts(userInfo);
     }
   }
