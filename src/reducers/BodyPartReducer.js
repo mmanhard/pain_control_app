@@ -29,7 +29,7 @@ export default (state = initialState, action) => {
         isFetching: false,
       }
 
-    case actions.bodyPartActions.GET_BODY_PART_SUCCESS:
+    case actions.bodyPartActions.GET_BODY_PART_REQUEST:
       return {
         ...state,
         isFetching: true,
