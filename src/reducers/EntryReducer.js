@@ -2,23 +2,49 @@ import actions from '../actions'
 
 const initialState = {
   entries: null,
-  entryUpdate: false
+  entryUpdate: false,
+  isFetching: false
 };
 
 export default (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
+
+    case actions.entryActions.GET_ALL_ENTRIES_REQUEST:
+      return {
+        ...state,
+        isFetching: true,
+      };
     case actions.entryActions.GET_ALL_ENTRIES_SUCCESS:
       return {
         ...state,
         entries: payload.data.entries,
-        entryUpdate: false
+        entryUpdate: false,
+        isFetching: false,
+      };
+    case actions.entryActions.GET_ALL_ENTRIES_FAIL:
+      return {
+        ...state,
+        isFetching: false,
+      };
+
+    case actions.entryActions.GET_ENTRY_REQUEST:
+      return {
+        ...state,
+        isFetching: true,
       };
     case actions.entryActions.GET_ENTRY_SUCCESS:
       return {
         ...state,
         entryInfo: payload.data.entry_info,
+        isFetching: false,
       };
+    case actions.entryActions.GET_ENTRY_FAIL:
+      return {
+        ...state,
+        isFetching: false,
+      };
+
     case actions.entryActions.ADD_ENTRY_SUCCESS:
       return {
         ...state,

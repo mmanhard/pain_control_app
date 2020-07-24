@@ -5,6 +5,7 @@ const initialState = {
   isLogin: false,
   loginSuccess: false,
   userUpdate: false,
+  isFetching: false
 };
 
 export default (state = initialState, action) => {
@@ -26,12 +27,25 @@ export default (state = initialState, action) => {
         userUpdate: true,
         loginSuccess: true
       };
+
+    case actions.userActions.GET_USER_REQUEST:
+      return {
+        ...state,
+        isFetching: true
+      };
     case actions.userActions.GET_USER_SUCCESS:
       return {
         ...state,
         userUpdate: false,
         userInfo: payload.data.user_info,
+        isFetching: false
       };
+    case actions.userActions.GET_USER_FAIL:
+      return {
+        ...state,
+        isFetching: false
+      };
+
     case actions.userActions.UPDATE_USER_SUCCESS:
       return {
         ...state,
