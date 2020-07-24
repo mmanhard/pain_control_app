@@ -47,7 +47,11 @@ module.exports = (env) => {
               sourceMap: true
             }
           }
-        }
+        },
+        {
+          test: /\.css$/i,
+          use: ['style-loader', 'css-loader'],
+        },
       ]
     },
     devtool: isProd ? 'source-map' : 'cheap-module-eval-source-map',
