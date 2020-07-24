@@ -5,10 +5,12 @@ export default {
   container: {
     ...AppStyles.fill,
     bottom: 0,
-    ...AppStyles.center,
-    backgroundColor: 'rgba(0, 0, 0, 0.2)'
+    ...AppStyles.columnStart,
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
   contentContainer: {
+    position: 'relative',
+    top: 200,
     backgroundColor: AppColors.white,
     height: 250,
     width: 300,
