@@ -5,13 +5,13 @@ import { withRouter } from 'react-router';
 import moment from 'moment';
 
 import actions from 'Actions';
-import Navbar from 'Components/Navbar';
-import BodyVisualizer from 'Components/BodyVisualizer';
-import AppStyles from 'Common/AppStyles';
-import Button from 'Components/Button';
-import styles from './style';
-
 import withWindowDimensions from 'Common/AppDimens';
+import AppStyles from 'Common/AppStyles';
+import BodyVisualizer from 'Components/BodyVisualizer';
+import Button from 'Components/Button';
+import LoadingSpinner from 'Components/LoadingSpinner';
+import Navbar from 'Components/Navbar';
+import styles from './style';
 
 const daytimes = {
   all_day: 'All Day',
@@ -69,7 +69,6 @@ class Entries extends React.Component {
     if (endDate) {
       params = { ...params, end_date: endDate.toISOString() };
     }
-    console.log(sortBy);
 
     this.props.getEntries(userInfo, params);
   }
@@ -284,7 +283,7 @@ class Entries extends React.Component {
   }
 
   render() {
-    const { userInfo, entries, logout, isSmallScreen, isMediumScreen } = this.props;
+    const { userInfo, entries, isFetching, logout, isSmallScreen, isMediumScreen } = this.props;
 
     return (
       <div style={styles.container(isSmallScreen)}>
@@ -301,6 +300,9 @@ class Entries extends React.Component {
           <div style={styles.entriesContainer(isSmallScreen, isMediumScreen)}>
             {entries.map(this._renderEntry)}
           </div>
+
+          {isFetching && <LoadingSpinner />}
+
         </div>
       </div>
     )
@@ -308,6 +310,7 @@ class Entries extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  isFetching: state.entries.isFetching,
   userInfo: state.users.userInfo,
   bodyParts: state.bodyParts.bodyParts,
   entries: state.entries.entries
