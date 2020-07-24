@@ -5,13 +5,14 @@ import { withRouter } from 'react-router';
 import moment from 'moment';
 
 import actions from 'Actions';
-import Navbar from 'Components/Navbar';
-import styles from './style';
-import AppStyles from 'Common/AppStyles';
 import AppColors from 'Common/AppColors';
+import withWindowDimensions from 'Common/AppDimens';
+import AppStyles from 'Common/AppStyles';
 import BodyVisualizer from 'Components/BodyVisualizer';
 import Button from 'Components/Button';
-import withWindowDimensions from 'Common/AppDimens';
+import LoadingSpinner from 'Components/LoadingSpinner';
+import Navbar from 'Components/Navbar';
+import styles from './style';
 
 class EntryDetail extends React.Component {
   constructor(props) {
@@ -241,16 +242,19 @@ class EntryDetail extends React.Component {
   }
 
   render() {
-    const { userInfo, entryInfo, isSmallScreen, isMediumScreen, logout } = this.props;
+    const { userInfo, entryInfo, isFetching, isSmallScreen, isMediumScreen, logout } = this.props;
     const { currentBodyPartID } = this.state;
 
+
     let subentry, currentSubentry, currentBodyPart;
-    for (subentry of entryInfo.pain_subentries) {
-      const part = subentry.body_part;
-      if (currentBodyPartID && part.id == currentBodyPartID) {
-        currentBodyPart = part;
-        currentSubentry = subentry;
-        break;
+    if (entryInfo) {
+      for (subentry of entryInfo.pain_subentries) {
+        const part = subentry.body_part;
+        if (currentBodyPartID && part.id == currentBodyPartID) {
+          currentBodyPart = part;
+          currentSubentry = subentry;
+          break;
+        }
       }
     }
 
@@ -258,8 +262,10 @@ class EntryDetail extends React.Component {
       <div style={styles.container(isSmallScreen)}>
         <Navbar userInfo={userInfo} logout={logout}/>
         <div style={styles.contentContainer(isSmallScreen, isMediumScreen)}>
-          {this._renderLeftContainer(currentBodyPart, currentSubentry)}
-          {!isMediumScreen && this._renderRightContainer(currentBodyPart, currentSubentry)}
+          {entryInfo && this._renderLeftContainer(currentBodyPart, currentSubentry)}
+          {entryInfo && !isMediumScreen && this._renderRightContainer(currentBodyPart, currentSubentry)}
+
+          {(!entryInfo || isFetching) && <LoadingSpinner />}
         </div>
 
       </div>
@@ -268,6 +274,7 @@ class EntryDetail extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  isFetching: state.entries.isFetching,
   userInfo: state.users.userInfo,
   entryInfo: state.entries.entryInfo
 });
