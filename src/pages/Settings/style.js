@@ -101,7 +101,7 @@ export default {
     return {
       width: '100%',
       ...minWidth,
-      marginTop: isSmallScreen ? 10 : 48,
+      marginTop: isSmallScreen ? 10 : 24,
     }
   },
   partsContainer: {
@@ -227,5 +227,18 @@ export default {
       ...AppStyles.largeBtn,
     },
     ...AppStyles.activeBtn
+  },
+  flashMessage: (isSmallScreen, flashMessage, flashSuccess) => {
+    return {
+      width: '90%',
+      marginTop: 10,
+      height: flashMessage ? 80 : 0,
+      borderRadius: 20,
+      backgroundColor: flashSuccess ? AppColors.flashGreen : AppColors.flashRed,
+      alignSelf: 'center',
+      ...AppStyles.center,
+      fontSize: isSmallScreen ? AppFonts.size.small : AppFonts.size.medium,
+      color: flashSuccess ? AppColors.flashGreenTxt : AppColors.flashRedTxt
+    };
   },
 }

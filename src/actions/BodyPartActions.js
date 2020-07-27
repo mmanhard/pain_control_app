@@ -70,7 +70,7 @@ const getBodyPart = (userInfo, bodyPartID, params) => {
   };
 }
 
-const addBodyPart = (userInfo, data) => {
+const addBodyPart = (userInfo, data, cb = () => {}) => {
   return async dispatch => {
     dispatch({
       type: bodyPartActions.ADD_BODY_PART_REQUEST
@@ -83,10 +83,14 @@ const addBodyPart = (userInfo, data) => {
           type: bodyPartActions.ADD_BODY_PART_SUCCESS,
           payload: { data: { ...response.data } }
         });
+
+        cb(true, response.data.message);
       } else {
         dispatch({
           type: bodyPartActions.ADD_BODY_PART_FAIL,
         });
+
+        cb(false, response.data.message);
       }
     } catch (err) {
       console.log(err);
@@ -94,7 +98,7 @@ const addBodyPart = (userInfo, data) => {
   };
 }
 
-const editBodyPart = (userInfo, bodyPartID, data) => {
+const editBodyPart = (userInfo, bodyPartID, data, cb = () => {}) => {
   return async dispatch => {
     dispatch({
       type: bodyPartActions.EDIT_BODY_PART_REQUEST
@@ -107,10 +111,14 @@ const editBodyPart = (userInfo, bodyPartID, data) => {
           type: bodyPartActions.EDIT_BODY_PART_SUCCESS,
           payload: { data: { ...response.data } }
         });
+
+        cb(true, response.data.message);
       } else {
         dispatch({
           type: bodyPartActions.EDIT_BODY_PART_FAIL,
         });
+
+        cb(false, response.data.message);
       }
     } catch (err) {
       console.log(err);

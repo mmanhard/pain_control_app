@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import validator from 'validator';
 
 import actions from 'Actions';
+import { flashDuration } from 'Common/AppConst';
 import AppColors from 'Common/AppColors';
 import withWindowDimensions from 'Common/AppDimens';
 import BubbleList from 'Components/BubbleList';
@@ -45,7 +46,9 @@ class Settings extends React.Component {
       phone: Utils.formatPhoneInput(props?.userInfo?.phone),
       birthday: Utils.formatDateInput(props?.userInfo?.birthday),
       hometown: props?.userInfo ? props.userInfo.hometown : '',
-      screenType: screenTypes.editAccount
+      screenType: screenTypes.editAccount,
+      flashMessage: '',
+      flashSuccess: false
     };
   }
 
@@ -81,25 +84,29 @@ class Settings extends React.Component {
     let userUpdates = {};
 
     if (!first_name) {
-      alert('Please enter a first name!')
+      this._setFlashMessage(false, 'Please enter a first name!');
+      return;
     } else if (userInfo?.first_name !== first_name) {
       userUpdates.first_name = first_name;
     }
 
     if (!last_name) {
-      alert('Please enter a first name!')
+      this._setFlashMessage(false, 'Please enter a first name!');
+      return;
     } else if (userInfo?.last_name !== last_name) {
       userUpdates.last_name = last_name;
     }
 
     if (phone && !validator.isMobilePhone(phone)) {
-      alert('Please enter a valid phone number!')
+      this._setFlashMessage(false, 'Please enter a valid phone number!');
+      return;
     } else if (userInfo?.phone !== phone) {
       userUpdates.phone = phone;
     }
 
     if (birthday && birthday.length !== validBirthdayLength) {
-      alert('Please enter a valid date!')
+      this._setFlashMessage(false, 'Please enter a valid date!');
+      return;
     } else if (userInfo?.birthday !== birthday) {
       userUpdates.birthday = birthday;
     }
@@ -109,8 +116,7 @@ class Settings extends React.Component {
       userUpdates.hometown = hometown;
     }
 
-    console.log(userUpdates);
-    this.props.updateUser(userInfo, userUpdates);
+    this.props.updateUser(userInfo, userUpdates, this._setFlashMessage);
   }
 
   _handleEditBodyPart = () => {
@@ -122,7 +128,7 @@ class Settings extends React.Component {
     if (part_location?.length > 0) partUpdates.location = part_location;
     if (part_type?.length > 0) partUpdates.type = part_type;
 
-    this.props.editBodyPart(userInfo, part.id, partUpdates);
+    this.props.editBodyPart(userInfo, part.id, partUpdates, this._setFlashMessage);
     this.setState({ currentBodyPart: null })
   }
 
@@ -130,9 +136,11 @@ class Settings extends React.Component {
     const { userInfo } = this.props;
     const { part_name, part_location, part_type } = this.state;
 
-    if (part_name?.length > 0 && part_location?.length > 0 && part_type?.length > 0) {
+    if (part_name?.length > 0) {
       const partInfo = { name: part_name, location: part_location, type: part_type }
-      this.props.addBodyPart(userInfo, partInfo);
+      this.props.addBodyPart(userInfo, partInfo, this._setFlashMessage);
+    } else {
+      this._setFlashMessage(false, 'You must enter a name for the pain point!');
     }
   }
 
@@ -140,12 +148,35 @@ class Settings extends React.Component {
     const { userInfo } = this.props;
     const { old_password, new_password_1, new_password_2 } = this.state;
 
-    if (old_password.length > 0 && new_password_1.length > 0) {
-      if (new_password_1 == new_password_2) {
-        const passwordUpdates = { old_password, new_password: new_password_1 };
-        this.props.changePassword(userInfo, passwordUpdates);
-      }
+    if (old_password.length <= 0) {
+      this._setFlashMessage(false, 'Please type in your old password!');
+    } else if (new_password_1.length <= 0) {
+      this._setFlashMessage(false, 'Please type in your new password!');
+    } else if (new_password_2.length <= 0) {
+      this._setFlashMessage(false, 'Please re-type your new password!');
+    } else if (new_password_1 != new_password_2) {
+      this._setFlashMessage(false, 'New passwords do not match!');
+    } else {
+      const passwordUpdates = { old_password, new_password: new_password_1 };
+      this.props.changePassword(userInfo, passwordUpdates, this._setFlashMessage);
     }
+  }
+
+  _setFlashMessage = (success, message) => {
+    this.setState({flashMessage: message, flashSuccess: success});
+    setTimeout(() => this.setState({flashMessage: ''}), flashDuration)
+  }
+
+  _renderFlash = () => {
+    const { isSmallScreen } = this.props;
+    const { flashMessage, flashSuccess } = this.state;
+
+    return (
+      <div style={styles.flashMessage(isSmallScreen, flashMessage, flashSuccess)}>
+        <div style={{margin: 10, textAlign: 'center'}}>{flashMessage}</div>
+      </div>
+    );
+
   }
 
   _renderEditAccount = () => {
@@ -155,13 +186,19 @@ class Settings extends React.Component {
 
     return (
       <div style={{...styles.editInfoContainer(isMediumScreen), ...styles.mainContainer(isSmallScreen)}}>
+
         <div style={{...styles.editAccountLeft, order: isMediumScreen ? 3 : 1}}>
           {!isMediumScreen && title}
-          <div style={{marginTop: isMediumScreen ? 0 : 72, marginBottom: 20}}>
+          {!isMediumScreen && this._renderFlash()}
+          <div style={{marginTop: isMediumScreen ? 0 : 20, marginBottom: 20}}>
             <Button btnStyles={styles.continueBtn} onClick={this._handleEditAccount}>Submit</Button>
           </div>
         </div>
+
         {isMediumScreen && !isSmallScreen && title}
+
+        {isMediumScreen && this._renderFlash()}
+
         <div style={{...styles.formContainer, order: 2}}>
           <div style={styles.txtInputContainer}>
             <img src={NameIcon} style={{height: 24, margin: 'auto'}} />
@@ -253,9 +290,12 @@ class Settings extends React.Component {
 
     return (
       <div style={{...styles.editPartsContainer, ...styles.mainContainer(isSmallScreen)}}>
-        {!isSmallScreen && <div style={{width: '100%', height: 110}}>
+        {!isSmallScreen && <div style={{width: '100%'}}>
           {this._renderSettingsTitle(['Edit', 'Pain Points'])}
         </div>}
+
+        {this._renderFlash()}
+
         <BubbleList
             contentContainerStyle={styles.bodyPartsContainer(isSmallScreen)}
             rowContainerStyle={styles.partsContainer}
@@ -343,13 +383,19 @@ class Settings extends React.Component {
 
     return (
       <div style={{...styles.editInfoContainer(isMediumScreen), ...styles.mainContainer(isSmallScreen)}}>
+
         <div style={{...styles.changePwdLeft, order: isMediumScreen ? 3 : 1}}>
           {!isMediumScreen && title}
-          <div style={{marginTop: isMediumScreen ? 0 : 72, marginBottom: 20}}>
+          {!isMediumScreen && this._renderFlash()}
+          <div style={{marginTop: isMediumScreen ? 0 : 20, marginBottom: 20}}>
             <Button btnStyles={styles.continueBtn} onClick={this._handleChangePassword}>Submit</Button>
           </div>
         </div>
+
         {isMediumScreen && !isSmallScreen && title}
+
+        {isMediumScreen && this._renderFlash()}
+
         <div style={{...styles.formContainer, order: 2}}>
           <div style={{...styles.txtInputContainer}}>
             <img src={KeyIcon} style={{height: 24, margin: 'auto' }} />

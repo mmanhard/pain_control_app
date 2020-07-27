@@ -104,7 +104,8 @@ class Login extends React.Component {
   }
 
   _renderFlash = () => {
-    const { flashMessage,isSmallScreen } = this.state;
+    const { isSmallScreen } = this.props;
+    const { flashMessage } = this.state;
     return (
       <div style={styles.flashMessage(isSmallScreen)}>
         <div style={{margin: 10}}>{flashMessage}</div>
