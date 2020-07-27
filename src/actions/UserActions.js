@@ -26,7 +26,7 @@ const userActions = {
   UPDATE_USER_FAIL: 'UPDATE_' + USER_PREFIX + '_FAIL',
 };
 
-const register = (data) => {
+const register = (data, errCb = () => {}) => {
   return async dispatch => {
     dispatch({
       type: userActions.USER_REGISTER_REQUEST
@@ -44,6 +44,7 @@ const register = (data) => {
         dispatch({
           type: userActions.USER_REGISTER_FAIL
         });
+        errCb(response.data.message);
       }
     } catch (err) {
       console.log(err);
@@ -51,7 +52,7 @@ const register = (data) => {
   };
 };
 
-const login = (data) => {
+const login = (data, errCb = () => {}) => {
   return async dispatch => {
     dispatch({
       type: userActions.USER_LOGIN_REQUEST
@@ -69,6 +70,8 @@ const login = (data) => {
         dispatch({
           type: userActions.USER_LOGIN_FAIL
         });
+        console.log(response);
+        errCb(response.data.message);
       }
     } catch (err) {
       console.log(err);

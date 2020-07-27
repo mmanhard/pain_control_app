@@ -11,11 +11,15 @@ import KeyIcon from 'Icons/icons8-key.png';
 
 import Icon from 'Icons/temp_ico.png';
 
+const flashDuration = 5000;
+
 class RegistrationModal extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      flashMessage: ''
+    };
 
     this.modalRef = React.createRef();
   }
@@ -28,13 +32,32 @@ class RegistrationModal extends React.Component {
     this.modalRef.current.close();
   }
 
+  setFlashMessage = (errMsg) => {
+    this.setState({flashMessage: errMsg});
+    setTimeout(() => this.setState({flashMessage: ''}), flashDuration)
+  }
+
+  _renderFlash = () => {
+    const { isSmallScreen } = this.props;
+    const { flashMessage } = this.state;
+    return (
+      <div style={styles.flashMessage(isSmallScreen)}>
+        <div style={{margin: 10}}>{flashMessage}</div>
+      </div>
+    )
+  }
+
   render() {
     const { handleInputChange, handleRegister, isMobile } = this.props;
+    const { flashMessage } = this.state;
     return (
       <Modal
         ref={this.modalRef}
         contentStyle={styles.container(isMobile)}>
-        <div style={styles.formContainer(isMobile)}>
+
+        {flashMessage && this._renderFlash()}
+
+        <div style={styles.formContainer(flashMessage)}>
           <div style={styles.txtInputContainer}>
             <img src={NameIcon} style={{width: 24, height: 24, margin: 'auto'}} />
             <input

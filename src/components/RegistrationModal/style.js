@@ -20,23 +20,17 @@ export default {
       ...AppStyles.typContentContainer
     }
   },
-  formContainer: (isMobile) => {
+  formContainer: (flashVisible) => {
     return {
       flex: 1,
-      padding: isMobile ? 20 : '20px 60px 50px 60px',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }
+      ...AppStyles.center,
+    };
   },
   txtInputContainer: {
     height: 36,
     marginBottom: 30,
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
+    width: '80%',
+    ...AppStyles.rowStart,
     borderBottom: `1px solid ${AppColors.blue}`
   },
   txtInput: {
@@ -50,5 +44,19 @@ export default {
   registerBtn: {
     addStyles: AppStyles.largeBtn,
     ...AppStyles.activeBtn
+  },
+  flashMessage: (isSmallScreen) => {
+    return {
+      width: '90%',
+      marginTop: 10,
+      height: 80,
+      borderRadius: 20,
+      backgroundColor: AppColors.flashRed,
+      alignSelf: 'center',
+      ...AppStyles.center,
+      ...AppFonts.Raleway.bold,
+      fontSize: isSmallScreen ? AppFonts.size.small : AppFonts.size.medium,
+      color: AppColors.flashRedTxt
+    };
   },
 }
