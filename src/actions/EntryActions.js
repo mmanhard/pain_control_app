@@ -66,7 +66,7 @@ const getEntry = (userInfo, entryID, params) => {
   };
 }
 
-const addEntry = (userInfo, data) => {
+const addEntry = (userInfo, data, cb = () => {}) => {
   return async dispatch => {
     dispatch({
       type: entryActions.ADD_ENTRY_REQUEST
@@ -79,10 +79,14 @@ const addEntry = (userInfo, data) => {
           type: entryActions.ADD_ENTRY_SUCCESS,
           payload: { data: { ...response.data } }
         });
+
+        cb(true, response.data.message);
       } else {
         dispatch({
           type: entryActions.ADD_ENTRY_FAIL,
         });
+
+        cb(false, response.data.message);
       }
     } catch (err) {
       console.log(err);
