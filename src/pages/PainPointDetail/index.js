@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import moment from 'moment';
 
 import actions from 'Actions';
+import { flashDuration } from 'Common/AppConst';
 import AppStyles from 'Common/AppStyles';
 import withWindowDimensions from 'Common/AppDimens';
 import BodyVisualizer from 'Components/BodyVisualizer';
@@ -61,6 +62,7 @@ class PainPointDetail extends React.Component {
       statType: 'mean',
       customStartDate: undefined,
       customEndDate: undefined,
+      flashMessage: ''
     };
   }
 
@@ -109,6 +111,7 @@ class PainPointDetail extends React.Component {
     if (endDate) {
       params = { ...params, end_date: endDate.toISOString() };
     }
+
     this.props.getBodyPart(userInfo, bodyPartID, params);
   }
 
@@ -126,11 +129,15 @@ class PainPointDetail extends React.Component {
     const startDate = Utils.convertDateTimeToMoment(customStartDate, '12:00', 'AM');
     const endDate = Utils.convertDateTimeToMoment(customEndDate, '11:59', 'PM');
 
-    if (startDate && endDate) {
+    if (!startDate) {
+      this._setFlashMessage('Please submit a start date!');
+    } else if (!endDate) {
+      this._setFlashMessage('Please submit an end date!');
+    } else if (startDate.isSameOrAfter(endDate)) {
+      this._setFlashMessage('Start date must be before end date!');
+    } else {
       const params = { start_date: startDate.toISOString(), end_date: endDate.toISOString() };
       this.props.getBodyPart(userInfo, bodyPartID, params);
-    } else{
-      alert('Incomplete dates!')
     }
   }
 
@@ -294,8 +301,26 @@ class PainPointDetail extends React.Component {
             Submit
           </Button>
         </div>}
+        {this._renderFlash()}
       </div>
     );
+  }
+
+  _setFlashMessage = (message) => {
+    this.setState({flashMessage: message});
+    setTimeout(() => this.setState({flashMessage: ''}), flashDuration)
+  }
+
+  _renderFlash = () => {
+    const { isSmallScreen } = this.props;
+    const { flashMessage } = this.state;
+
+    return (
+      <div style={styles.flashMessage(isSmallScreen, flashMessage)}>
+        <div style={{margin: 10, textAlign: 'center'}}>{flashMessage}</div>
+      </div>
+    );
+
   }
 
   render() {
