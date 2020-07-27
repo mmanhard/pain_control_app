@@ -502,7 +502,10 @@ class AddEntry extends React.Component {
   _setFlashMessage = (success, message) => {
     if (this._isMounted) {
       this.setState({flashMessage: message, flashSuccess: success});
-      setTimeout(() => this.setState({flashMessage: ''}), flashDuration);
+
+      if (message) {
+        setTimeout(() => this.setState({flashMessage: ''}), flashDuration);
+      }
     }
   }
 
