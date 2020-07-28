@@ -222,13 +222,20 @@ class Onboarding extends React.Component {
     event.preventDefault();
 
     if (this.state.medicalHistory.length > 0) {
-      this.props.updateUser(this.props.userInfo, { medical_history: this.state.medicalHistory });
+      this.props.updateUser(this.props.userInfo, { medical_history: this.state.medicalHistory }, this._submitNotesCallback);
     }
-
-    this._switchScreen();
   }
 
-  _switchScreen = (backward = false) => {
+  _submitNotesCallback = (success, message) => {
+    if (success) {
+      this._switchScreen(false, false);
+    } else {
+      alert('Something went wrong! Please try again.')
+      // this._setFlashMessage(success, message);
+    }
+  }
+
+  _switchScreen = (backward = false, skip = true) => {
     switch (this.state.screenType) {
       case (screenTypes.addInfo):
         if (!backward) {
@@ -246,7 +253,12 @@ class Onboarding extends React.Component {
         if (backward) {
           this.setState({ screenType: screenTypes.addParts});
         } else {
-          this.props.history.replace('/dashboard');
+          const completeMsg = 'You\'re all set! Welcome to Pain Control!';
+          const incompMsg = 'Welcome to Pain Control! You can add more details about yourself over in the settings page.';
+          this.props.history.push({
+            pathname: '/dashboard',
+            state: { flashMessage: skip ? incompMsg : completeMsg }
+          });
         }
         break;
     }
