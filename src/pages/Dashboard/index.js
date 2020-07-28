@@ -6,6 +6,7 @@ import moment from 'moment';
 
 import actions from 'Actions';
 import AppColors from 'Common/AppColors';
+import { flashDuration } from 'Common/AppConst';
 import withWindowDimensions from 'Common/AppDimens';
 import AppStyles from 'Common/AppStyles';
 import ActionModal from 'Components/ActionModal';
@@ -46,6 +47,9 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props);
 
+    const flashMessage = props.history?.location?.state?.flashMessage
+      ? props.history.location.state.flashMessage : '';
+
     this.state = {
       name: '',
       type: 'Joint',
@@ -55,6 +59,8 @@ class Dashboard extends React.Component {
       newBodyPart: undefined,
       customStartDate: undefined,
       customEndDate: undefined,
+      flashMessage: flashMessage,
+      flashSuccess: true
     };
 
     this.actionModalRef = React.createRef();
@@ -63,12 +69,15 @@ class Dashboard extends React.Component {
 
   componentDidMount() {
     const { userInfo } = this.props;
+    const { flashMessage } = this.state;
 
     this.props.getUserData(userInfo);
     this.props.getEntries(userInfo);
     this.props.getBodyParts(userInfo);
 
-    document.body.style = `background: ${AppColors.lilac};`;
+    if (flashMessage) {
+      setTimeout(() => this.setState({flashMessage: ''}), flashDuration);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -288,12 +297,14 @@ class Dashboard extends React.Component {
             <div>My</div>
             <div>Pain Map</div>
           </div>
+          {!isSmallScreen && this._renderFlash()}
           <Button
             onClick={() => {this.helpModalRef.current.open()}}
             btnStyles={styles.helpBtn}>
             <div style={styles.helpIcon}>?</div>
           </Button>
         </div>
+        {isSmallScreen && this._renderFlash()}
         <div style={{width: '90%', ...AppStyles.rowSpace, alignItems: 'center'}}>
           <div style={styles.filterContainer(isSmallScreen)}>
             <div style={styles.filterTxt}>Show:</div>
@@ -456,6 +467,24 @@ class Dashboard extends React.Component {
         </div>
     );
   }
+
+  _setFlashMessage = (success, message) => {
+    this.setState({flashMessage: message, flashSuccess: success});
+    setTimeout(() => this.setState({flashMessage: ''}), flashDuration);
+  }
+
+  _renderFlash = () => {
+    const { isSmallScreen } = this.props;
+    const { flashMessage, flashSuccess } = this.state;
+
+    return (
+      <div style={styles.flashMessage(isSmallScreen, flashMessage, flashSuccess)}>
+        <div style={{margin: 10, textAlign: 'center'}}>{flashMessage}</div>
+      </div>
+    );
+
+  }
+
 
   render() {
     const { userInfo, bodyParts, entries, logout, isSmallScreen, isMediumScreen, isFetching } = this.props;
