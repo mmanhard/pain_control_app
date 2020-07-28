@@ -17,5 +17,9 @@ export default {
     '#5680E9',
     '#E5C3D1',
     '#7656E9',
-  ]
+  ],
+  flashRed: 'rgba(205,55,55,0.5)',
+  flashRedTxt: 'rgba(128,0,0,1.0)',
+  flashGreen: 'rgba(55,205,100,0.5)',
+  flashGreenTxt: 'rgba(0,128,0,1.0)',
 }

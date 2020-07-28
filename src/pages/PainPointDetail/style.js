@@ -225,5 +225,19 @@ export default {
     boxShadow: AppStyles.typBoxShadow,
     borderRadius: 12,
     marginRight: 30,
-  }
+  },
+  flashMessage: (isSmallScreen, flashMessage) => {
+    return {
+      width: '90%',
+      marginTop: 10,
+      marginBottom: 10,
+      height: flashMessage ? 80 : 0,
+      borderRadius: 20,
+      backgroundColor: AppColors.flashRed,
+      alignSelf: 'center',
+      ...AppStyles.center,
+      fontSize: isSmallScreen ? AppFonts.size.small : AppFonts.size.medium,
+      color: AppColors.flashRedTxt
+    };
+  },
 }

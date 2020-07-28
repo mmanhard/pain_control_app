@@ -11,3 +11,5 @@ export const defaultHeaders = {
   'Accept': 'application/json',
   'Content-Type': 'application/json'
 };
+
+export const flashDuration = 8000;

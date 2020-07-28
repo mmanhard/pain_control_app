@@ -17,12 +17,13 @@ export default {
       display: 'flex',
       flexDirection: 'column' };
     const flexStyle = isMobile ? mobileFlexStyle : AppStyles.rowSpace;
+    const controlWidth = isSmallScreen ? { width: '100%' } : { minWidth: 400 };
     return {
       flex: 1,
       margin: isSmallScreen ? 0 : 80,
       backgroundColor: AppColors.blue,
       boxShadow: AppStyles.typBoxShadow,
-      minWidth: 400,
+      ...controlWidth,
       ...flexStyle
     }
   },
@@ -58,21 +59,33 @@ export default {
     color: AppColors.white,
     fontSize: AppFonts.size.xxLarge
   },
-  loginContainer: {
-    flex: 1,
-    padding: '20px 80px 50px 80px',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
+  flashMessage: (isSmallScreen) => {
+    return {
+      width: '90%',
+      marginTop: 10,
+      height: 80,
+      borderRadius: 20,
+      backgroundColor: AppColors.flashRed,
+      alignSelf: 'center',
+      ...AppStyles.center,
+      fontSize: isSmallScreen ? AppFonts.size.small : AppFonts.size.medium,
+      color: AppColors.flashRedTxt
+    };
+  },
+  loginContainer: (isShortScreen, flashVisible) => {
+    const controlPos = (!isShortScreen && flashVisible) ? { position: 'relative', top: -45 } : {};
+    return {
+      flex: 1,
+      position: 'relative',
+      ...controlPos,
+      ...AppStyles.center
+    }
   },
   txtInputContainer: {
     height: 36,
     marginBottom: 30,
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
+    width: '70%',
+    ...AppStyles.rowCenter,
     borderBottom: `1px solid ${AppColors.blue}`
   },
   txtInput: {

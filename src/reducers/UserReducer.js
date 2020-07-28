@@ -88,8 +88,25 @@ export default (state = initialState, action) => {
         isAwaitingResp: false,
       };
 
+    case actions.userActions.USER_PASSWORD_CHANGE_REQUEST:
+      return {
+        ...state,
+        isAwaitingResp: true,
+      };
+    case actions.userActions.USER_PASSWORD_CHANGE_SUCCESS:
+      return {
+        ...state,
+        isAwaitingResp: false,
+      };
+    case actions.userActions.USER_PASSWORD_CHANGE_FAIL:
+      return {
+        ...state,
+        isAwaitingResp: false,
+      };
+
     case actions.userActions.LOG_OUT:
       return initialState;
+
     default:
       return state;
   }

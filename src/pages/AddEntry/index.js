@@ -5,6 +5,7 @@ import { withRouter } from 'react-router';
 import moment from 'moment';
 
 import actions from 'Actions';
+import { flashDuration } from 'Common/AppConst';
 import AppColors from 'Common/AppColors';
 import withWindowDimensions from 'Common/AppDimens';
 import AppStyles from 'Common/AppStyles';
@@ -30,6 +31,8 @@ class AddEntry extends React.Component {
   constructor(props) {
     super(props);
 
+    this._isMounted = false;
+
     this.state = {
       screenType: screenTypes.addPainLevels,
       highDetail: true,
@@ -38,7 +41,9 @@ class AddEntry extends React.Component {
       entryTime: undefined,
       entryTimePeriod: 'PM',
       entryMoment: undefined,
-      notes: ''
+      notes: '',
+      flashMessage: '',
+      flashSuccess: false
     };
 
     this.helpModalRef = React.createRef();
@@ -46,6 +51,8 @@ class AddEntry extends React.Component {
 
   componentDidMount() {
     const { userInfo } = this.props;
+
+    this._isMounted = true;
 
     this.props.getUserData(userInfo);
     this.props.getBodyParts(userInfo);
@@ -55,6 +62,10 @@ class AddEntry extends React.Component {
     if (!prevProps.entryUpdate && this.props.entryUpdate) {
       this.props.history.push('/dashboard');
     }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   _handleInputChange = (event) => {
@@ -70,9 +81,9 @@ class AddEntry extends React.Component {
     if (target.value.length > 0) {
       const value = Number(target.value);
       if (isNaN(value)) {
-        alert('Please type in a number!');
+        this._setFlashMessage(false, 'Please type in a number!');
       } else if (value < 0 || value > 10) {
-        alert('Please type in a number between 0 and 10!');
+        this._setFlashMessage(false, 'Please type in a number between 0 and 10!');
       } else {
         bodyPartsIncluded[target.name] = {
           pain_level: target.value.slice(0, 3),
@@ -105,7 +116,7 @@ class AddEntry extends React.Component {
       if (inputMoment) {
         this.setState({ entryMoment: inputMoment });
       } else {
-        alert('You must submit a real date and time!');
+        this._setFlashMessage(false, 'You must submit a real date and time!');
         return ;
       }
     }
@@ -118,7 +129,7 @@ class AddEntry extends React.Component {
       }
     }
     if (Object.keys(bodyPartsIncluded).length === 0) {
-      alert('You must record at least one pain level!');
+      this._setFlashMessage(false, 'You must record at least one pain level!');
       return ;
     }
     this.setState({ bodyPartsIncluded });
@@ -156,11 +167,13 @@ class AddEntry extends React.Component {
       }
     });
 
-    this.props.addEntry(userInfo, entry);
+    this.props.addEntry(userInfo, entry, this._setFlashMessage);
   }
 
   _switchScreen = (backward = false) => {
     const { highDetail } = this.state;
+
+    this._setFlashMessage(false, '');
 
     switch (this.state.screenType) {
       case (screenTypes.addPainLevels):
@@ -255,6 +268,7 @@ class AddEntry extends React.Component {
       <div style={{...styles.entryContainer(isSmallScreen), ...AppStyles.rowSpace}}>
         <div style={{...AppStyles.columnStart, flex: 1}}>
           {painBubbleList}
+          {this._renderFlash()}
           {isLargeScreen && visualizer}
           {continueBtn}
         </div>
@@ -323,6 +337,7 @@ class AddEntry extends React.Component {
             style={styles.entryNotesInput}
             onChange={this._handleInputChange} />
           <p style={styles.counterText}>{notes.length}/500</p>
+          {this._renderFlash()}
           <Button btnStyles={styles.continueBtn} onClick={this._handleSubmitEntry}>Submit Entry</Button>
           {isSmallScreen && <div style={{marginBottom: 30}}>
             <Button
@@ -481,6 +496,28 @@ class AddEntry extends React.Component {
         </div>
       );
     }
+
+  }
+
+  _setFlashMessage = (success, message) => {
+    if (this._isMounted) {
+      this.setState({flashMessage: message, flashSuccess: success});
+
+      if (message) {
+        setTimeout(() => this.setState({flashMessage: ''}), flashDuration);
+      }
+    }
+  }
+
+  _renderFlash = () => {
+    const { isSmallScreen } = this.props;
+    const { flashMessage, flashSuccess } = this.state;
+
+    return (
+      <div style={styles.flashMessage(isSmallScreen, flashMessage, flashSuccess)}>
+        <div style={{margin: 10, textAlign: 'center'}}>{flashMessage}</div>
+      </div>
+    );
 
   }
 

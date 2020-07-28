@@ -16,6 +16,8 @@ import EmailIcon from 'Icons/icons8-email.png';
 import KeyIcon from 'Icons/icons8-key.png';
 
 const minPwdLength = 8;
+const flashDuration = 5000;
+const shortScreenHt = 600;
 
 class Login extends React.Component {
   constructor(props) {
@@ -29,6 +31,7 @@ class Login extends React.Component {
       email_login: '',
       password_login: '',
       didRegister: false,
+      flashMessage: ''
     };
 
     this.modalRef = React.createRef();
@@ -61,18 +64,18 @@ class Login extends React.Component {
     event.preventDefault();
 
     if (!first_name) {
-      alert('Please enter your first name!');
+      this.modalRef.current.setFlashMessage('Please enter your first name!');
     } else if (!last_name) {
-      alert('Please enter your last name!');
+      this.modalRef.current.setFlashMessage('Please enter your last name!');
     } else if (!validator.isEmail(email)) {
-      alert('Please enter a valid email address!');
+      this.modalRef.current.setFlashMessage('Please enter a valid email address!');
     } else if (password.length < minPwdLength) {
-      alert(`Password must be at least ${minPwdLength} characters long!`);
+      this.modalRef.current.setFlashMessage(`Password must be at least ${minPwdLength} characters long!`);
     } else {
       this.setState({ didRegister: true });
 
       const data = { first_name, last_name, email, password };
-      this.props.register(data);
+      this.props.register(data, this.modalRef.current.setFlashMessage);
     }
   }
 
@@ -82,12 +85,12 @@ class Login extends React.Component {
     event.preventDefault();
 
     if (!validator.isEmail(email_login)) {
-      alert('Please enter a valid email address!');
+      this._setFlashMessage('Please enter a valid email address!');
     } else if (password_login.length <= 0) {
-      alert('Please enter your password!');
+      this._setFlashMessage('Please enter your password!');
     } else {
       const data = { email: email_login, password: password_login };
-      this.props.login(data);
+      this.props.login(data, this._setFlashMessage);
     }
   }
 
@@ -95,21 +98,40 @@ class Login extends React.Component {
     this.modalRef.current.open();
   }
 
+  _setFlashMessage = (errMsg) => {
+    this.setState({flashMessage: errMsg});
+    setTimeout(() => this.setState({flashMessage: ''}), flashDuration)
+  }
+
+  _renderFlash = () => {
+    const { isSmallScreen } = this.props;
+    const { flashMessage } = this.state;
+    return (
+      <div style={styles.flashMessage(isSmallScreen)}>
+        <div style={{margin: 10}}>{flashMessage}</div>
+      </div>
+    )
+  }
+
   render() {
-    const {isMobile, isSmallScreen, isAwaitingResp} = this.props;
+    const { isMobile, isSmallScreen, windowHeight, isAwaitingResp } = this.props;
+    const { flashMessage } = this.state;
     return (
       <div style={styles.container}>
         <div style={styles.contentContainer(isMobile, isSmallScreen)}>
+
           <div style={styles.titleContainer(isMobile)}>
             <p style={styles.titleTxt}>pain</p>
             <p style={styles.titleTxt}>control</p>
           </div>
+
           <div style={styles.formContainer(isMobile)}>
             <div style={styles.noLoginContainer}>
               <p style={{marginRight: 10 }}>Don't have an account?</p>
               <Button btnStyles={styles.registerBtn} onClick={this._open}>Register</Button>
             </div>
-            <div style={styles.loginContainer}>
+            {flashMessage && this._renderFlash()}
+            <div style={styles.loginContainer(windowHeight < shortScreenHt, flashMessage)}>
               <div style={styles.txtInputContainer}>
                 <img src={EmailIcon} style={{height: 24, margin: 'auto'}} />
                 <input
@@ -135,6 +157,7 @@ class Login extends React.Component {
               <Button btnStyles={styles.loginBtn} onClick={this._handleLogin}>Log In</Button>
               <p style={{textDecoration: 'underline'}}>Forgot password?</p>
             </div>
+
           </div>
         </div>
 
@@ -143,6 +166,7 @@ class Login extends React.Component {
         <RegistrationModal
           ref={this.modalRef}
           isMobile={isMobile}
+          isSmallScreen={isSmallScreen}
           handleInputChange={this._handleInputChange}
           handleRegister={this._handleRegister}
         />

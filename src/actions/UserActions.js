@@ -26,7 +26,7 @@ const userActions = {
   UPDATE_USER_FAIL: 'UPDATE_' + USER_PREFIX + '_FAIL',
 };
 
-const register = (data) => {
+const register = (data, errCb = () => {}) => {
   return async dispatch => {
     dispatch({
       type: userActions.USER_REGISTER_REQUEST
@@ -44,6 +44,7 @@ const register = (data) => {
         dispatch({
           type: userActions.USER_REGISTER_FAIL
         });
+        errCb(response.data.message);
       }
     } catch (err) {
       console.log(err);
@@ -51,7 +52,7 @@ const register = (data) => {
   };
 };
 
-const login = (data) => {
+const login = (data, errCb = () => {}) => {
   return async dispatch => {
     dispatch({
       type: userActions.USER_LOGIN_REQUEST
@@ -69,6 +70,8 @@ const login = (data) => {
         dispatch({
           type: userActions.USER_LOGIN_FAIL
         });
+        console.log(response);
+        errCb(response.data.message);
       }
     } catch (err) {
       console.log(err);
@@ -76,7 +79,7 @@ const login = (data) => {
   };
 };
 
-const changePassword = (userInfo, data) => {
+const changePassword = (userInfo, data, cb = () => {}) => {
   return async dispatch => {
     dispatch({
       type: userActions.USER_PASSWORD_CHANGE_REQUEST
@@ -89,10 +92,14 @@ const changePassword = (userInfo, data) => {
         dispatch({
           type: userActions.USER_PASSWORD_CHANGE_SUCCESS
         });
+
+        cb(true, response.data.message);
       } else {
         dispatch({
           type: userActions.USER_PASSWORD_CHANGE_FAIL
         });
+
+        cb(false, response.data.message);
       }
     } catch (err) {
       console.log(err);
@@ -124,7 +131,7 @@ const getUserData = (userInfo, params) => {
   };
 }
 
-const updateUser = (userInfo, data) => {
+const updateUser = (userInfo, data, cb = () => {}) => {
   return async dispatch => {
     dispatch({
       type: userActions.UPDATE_USER_REQUEST
@@ -137,10 +144,14 @@ const updateUser = (userInfo, data) => {
           type: userActions.UPDATE_USER_SUCCESS,
           payload: { data: { ...response.data } }
         });
+
+        cb(true, response.data.message);
       } else {
         dispatch({
           type: userActions.UPDATE_USER_FAIL,
         });
+
+        cb(false, response.data.message);
       }
     } catch (err) {
       console.log(err);
