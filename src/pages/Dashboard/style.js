@@ -192,17 +192,19 @@ export default {
         ...contentContainer,
         flex: 1,
         width: '90%',
-        marginTop: 30,
+        marginTop: isSmallScreen ? 10 : 30,
         marginBottom: 20,
       }
     },
-    statsRow: {
-      ...AppStyles.rowStart,
-      paddingLeft: 30,
-      alignItems: 'center',
-      flex: 1,
-      width: '95%',
-      marginTop: 10,
+    statsRow: (isSmallScreen) => {
+      return {
+        ...AppStyles.rowStart,
+        paddingLeft: isSmallScreen ? 0 : 30,
+        alignItems: 'center',
+        flex: 1,
+        width: '95%',
+        marginTop: 10,
+      }
     },
     generalStatsContainer: {
       ...AppStyles.rowStart,
@@ -227,25 +229,30 @@ export default {
       width: '25%',
       textAlign: 'center',
     },
-    statTxtBtn: {
-      addStyles: {
-        ...AppStyles.center,
-        ...AppFonts.Raleway.bold,
-        fontSize: AppFonts.size.medium,
-        height: 60,
-        width: 60,
-        borderRadius: 30,
-        boxShadow: AppStyles.typBoxShadow,
-      },
-      ...AppStyles.activeBtn
+    statTxtBtn: (isMobile) => {
+      return {
+        addStyles: {
+          ...AppStyles.center,
+          ...AppFonts.Raleway.bold,
+          fontSize: isMobile ? AppFonts.size.medSmall : AppFonts.size.medium,
+          height: isMobile ? 48 : 60,
+          width: isMobile ? 48 : 60,
+          borderRadius: isMobile ? 24 : 30,
+          boxShadow: AppStyles.typBoxShadow,
+        },
+        ...AppStyles.activeBtn
+      }
     },
-    statTxt: {
-      ...AppStyles.center,
-      backgroundColor: AppColors.blue,
-      height: 60,
-      width: 60,
-      borderRadius: 30,
-      color: AppColors.white
+    statTxt: (isMobile) => {
+      return {
+        ...AppStyles.center,
+        fontSize: isMobile ? AppFonts.size.medSmall : AppFonts.size.medium,
+        backgroundColor: AppColors.blue,
+        height: isMobile ? 48 : 60,
+        width: isMobile ? 48 : 60,
+        borderRadius: isMobile ? 24 : 30,
+        color: AppColors.white
+      }
     },
     statTitle: {
       marginTop: 8,

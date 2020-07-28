@@ -160,6 +160,7 @@ class Dashboard extends React.Component {
   }
 
   _renderGeneralStats = (bodyParts) => {
+    const { isMobile } = this.props;
     const { statType } = this.state;
     return (
       <ul style={styles.generalStatsContainer}>
@@ -172,7 +173,7 @@ class Dashboard extends React.Component {
             <li key={part.id} style={styles.statContainer}>
               <Button
                 onClick={() => {this.setState({ currentBodyPartID: part.id })}}
-                btnStyles={styles.statTxtBtn}>
+                btnStyles={styles.statTxtBtn(isMobile)}>
                 {part.stats ? Number(part.stats).toFixed(1) : '-'}
               </Button>
               <div style={styles.statTitle}>{part.name.replace('_', ' ')}</div>
@@ -184,24 +185,26 @@ class Dashboard extends React.Component {
   }
 
   _renderOverviewStats = (currentBodyPart) => {
+    const { isMobile, isSmallScreen } = this.props;
+
     let stats = currentBodyPart?.stats?.total;
     return (
-      <div style={styles.statsRow}>
+      <div style={styles.statsRow(isSmallScreen)}>
         <div style={styles.subtitleContainer}>Overall</div>
         <div style={styles.statContainer}>
-          <div style={styles.statTxt}>{stats?.high ? stats.high.toFixed(1) : '-'}</div>
+          <div style={styles.statTxt(isMobile)}>{stats?.high ? stats.high.toFixed(1) : '-'}</div>
           <div style={styles.statTitle}>Max</div>
         </div>
         <div style={styles.statContainer}>
-          <div style={styles.statTxt}>{stats?.low ? stats.low.toFixed(1) : '-'}</div>
+          <div style={styles.statTxt(isMobile)}>{stats?.low ? stats.low.toFixed(1) : '-'}</div>
           <div style={styles.statTitle}>Min</div>
         </div>
         <div style={styles.statContainer}>
-          <div style={styles.statTxt}>{stats?.median ? stats.median.toFixed(1) : '-'}</div>
+          <div style={styles.statTxt(isMobile)}>{stats?.median ? stats.median.toFixed(1) : '-'}</div>
           <div style={styles.statTitle}>Median</div>
         </div>
         <div style={styles.statContainer}>
-          <div style={styles.statTxt}>{stats?.stdev ? stats.stdev.toFixed(1) : '-'}</div>
+          <div style={styles.statTxt(isMobile)}>{stats?.stdev ? stats.stdev.toFixed(1) : '-'}</div>
           <div style={styles.statTitle}>Std Dev</div>
         </div>
       </div>
@@ -209,29 +212,30 @@ class Dashboard extends React.Component {
   }
 
   _renderDaytimeStats = (currentBodyPart) => {
+    const { isMobile, isSmallScreen} = this.props;
     const { statType } = this.state;
 
     let stats = currentBodyPart?.stats?.daytime;
     return (
-      <div style={styles.statsRow}>
+      <div style={styles.statsRow(isSmallScreen)}>
         <div style={styles.subtitleContainer}>
           <div>{statTypes[statType]}</div>
-          <div>Over the Day</div>
+          {!isMobile && <div style={{textAlign: 'center'}}>Over the Day</div>}
         </div>
         <div style={styles.statContainer}>
-          <div style={styles.statTxt}>{stats?.morning && stats.morning[statType] ? stats.morning[statType].toFixed(1) : '-'}</div>
+          <div style={styles.statTxt(isMobile)}>{stats?.morning && stats.morning[statType] ? stats.morning[statType].toFixed(1) : '-'}</div>
           <div style={styles.statTitle}>Morning</div>
         </div>
         <div style={styles.statContainer}>
-          <div style={styles.statTxt}>{stats?.lunch && stats.lunch[statType] ? stats.lunch[statType].toFixed(1) : '-'}</div>
+          <div style={styles.statTxt(isMobile)}>{stats?.lunch && stats.lunch[statType] ? stats.lunch[statType].toFixed(1) : '-'}</div>
           <div style={styles.statTitle}>Lunch</div>
         </div>
         <div style={styles.statContainer}>
-          <div style={styles.statTxt}>{stats?.evening && stats.evening[statType] ? stats.evening[statType].toFixed(1) : '-'}</div>
+          <div style={styles.statTxt(isMobile)}>{stats?.evening && stats.evening[statType] ? stats.evening[statType].toFixed(1) : '-'}</div>
           <div style={styles.statTitle}>Evening</div>
         </div>
         <div style={styles.statContainer}>
-          <div style={styles.statTxt}>{stats?.bed_time && stats.bed_time[statType] ? stats.bed_time[statType].toFixed(1) : '-'}</div>
+          <div style={styles.statTxt(isMobile)}>{stats?.bed_time && stats.bed_time[statType] ? stats.bed_time[statType].toFixed(1) : '-'}</div>
           <div style={styles.statTitle}>Bed Time</div>
         </div>
       </div>
@@ -438,12 +442,12 @@ class Dashboard extends React.Component {
               <div style={AppStyles.rowSpace}>
                 <Button
                   onClick={() => {this.setState({ currentBodyPartID: undefined })}}
-                  btnStyles={styles.mainButtonInactive}>
+                  btnStyles={styles.mainButtonInactive(isMobile)}>
                   View General
                 </Button>
                 <Button
                   onClick={() => { history.push(`pain_points/${currentBodyPart.id}`)}}
-                  btnStyles={styles.mainButtonInactive}>
+                  btnStyles={styles.mainButtonInactive(isMobile)}>
                   View Details
                 </Button>
               </div>
