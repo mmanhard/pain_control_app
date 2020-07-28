@@ -154,12 +154,16 @@ class Dashboard extends React.Component {
     const startDate = Utils.convertDateTimeToMoment(customStartDate, '12:00', 'AM');
     const endDate = Utils.convertDateTimeToMoment(customEndDate, '11:59', 'PM');
 
-    if (startDate && endDate) {
+    if (!startDate) {
+      this._setFlashMessage(false, 'Please submit a valid start date!');
+    } else if (!endDate) {
+      this._setFlashMessage(false, 'Please submit a valid end date!');
+    } else if (startDate.isSameOrAfter(endDate)) {
+      this._setFlashMessage(false, 'Start date must be before end date!');
+    } else {
       const params = { start_date: startDate.toISOString(), end_date: endDate.toISOString() };
       this.props.getEntries(userInfo, params);
       this.props.getBodyParts(userInfo, params);
-    } else{
-      alert('Incomplete dates!')
     }
   }
 
