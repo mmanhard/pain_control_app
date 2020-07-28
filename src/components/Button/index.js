@@ -4,12 +4,12 @@ import React from 'react';
 class Button extends React.Component {
 
   render() {
-    const { btnStyles, onClick, onFocus, onBlur } = this.props;
+    const { btnStyles, children, radiumConfigContext, styleKeeperContext, ...otherProps } = this.props;
     const { normalStyle, addStyles, hoverStyle, activeStyle, focusStyle } = btnStyles;
 
     const appliedActiveStyle = activeStyle ? activeStyle : hoverStyle;
 
-    const style = {
+    const btnStyle = {
       ...normalStyle,
       ...addStyles,
       ':hover': {cursor: 'pointer', ...hoverStyle},
@@ -18,8 +18,8 @@ class Button extends React.Component {
     }
 
     return (
-      <button onClick={onClick} onFocus={onFocus} onBlur={onBlur} style={[style]}>
-        {this.props.children}
+      <button style={[btnStyle]} {...otherProps}>
+        {children}
       </button>
     );
   }
