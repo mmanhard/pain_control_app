@@ -110,7 +110,7 @@ class EntryDetail extends React.Component {
   }
 
   _renderBodyPartStats = (currentSubentry) => {
-    const { entryInfo, isSmallScreen, isMediumScreen } = this.props;
+    const { entryInfo, isSmallScreen, isMediumScreen, history } = this.props;
     const { currentBodyPartID } = this.state;
 
     let currentComparisons;
@@ -164,8 +164,7 @@ class EntryDetail extends React.Component {
           </div>
           <Button
             onClick={() => {
-              this.props.history.push('/');
-              this.props.history.push(`pain_points/${currentBodyPartID}`)}
+              history.push(`../pain_points/${currentBodyPartID}`)}
             }
             btnStyles={styles.mainButton(isSmallScreen, isMediumScreen)}>
             View Pain Point
