@@ -32,8 +32,8 @@ class RegistrationModal extends React.Component {
     this.modalRef.current.close();
   }
 
-  setFlashMessage = (errMsg) => {
-    this.setState({flashMessage: errMsg});
+  setFlashMessage = (success, message) => {
+    this.setState({flashMessage: message});
     setTimeout(() => this.setState({flashMessage: ''}), flashDuration)
   }
 

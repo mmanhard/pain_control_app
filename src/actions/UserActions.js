@@ -26,7 +26,7 @@ const userActions = {
   UPDATE_USER_FAIL: 'UPDATE_' + USER_PREFIX + '_FAIL',
 };
 
-const register = (data, errCb = () => {}) => {
+const register = (data, cb = () => {}) => {
   return async dispatch => {
     dispatch({
       type: userActions.USER_REGISTER_REQUEST
@@ -40,11 +40,14 @@ const register = (data, errCb = () => {}) => {
           type: userActions.USER_REGISTER_SUCCESS,
           payload: { data: { ...response.data } }
         });
+
+        cb(true, response.data.message);
       } else {
         dispatch({
           type: userActions.USER_REGISTER_FAIL
         });
-        errCb(response.data.message);
+
+        cb(false, response.data.message);
       }
     } catch (err) {
       console.log(err);
@@ -52,7 +55,7 @@ const register = (data, errCb = () => {}) => {
   };
 };
 
-const login = (data, errCb = () => {}) => {
+const login = (data, cb = () => {}) => {
   return async dispatch => {
     dispatch({
       type: userActions.USER_LOGIN_REQUEST
@@ -66,12 +69,14 @@ const login = (data, errCb = () => {}) => {
           type: userActions.USER_LOGIN_SUCCESS,
           payload: { data: { ...response.data } }
         });
+
+        cb(true, response.data.message);
       } else {
         dispatch({
           type: userActions.USER_LOGIN_FAIL
         });
-        console.log(response);
-        errCb(response.data.message);
+
+        cb(false, response.data.message);
       }
     } catch (err) {
       console.log(err);
