@@ -68,7 +68,7 @@ class Navbar extends React.Component {
                 ? `Hi, ${userInfo.first_name}!`
                 : 'Hello there!' }
           </div>
-          <Button onClick={this._toggleDropdown} btnStyles={styles.dropdownToggle(isMobile, dropdownVisible)}><img src={BackIcon} style={{ height: 21 }} /></Button>
+          <Button onClick={this._toggleDropdown} onBlur={() => {this.setState({ dropdownVisible: false })}} btnStyles={styles.dropdownToggle(isMobile, dropdownVisible)}><img src={BackIcon} style={{ height: 21 }} /></Button>
           {dropdownVisible && this._renderDropdown()}
           <Button btnStyles={styles.addIconBtn(isMobile)} onClick={() => {this._goToPage('add_entry')}}>
             <img src={AddIcon} style={{height: 32 }} />

@@ -4,7 +4,7 @@ import React from 'react';
 class Button extends React.Component {
 
   render() {
-    const { btnStyles, onClick } = this.props;
+    const { btnStyles, onClick, onFocus, onBlur } = this.props;
     const { normalStyle, addStyles, hoverStyle, activeStyle, focusStyle } = btnStyles;
 
     const appliedActiveStyle = activeStyle ? activeStyle : hoverStyle;
@@ -18,7 +18,7 @@ class Button extends React.Component {
     }
 
     return (
-      <button onClick={onClick} style={[style]}>
+      <button onClick={onClick} onFocus={onFocus} onBlur={onBlur} style={[style]}>
         {this.props.children}
       </button>
     );
