@@ -58,12 +58,6 @@ class AddEntry extends React.Component {
     this.props.getBodyParts(userInfo);
   }
 
-  componentDidUpdate(prevProps) {
-    if (!prevProps.entryUpdate && this.props.entryUpdate) {
-      this.props.history.push('/dashboard');
-    }
-  }
-
   componentWillUnmount() {
     this._isMounted = false;
   }
@@ -167,7 +161,18 @@ class AddEntry extends React.Component {
       }
     });
 
-    this.props.addEntry(userInfo, entry, this._setFlashMessage);
+    this.props.addEntry(userInfo, entry, this._submitEntryCallback);
+  }
+
+  _submitEntryCallback = (success, message) => {
+    if (success) {
+      this.props.history.push({
+        pathname: '/dashboard',
+        state: { flashMessage: message }
+      });
+    } else {
+      this._setFlashMessage(success, message);
+    }
   }
 
   _switchScreen = (backward = false) => {
@@ -560,7 +565,6 @@ class AddEntry extends React.Component {
 
 const mapStateToProps = state => ({
   isAwaitingResp: state.entries.isAwaitingResp,
-  entryUpdate: state.entries.entryUpdate,
   userInfo: state.users.userInfo,
   bodyParts: state.bodyParts.bodyParts,
 });

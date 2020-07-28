@@ -305,5 +305,18 @@ export default {
       marginTop: 30,
       textAlign: 'center',
       width: '80%'
-    }
+    },
+    flashMessage: (isSmallScreen, flashMessage, flashSuccess) => {
+      return {
+        width: '90%',
+        margin: isSmallScreen ? '0 0 20px 0' : 20,
+        height: flashMessage ? 80 : 0,
+        borderRadius: 20,
+        backgroundColor: flashSuccess ? AppColors.flashGreen : AppColors.flashRed,
+        alignSelf: 'center',
+        ...AppStyles.center,
+        fontSize: isSmallScreen ? AppFonts.size.small : AppFonts.size.medium,
+        color: flashSuccess ? AppColors.flashGreenTxt : AppColors.flashRedTxt
+      };
+    },
 }

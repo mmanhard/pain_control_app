@@ -64,13 +64,13 @@ class Login extends React.Component {
     event.preventDefault();
 
     if (!first_name) {
-      this.modalRef.current.setFlashMessage('Please enter your first name!');
+      this.modalRef.current.setFlashMessage(false, 'Please enter your first name!');
     } else if (!last_name) {
-      this.modalRef.current.setFlashMessage('Please enter your last name!');
+      this.modalRef.current.setFlashMessage(false, 'Please enter your last name!');
     } else if (!validator.isEmail(email)) {
-      this.modalRef.current.setFlashMessage('Please enter a valid email address!');
+      this.modalRef.current.setFlashMessage(false, 'Please enter a valid email address!');
     } else if (password.length < minPwdLength) {
-      this.modalRef.current.setFlashMessage(`Password must be at least ${minPwdLength} characters long!`);
+      this.modalRef.current.setFlashMessage(false, `Password must be at least ${minPwdLength} characters long!`);
     } else {
       this.setState({ didRegister: true });
 
@@ -85,12 +85,23 @@ class Login extends React.Component {
     event.preventDefault();
 
     if (!validator.isEmail(email_login)) {
-      this._setFlashMessage('Please enter a valid email address!');
+      this._setFlashMessage(false, 'Please enter a valid email address!');
     } else if (password_login.length <= 0) {
-      this._setFlashMessage('Please enter your password!');
+      this._setFlashMessage(false, 'Please enter your password!');
     } else {
       const data = { email: email_login, password: password_login };
-      this.props.login(data, this._setFlashMessage);
+      this.props.login(data, this._loginCallback);
+    }
+  }
+
+  _loginCallback = (success, message) => {
+    if (success) {
+      this.props.history.push({
+        pathname: '/dashboard',
+        state: { flashMessage: message }
+      });
+    } else {
+      this._setFlashMessage(success, message);
     }
   }
 
@@ -98,8 +109,8 @@ class Login extends React.Component {
     this.modalRef.current.open();
   }
 
-  _setFlashMessage = (errMsg) => {
-    this.setState({flashMessage: errMsg});
+  _setFlashMessage = (success, message) => {
+    this.setState({flashMessage: message});
     setTimeout(() => this.setState({flashMessage: ''}), flashDuration)
   }
 
