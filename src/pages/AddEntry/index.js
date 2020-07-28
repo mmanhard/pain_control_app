@@ -76,8 +76,8 @@ class AddEntry extends React.Component {
       const value = Number(target.value);
       if (isNaN(value)) {
         this._setFlashMessage(false, 'Please type in a number!');
-      } else if (value < 0 || value > 10) {
-        this._setFlashMessage(false, 'Please type in a number between 0 and 10!');
+      } else if (target.value.length != 1 && value != 10) {
+        this._setFlashMessage(false, 'Pain levels must be between 0 and 10. No decimal places allowed!');
       } else {
         bodyPartsIncluded[target.name] = {
           pain_level: target.value.slice(0, 3),
