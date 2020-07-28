@@ -36,12 +36,12 @@ class Navbar extends React.Component {
     const { isMobile } = this.props;
     return (
       <div style={styles.dropdownMenu(isMobile)}>
-        <Button btnStyles={styles.dropdownItem} onClick={() => {this._goToPage('settings')}}>
+        <Button btnStyles={styles.dropdownItem} onClick={() => {this._goToPage('settings')}} onMouseDown={(event) => {event.preventDefault()}}>
           <img src={SettingsIcon} style={{ height: 24, width: 24 }} />
           <p style={{ flex: 1, marginLeft: 8 }}>Settings</p>
         </Button>
         <hr style={{width: '85%', height: 0, borderTop: `solid 1px black`}}/>
-        <Button btnStyles={styles.dropdownItem} onClick={this.props.logout}>
+        <Button btnStyles={styles.dropdownItem} onClick={this.props.logout} onMouseDown={(event) => {event.preventDefault()}}>
           <img src={ExitIcon} style={{ height: 24, width: 24 }} />
           <p style={{ flex: 1, marginLeft: 8 }}>Log Out</p>
         </Button>
