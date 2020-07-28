@@ -105,7 +105,9 @@ class Onboarding extends React.Component {
       medicalHistory: '',
       screenType: screenTypes.addInfo,
       selectOtherBodyParts: false,
-      otherBodyParts: []
+      otherBodyParts: [],
+      flashMessage: '',
+      flashSuccess: false
     };
 
     let bodyPart;
@@ -141,7 +143,7 @@ class Onboarding extends React.Component {
     if (this.state.phone.length > 0) userUpdates.phone = this.state.phone;
     if (this.state.birthday.length > 0) userUpdates.birthday = this.state.birthday;
     if (this.state.hometown.length > 0) userUpdates.hometown = this.state.hometown;
-    this.props.updateUser(this.props.userInfo, userUpdates);
+    this.props.updateUser(this.props.userInfo, userUpdates, this._submitCallback);
 
     this._switchScreen();
   }
@@ -167,7 +169,7 @@ class Onboarding extends React.Component {
               this.props.addBodyPart(this.props.userInfo, data);
             }
           } else {
-            alert(`Need to add locations for ${name}!`);
+            this._setFlashMessage(false, `Need to add locations for ${name}!`);
             return;
           }
         } else {
@@ -192,7 +194,7 @@ class Onboarding extends React.Component {
       this.setState( { selectOtherBodyParts: true })
     }
     if (otherBodyParts.length >= 3) {
-      alert('Can\'t add any more. Don\'t worry! You can always add more later.');
+      this._setFlashMessage(false, 'Can\'t add any more pain points right now. Don\'t worry! You can always add more later.');
       return;
     }
     const newBodyPart = { name: '', type: 'Other'};
@@ -222,16 +224,15 @@ class Onboarding extends React.Component {
     event.preventDefault();
 
     if (this.state.medicalHistory.length > 0) {
-      this.props.updateUser(this.props.userInfo, { medical_history: this.state.medicalHistory }, this._submitNotesCallback);
+      this.props.updateUser(this.props.userInfo, { medical_history: this.state.medicalHistory }, this._submitCallback);
     }
   }
 
-  _submitNotesCallback = (success, message) => {
+  _submitCallback = (success, message) => {
     if (success) {
       this._switchScreen(false, false);
     } else {
-      alert('Something went wrong! Please try again.')
-      // this._setFlashMessage(success, message);
+      this._setFlashMessage(success, message);
     }
   }
 
@@ -269,6 +270,7 @@ class Onboarding extends React.Component {
     return (
       <div style={styles.contentContainer(isMobile)}>
         <div style={styles.infoContainer}>
+          {this._renderFlash()}
           <div style={{...styles.txtInputContainer(isShortScreen), marginTop: 40 }}>
             <img src={PhoneIcon} style={{height: 24, margin: 'auto' }} />
             <input
@@ -386,6 +388,7 @@ class Onboarding extends React.Component {
           <img src={BackIcon} style={{height: 32, margin: 'auto' }} />
         </Button>
         <div style={{ ...styles.infoContainer}}>
+          {this._renderFlash()}
           <BubbleList
               rowContainerStyle={styles.partsContainer}
               renderItem={this._renderItem}
@@ -423,6 +426,7 @@ class Onboarding extends React.Component {
       <div style={styles.contentContainer(isMobile)}>
         <Button btnStyles={styles.backBtn} onClick={() => { this._switchScreen(true) }}><img src={BackIcon} style={{height: 32}} /></Button>
         <div style={styles.infoContainer}>
+          {this._renderFlash()}
           <textarea rows="15" cols="65" maxLength="500"
             name="medicalHistory"
             placeholder={'Please enter your medical history here!'}
@@ -434,6 +438,23 @@ class Onboarding extends React.Component {
         </div>
       </div>
     );
+  }
+
+  _setFlashMessage = (success, message) => {
+    this.setState({flashMessage: message, flashSuccess: success});
+    setTimeout(() => this.setState({flashMessage: ''}), flashDuration);
+  }
+
+  _renderFlash = () => {
+    const { isSmallScreen } = this.props;
+    const { flashMessage, flashSuccess } = this.state;
+
+    return (
+      <div style={styles.flashMessage(isSmallScreen, flashMessage, flashSuccess)}>
+        <div style={{margin: 10, textAlign: 'center'}}>{flashMessage}</div>
+      </div>
+    );
+
   }
 
   render() {

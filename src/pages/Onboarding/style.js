@@ -190,5 +190,18 @@ export default {
     bottom: 70,
     ...AppFonts.Raleway.regular,
     color: AppColors.blue,
-  }
+  },
+  flashMessage: (isSmallScreen, flashMessage, flashSuccess) => {
+    return {
+      width: '90%',
+      marginBottom: 20,
+      height: flashMessage ? 80 : 0,
+      borderRadius: 20,
+      backgroundColor: flashSuccess ? AppColors.flashGreen : AppColors.flashRed,
+      alignSelf: 'center',
+      ...AppStyles.center,
+      fontSize: isSmallScreen ? AppFonts.size.small : AppFonts.size.medium,
+      color: flashSuccess ? AppColors.flashGreenTxt : AppColors.flashRedTxt
+    };
+  },
 }
