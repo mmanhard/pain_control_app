@@ -64,14 +64,14 @@ export default {
       alignItems: 'center',
     };
   },
-  toggleTxtContainer: (isSmallScreen) => {
+  toggleTxtContainer: (isMobile) => {
     return {
-      height: isSmallScreen ? 50 : 70,
+      height: isMobile ? 50 : 70,
       maxWidth: 120,
       borderRadius: 20,
       backgroundColor: AppColors.lilac,
       color: AppColors.blue,
-      fontSize: isSmallScreen ? AppFonts.size.medSmall : AppFonts.size.medium,
+      fontSize: isMobile ? AppFonts.size.small : AppFonts.size.medium,
       marginLeft: 20,
       padding: 10,
       ...AppStyles.center,
@@ -79,11 +79,11 @@ export default {
       textAlign: 'center'
     }
   },
-  mainButton: (isSmallScreen) => {
+  mainButton: (isMobile, isSmallScreen) => {
     return {
       addStyles: {
         ...AppFonts.Raleway.bold,
-        fontSize: isSmallScreen ? AppFonts.size.medSmall : AppFonts.size.medium,
+        fontSize: isMobile ? AppFonts.size.small : AppFonts.size.medium,
         border: 'none',
         boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
         height: isSmallScreen ? 50 : 60,
@@ -94,11 +94,11 @@ export default {
       ...AppStyles.activeBtn
     }
   },
-  mainButtonInactive: (isSmallScreen) => {
+  mainButtonInactive: (isMobile, isSmallScreen) => {
     return {
       addStyles: {
         ...AppFonts.Raleway.bold,
-        fontSize: isSmallScreen ? AppFonts.size.medSmall : AppFonts.size.medium,
+        fontSize: isMobile ? AppFonts.size.small : AppFonts.size.medium,
         border: 'none',
         boxShadow: `0px 2px 2px rgba(0,0,0,0.15)`,
         height: isSmallScreen ? 50 : 60,
@@ -150,14 +150,14 @@ export default {
       ? 300
       : (isSmallScreen ? 375 : 400));
   },
-  filterContainer: (isSmallScreen, customStartDate) => {
-    const flexStyle = isSmallScreen ? AppStyles.rowSpace : AppStyles.center;
+  filterContainer: (isMobile, isSmallScreen, customStartDate) => {
+    const flexStyle = (!isMobile && isSmallScreen) ? AppStyles.rowSpace : AppStyles.center;
     return {
       ...flexStyle,
       justifyContent: 'space-evenly',
       borderRadius: 20,
       backgroundColor: AppColors.lilac,
-      width: isSmallScreen ? '80%' : 180,
+      width: (!isMobile && isSmallScreen) ? '80%' : 180,
       margin: 20,
       flexWrap: 'wrap'
     };

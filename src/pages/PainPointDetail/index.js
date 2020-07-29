@@ -160,15 +160,15 @@ class PainPointDetail extends React.Component {
   }
 
   _renderConfigContainer = () => {
-    const { isSmallScreen } = this.props;
+    const { isMobile, isSmallScreen } = this.props;
     const { chartType } = this.state;
 
-    const mainBtnStyles = styles.mainButton(isSmallScreen);
-    const inactiveBtnStyles = styles.mainButtonInactive(isSmallScreen);
+    const mainBtnStyles = styles.mainButton(isMobile, isSmallScreen);
+    const inactiveBtnStyles = styles.mainButtonInactive(isMobile, isSmallScreen);
 
     return (
       <div style={styles.configContentContainer(isSmallScreen)}>
-        <div style={styles.toggleTxtContainer(isSmallScreen)}>Toggle Chart Type</div>
+        <div style={styles.toggleTxtContainer(isMobile)}>Toggle Chart Type</div>
         <Button
           btnStyles={chartType === chartTypes.daytime ? mainBtnStyles : inactiveBtnStyles}
           onClick={() => {this.setState({ statType: 'mean', chartType: chartTypes.daytime })}}>
@@ -204,11 +204,11 @@ class PainPointDetail extends React.Component {
     return (
       <div style={styles.mainContentContainer(isSmallScreen, isMediumScreen)}>
         <div style={styles.graphContainer(isSmallScreen)}>
-          <div style={styles.graphTitle}>
+          {!isMobile && <div style={styles.graphTitle}>
             {chartType === chartTypes.daytime && 'Pain Throughout the Day'}
             {chartType === chartTypes.calendar && 'Pain Over Time'}
             {chartType === chartTypes.histogram && 'Frequency of Pain'}
-          </div>
+          </div>}
           {chartType === chartTypes.daytime &&
             <DaytimeChart
               fontSize={graphFontSize}
@@ -245,7 +245,7 @@ class PainPointDetail extends React.Component {
   }
 
   _renderFilterContainer = () => {
-    const { isSmallScreen } = this.props;
+    const { isMobile, isSmallScreen } = this.props;
     const { chartType, customStartDate, customEndDate } = this.state;
 
     let currentStatTypes;
@@ -261,7 +261,7 @@ class PainPointDetail extends React.Component {
         break;
     }
     return (
-      <div style={styles.filterContainer(isSmallScreen, customStartDate)}>
+      <div style={styles.filterContainer(isMobile, isSmallScreen, customStartDate)}>
         <div style={styles.filterTxt}>Show:</div>
         <select name="statType" style={styles.filterOptionTxt} onChange={this._handleInputChange}>
           {Object.entries(currentStatTypes).map(([key, value]) => {
@@ -277,7 +277,7 @@ class PainPointDetail extends React.Component {
             );
           })}
         </select>
-        {(typeof customStartDate !== 'undefined') && <div style={isSmallScreen ? AppStyles.rowSpace : AppStyles.center}>
+        {(typeof customStartDate !== 'undefined') && <div style={(!isMobile && isSmallScreen) ? AppStyles.rowSpace : AppStyles.center}>
           {!isSmallScreen && <div style={styles.filterTxt}>Start Date</div>}
           <input
             type='text'
