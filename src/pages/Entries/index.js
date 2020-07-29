@@ -59,7 +59,10 @@ class Entries extends React.Component {
     const { userInfo } = this.props;
     const { startDate, endDate, daytime, currentBodyPartID, sortBy } = this.state;
 
-    let params = { sort_by: sortBy, time_of_day: daytime };
+    let params = { sort_by: sortBy, detail_level: 'high' };
+    if (daytime !== 'all_day') {
+      params = { ...params, time_of_day: daytime };
+    }
     if (currentBodyPartID) {
       params = { ...params, pain_point: currentBodyPartID };
     }
@@ -114,7 +117,11 @@ class Entries extends React.Component {
   _renderEntry = (entry) => {
     const { isSmallScreen, isMediumScreen } = this.props;
 
-    let visualizerBodyParts = entry.pain_subentries.map(subentry => {
+    if (!entry.pain_subentries) {
+      return (<div key={entry.id}/>);
+    }
+
+    let visualizerBodyParts = entry.pain_subentries && entry.pain_subentries.map(subentry => {
       const part = subentry.body_part;
       const displayName = part.location ? `${part.location}_${part.name}` : part.name;
       return ({
@@ -298,7 +305,7 @@ class Entries extends React.Component {
             {this._renderConfiguration()}
           </div>
           <div style={styles.entriesContainer(isSmallScreen, isMediumScreen)}>
-            {entries.map(this._renderEntry)}
+            {entries && entries.map(this._renderEntry)}
           </div>
 
           {isFetching && <LoadingSpinner />}
