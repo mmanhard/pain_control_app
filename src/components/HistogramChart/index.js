@@ -2,6 +2,7 @@ import React from "react";
 
 import AppStyles from 'Common/AppStyles';
 import AppColors from 'Common/AppColors';
+import RotatedAxisTick from 'Components/RotatedAxisTick';
 
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Tooltip } from 'recharts';
 
@@ -29,7 +30,7 @@ const histogramStatTypes = {
 }
 
 class HistogramChart extends React.Component {
-  
+
   render() {
     const { histograms, statType, width, height, fontSize } = this.props;
 
@@ -40,11 +41,12 @@ class HistogramChart extends React.Component {
     let i = 0;
     for (var histogram of histograms) {
       for (const [key, value] of Object.entries(histogram[statType])) {
+        const bucketName = width < 500 ? bucketNames[key].split(' ').slice(0, -1).join(' ') : bucketNames[key];
         if (!dataDict[key]) {
-          dataDict[key] = { key, bucketName: bucketNames[key] };
+          dataDict[key] = { key, bucketName };
         }
 
-        dataDict[key]['Number'] = value;
+        dataDict[key]['Quantity'] = value;
         if (value > maxCount) maxCount = value;
       }
       i++;
@@ -62,17 +64,20 @@ class HistogramChart extends React.Component {
           <div style={styles.yLabel}># of Daily Occurences</div>
         </div>
         <div style={AppStyles.center}>
-          <BarChart width={width} height={height} data={data} margin={{ top: 8, right: 0, bottom: 8, left: 0 }}>
+          <BarChart width={width} height={height} data={data} margin={{ top: 8, right: 0, bottom: width < 500 ? 32 : 8, left: -30 }}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis tick={{fontSize}} dataKey='bucketName' />
+            <XAxis
+              interval={0}
+              tick={width < 500 ? <RotatedAxisTick fontSize={fontSize}/> : {fontSize}}
+              dataKey='bucketName' />
             <YAxis domain={[0, Math.ceil(1.25 * maxCount)]} type='number' />
             <Tooltip />
             {histograms.map((_, index) => {
-              const key = 'Number';
+              const key = 'Quantity';
               return <Bar key={key} dataKey={key} fill={AppColors.barSeries[index % AppColors.barSeries.length]} />
             })}
           </BarChart>
-          <div style={styles.xLabel}>{statDisplayName} Pain Levels</div>
+          {width >= 400 && <div style={styles.xLabel}>{statDisplayName} Pain Levels</div>}
         </div>
       </div>
     )
@@ -82,6 +87,7 @@ class HistogramChart extends React.Component {
 const styles = {
   xLabel: {
     height: 30,
+    marginBottom: 20,
     borderRadius: 20,
     paddingLeft: 12,
     paddingRight: 12,
