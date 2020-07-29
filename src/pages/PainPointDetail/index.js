@@ -106,10 +106,10 @@ class PainPointDetail extends React.Component {
 
     let params = {};
     if (startDate) {
-      params = { ...params, start_date: startDate.toISOString() };
+      params = { ...params, start_date: startDate.toISOString(true) };
     }
     if (endDate) {
-      params = { ...params, end_date: endDate.toISOString() };
+      params = { ...params, end_date: endDate.toISOString(true) };
     }
 
     this.props.getBodyPart(userInfo, bodyPartID, params);
@@ -136,7 +136,7 @@ class PainPointDetail extends React.Component {
     } else if (startDate.isSameOrAfter(endDate)) {
       this._setFlashMessage('Start date must be before end date!');
     } else {
-      const params = { start_date: startDate.toISOString(), end_date: endDate.toISOString() };
+      const params = { start_date: startDate.toISOString(true), end_date: endDate.toISOString(true) };
       this.props.getBodyPart(userInfo, bodyPartID, params);
     }
   }

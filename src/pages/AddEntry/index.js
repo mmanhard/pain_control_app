@@ -142,7 +142,7 @@ class AddEntry extends React.Component {
     e.preventDefault();
 
     let entry = {
-      'date': entryMoment.toISOString(),
+      'date': entryMoment.toISOString(true),
       'pain_subentries': []
     };
 

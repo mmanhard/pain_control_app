@@ -64,10 +64,10 @@ class Entries extends React.Component {
       params = { ...params, pain_point: currentBodyPartID };
     }
     if (startDate) {
-      params = { ...params, start_date: startDate.toISOString() };
+      params = { ...params, start_date: startDate.toISOString(true) };
     }
     if (endDate) {
-      params = { ...params, end_date: endDate.toISOString() };
+      params = { ...params, end_date: endDate.toISOString(true) };
     }
 
     this.props.getEntries(userInfo, params);
