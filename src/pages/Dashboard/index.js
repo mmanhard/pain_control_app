@@ -28,11 +28,14 @@ const statTypes = {
 
 const daytimes = {
   all_day: 'All Day',
+  sleep: 'Sleep',
+  wakeup: 'Wake Up',
   morning: 'Morning',
   lunch: 'Lunch',
+  afternoon: 'Afternoon',
   evening: 'Evening',
   bed_time: 'Bed Time',
-};
+  };
 
 const dateRanges = {
   all_time: 'All Time',
