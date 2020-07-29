@@ -7,15 +7,17 @@ import AppStyles from 'Common/AppStyles';
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Tooltip } from 'recharts';
 
 const daytimeOrder = {
-  wakeup: 0,
-  morning: 1,
-  lunch: 2,
-  afternoon: 3,
-  evening: 4,
-  bed_time: 5,
+  sleep: 0,
+  wakeup: 1,
+  morning: 2,
+  lunch: 3,
+  afternoon: 4,
+  evening: 5,
+  bed_time: 6,
 }
 
 const daytimes = {
+  sleep: 'Sleep',
   wakeup: 'Wake Up',
   morning: 'Morning',
   lunch: 'Lunch',
