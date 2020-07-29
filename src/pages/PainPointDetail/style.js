@@ -8,7 +8,6 @@ export default {
   container: (isSmallScreen) => {
     return {
       ...AppStyles.fill,
-      bottom: 0,
       padding: isSmallScreen ? '80px 0px 0px 0px' : '110px 30px 30px 30px',
     }
   },
