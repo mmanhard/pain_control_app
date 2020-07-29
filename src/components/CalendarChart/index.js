@@ -16,7 +16,7 @@ class CalendarChart extends React.Component {
 
   _formatXAxisTick = (firstEntryMoment, daysAfter) => {
 
-    let tickMoment = moment(firstEntryMoment).add(daysAfter, 'days');
+    let tickMoment = moment(firstEntryMoment).add(daysAfter+1, 'days');
     return tickMoment.format('MM/DD');
   }
 
@@ -38,7 +38,6 @@ class CalendarChart extends React.Component {
     // } else {
     //   dateIncrement = 'monthly';
     // }
-
     let dataDict = {};
     for (var calendarDay of movingStats) {
       const currentMoment = moment(calendarDay.date);
