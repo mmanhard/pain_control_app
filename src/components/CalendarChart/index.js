@@ -21,7 +21,7 @@ class CalendarChart extends React.Component {
   }
 
   render() {
-    const { movingStats, calendarStats, statType, width, height, fontSize } = this.props;
+    const { movingStats, calendarStats, statType, width, height } = this.props;
 
     const statDisplayName = calendarStatTypes[statType];
 
@@ -66,19 +66,34 @@ class CalendarChart extends React.Component {
       return a.timeDiff - b.timeDiff;
     });
 
+    const fontSize = width < 700 ? 12 : 14;
+    const maxBarSize = 60;
+    const xTickCount = width < 600 ? (width < 450 ? (width < 350 ? 4 : 6) : 9) : 12;
+    const xDomain = [-1, data[data.length-1].timeDiff+1];
+
     return (
       <div style={AppStyles.rowCenter}>
-        <div style={{...AppStyles.center, height: height}}>
+        <div style={{...AppStyles.center, height: (height-66), alignSelf: 'flex-start'}}>
           <div style={styles.yLabel}>{statDisplayName} Pain Level</div>
         </div>
-        <ComposedChart width={width} height={height} data={data} margin={{ top: 8, right: 0, bottom: 8, left: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis tick={{fontSize}} dataKey='timeDiff' type='number' tickFormatter={v => { return this._formatXAxisTick(firstEntryMoment, v) }} padding={{left: 30, right: 30}}/>
+        <ComposedChart width={width} height={height} data={data} margin={{ top: 8, right: 0, bottom: 8, left: -30 }}>
+          <CartesianGrid
+            strokeDasharray="3 3" />
+          <XAxis
+            interval={0}
+            tickCount={xTickCount}
+            domain={xDomain}
+            tick={{fontSize}}
+            dataKey='timeDiff'
+            type='number'
+            allowDecimals={false}
+            tickFormatter={v => { return this._formatXAxisTick(firstEntryMoment, v) }}
+            padding={{left: 40, right: 40}}/>
           <YAxis domain={[0, 10]} ticks={[0, 2, 4, 6, 8, 10]} />
           <Tooltip labelFormatter={v => { return this._formatXAxisTick(firstEntryMoment, v) }}/>
           <Legend height={36}/>
           <Area type='monotone' dataKey={'3-Day Moving Average'} />
-          <Bar dataKey={`${statDisplayName} Daily Pain Level`} fill={AppColors.barSeries[0 % AppColors.barSeries.length]} />
+          <Bar dataKey={`${statDisplayName} Daily Pain Level`} minPointSize={5} maxBarSize={maxBarSize} fill={AppColors.barSeries[0 % AppColors.barSeries.length]} />
         </ComposedChart>
       </div>
     )

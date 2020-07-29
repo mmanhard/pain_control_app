@@ -199,7 +199,7 @@ class PainPointDetail extends React.Component {
 
     let graphWidth = isSmallScreen ? 0.8 * windowWidth : 0.6 * windowWidth;
     let graphHeight = styles.graphHeight(isMobile, isSmallScreen);
-    let graphFontSize = isSmallScreen ? 10 : 16;
+    let graphFontSize = isSmallScreen ? (isMobile ? 12 : 14) : 16;
 
     return (
       <div style={styles.mainContentContainer(isSmallScreen, isMediumScreen)}>
@@ -220,7 +220,6 @@ class PainPointDetail extends React.Component {
 
           {chartType === chartTypes.calendar &&
             <CalendarChart
-              fontSize={graphFontSize}
               width={graphWidth}
               height={graphHeight}
               graphStyle={styles.graph}
