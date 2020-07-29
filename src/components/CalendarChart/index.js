@@ -21,7 +21,7 @@ class CalendarChart extends React.Component {
   }
 
   render() {
-    const { movingStats, calendarStats, statType, width, height } = this.props;
+    const { movingStats, calendarStats, statType, width, height, fontSize } = this.props;
 
     const statDisplayName = calendarStatTypes[statType];
 
@@ -66,7 +66,6 @@ class CalendarChart extends React.Component {
       return a.timeDiff - b.timeDiff;
     });
 
-    const fontSize = width < 700 ? 12 : 14;
     const maxBarSize = 60;
     const xTickCount = width < 600 ? (width < 450 ? (width < 350 ? 4 : 6) : 9) : 12;
     const xDomain = [-1, data[data.length-1].timeDiff+1];
