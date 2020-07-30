@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import ReactModal from 'react-modal';
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 import { PersistGate } from 'redux-persist/integration/react'
@@ -25,5 +26,7 @@ const app = (
     </PersistGate>
   </Provider>
 );
+
+ReactModal.setAppElement(appRoot);
 
 ReactDOM.render(app, appRoot);
