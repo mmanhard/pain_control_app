@@ -150,16 +150,6 @@ export default {
       fontSize: AppFonts.size.medLarge,
       color: AppColors.blue,
     },
-    painLegendColor: {
-      height: 28,
-      width: 28,
-      borderRadius: 18,
-      border: '2px solid black',
-    },
-    painLegendNumbers:{
-      ...AppStyles.rowCenter,
-      flex: 1,
-    },
     rightContentContainer: (isSmallScreen) => {
       return {
         flex: 1,
