@@ -53,12 +53,17 @@ class Settings extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { userInfo, isAwaitingResp } = this.props;
+    const { userInfo, bodyPartUpdate, userUpdate } = this.props;
 
-    if (prevProps.isAwaitingResp & !isAwaitingResp) {
+
+    if (!prevProps.userUpdate && userUpdate) {
       this.props.getUserData(userInfo);
+    }
+
+    if (!prevProps.bodyPartUpdate && bodyPartUpdate) {
       this.props.getBodyParts(userInfo);
     }
+
   }
 
   _handleInputChange = (event) => {
@@ -81,8 +86,10 @@ class Settings extends React.Component {
   _handleEditAccount = () => {
     const { userInfo } = this.props;
     const { first_name, last_name, phone, birthday, hometown } = this.state;
+
     let userUpdates = {};
 
+    // Validate the user's first name and add it to updates if it has changed.
     if (!first_name) {
       this._setFlashMessage(false, 'Please enter a first name!');
       return;
@@ -90,6 +97,7 @@ class Settings extends React.Component {
       userUpdates.first_name = first_name;
     }
 
+    // Validate the user's last name and add it to updates if it has changed.
     if (!last_name) {
       this._setFlashMessage(false, 'Please enter a first name!');
       return;
@@ -97,6 +105,7 @@ class Settings extends React.Component {
       userUpdates.last_name = last_name;
     }
 
+    // Validate the user's phone number and add it to updates if it has changed.
     if (phone && !validator.isMobilePhone(phone)) {
       this._setFlashMessage(false, 'Please enter a valid phone number!');
       return;
@@ -104,6 +113,7 @@ class Settings extends React.Component {
       userUpdates.phone = phone;
     }
 
+    // Validate the user's birthday and add it to updates if it has changed.
     if (birthday && birthday.length !== validBirthdayLength) {
       this._setFlashMessage(false, 'Please enter a valid date!');
       return;
@@ -111,7 +121,7 @@ class Settings extends React.Component {
       userUpdates.birthday = birthday;
     }
 
-
+    // Add hometown to updates if it has changed.
     if (userInfo?.hometown !== hometown) {
       userUpdates.hometown = hometown;
     }
@@ -123,24 +133,35 @@ class Settings extends React.Component {
     const { userInfo } = this.props;
     const { currentBodyPart: part, part_name, part_location, part_type } = this.state;
 
-    let partUpdates = {};
-    if (part_name?.length > 0) partUpdates.name = part_name;
-    if (part_location?.length > 0) partUpdates.location = part_location;
-    if (part_type?.length > 0) partUpdates.type = part_type;
-
-    this.props.editBodyPart(userInfo, part.id, partUpdates, this._setFlashMessage);
-    this.setState({ currentBodyPart: null })
+    // Validate the body part has changed and that the fields are valid. Then
+    // make a request to edit it.
+    if (part_name?.length <= 0) {
+      this.setState({ part_name: part.name });
+      this._setFlashMessage(false, 'You must enter a name for the pain point!');
+    } else if (part_type?.length <= 0) {
+      this.setState({ part_type: part.type });
+      this._setFlashMessage(false, 'You must enter a type (e.g. joint) for the pain point!');
+    } else if (part.name === part_name && part.location === part_location && part.type === part_type) {
+      this._setFlashMessage(false, 'You haven\'t edited the pain point!');
+    } else {
+      const partUpdates = { name: part_name, location: part_location, type: part_type };
+      this.props.editBodyPart(userInfo, part.id, partUpdates, this._setFlashMessage);
+      this.setState({ currentBodyPart: null })
+    }
   }
 
   _handleAddBodyPart = () => {
     const { userInfo } = this.props;
     const { part_name, part_location, part_type } = this.state;
 
-    if (part_name?.length > 0) {
+    // Validate the new body part's name and type. Then make a request to add it.
+    if (part_name?.length <= 0) {
+      this._setFlashMessage(false, 'You must enter a name for the pain point!');
+    } else if (part_type?.length <= 0) {
+      this._setFlashMessage(false, 'You must enter a type (e.g. joint) for the pain point!');
+    } else {
       const partInfo = { name: part_name, location: part_location, type: part_type }
       this.props.addBodyPart(userInfo, partInfo, this._setFlashMessage);
-    } else {
-      this._setFlashMessage(false, 'You must enter a name for the pain point!');
     }
   }
 
@@ -148,6 +169,8 @@ class Settings extends React.Component {
     const { userInfo } = this.props;
     const { old_password, new_password_1, new_password_2 } = this.state;
 
+    // Validate the old and new passwords. Then submit a request to change the
+    // password.
     if (old_password.length <= 0) {
       this._setFlashMessage(false, 'Please type in your old password!');
     } else if (new_password_1.length <= 0) {
@@ -191,7 +214,11 @@ class Settings extends React.Component {
           {!isMediumScreen && title}
           {!isMediumScreen && this._renderFlash()}
           <div style={{marginTop: isMediumScreen ? 0 : 20, marginBottom: 20}}>
-            <Button btnStyles={styles.continueBtn} onClick={this._handleEditAccount}>Submit</Button>
+            <Button
+              btnStyles={styles.continueBtn}
+              onClick={this._handleEditAccount}>
+              Submit
+            </Button>
           </div>
         </div>
 
@@ -200,6 +227,7 @@ class Settings extends React.Component {
         {isMediumScreen && this._renderFlash()}
 
         <div style={{...styles.formContainer, order: 2}}>
+
           <div style={styles.txtInputContainer}>
             <img src={NameIcon} style={{height: 24, margin: 'auto'}} />
             <input
@@ -219,6 +247,7 @@ class Settings extends React.Component {
               onChange={this._handleInputChange}
             />
           </div>
+
           <div style={styles.txtInputContainer}>
             <img src={PhoneIcon} style={{height: 24, margin: 'auto' }} />
             <input
@@ -230,6 +259,7 @@ class Settings extends React.Component {
               onChange={this._handlePhoneChange}
             />
           </div>
+
           <div style={styles.txtInputContainer}>
             <img src={BirthdayIcon} style={{height: 24, margin: 'auto' }} />
             <input
@@ -241,6 +271,7 @@ class Settings extends React.Component {
               onChange={this._handleBirthdayChange}
             />
           </div>
+
           <div style={styles.txtInputContainer}>
             <img src={HomeIcon} style={{height: 24, margin: 'auto' }} />
             <input
@@ -252,27 +283,34 @@ class Settings extends React.Component {
               onChange={this._handleInputChange}
             />
           </div>
+
         </div>
       </div>
     );
   }
 
+  // Renders a bubble button (to be used with BubbleList) for the given part. If
+  // the part does not have a name, an add more parts button will be returned.
   _renderPart = (part) => {
     const { isSmallScreen } = this.props;
     const { currentBodyPart, addMoreParts } = this.state;
+
     if (part.name) {
       const selected = currentBodyPart && currentBodyPart.id == part.id;
       const displayName = part.location ? `${part.location} ${part.name}` : part.name;
+
       return (
         <Button
           key={part.id}
-          onClick={() => { this.setState({ currentBodyPart: part, addMoreParts: false, part_name: '', part_location: '', part_type: '' })}}
+          onClick={() => { this.setState({ currentBodyPart: part, addMoreParts: false, part_name: part.name, part_location: part.location, part_type: part.type })}}
           btnStyles={styles.partContainer(isSmallScreen, selected)}>
           <div>{displayName}</div>
           <div style={styles.editTxt}>Edit</div>
         </Button>
       );
     } else {
+
+      // Return a button to add more parts if part name does not exist.
       return (
         <Button
           key='addMoreBtn'
@@ -288,8 +326,13 @@ class Settings extends React.Component {
     const { bodyParts, isMobile, isSmallScreen } = this.props;
     const { currentBodyPart: part, addMoreParts } = this.state;
 
+    // Include an empty object with the list of parts to include an add more
+    // button in the list.
+    const listParts = [...bodyParts, {}];
+
     return (
       <div style={{...styles.editPartsContainer, ...styles.mainContainer(isSmallScreen)}}>
+
         {!isSmallScreen && <div style={{width: '100%'}}>
           {this._renderSettingsTitle(['Edit', 'Pain Points'])}
         </div>}
@@ -300,78 +343,54 @@ class Settings extends React.Component {
             contentContainerStyle={styles.bodyPartsContainer(isSmallScreen)}
             rowContainerStyle={styles.partsContainer}
             renderItem={this._renderPart}
-            items={[...bodyParts, {}]}
+            items={listParts}
             itemsPerRow={isMobile ? 2 : 3}
             offset={30}
         />
-        {part && (
-          <div style={styles.partDetailsContainer}>
+
+        {(part || addMoreParts) && (<div style={styles.partDetailsContainer}>
+
             <div style={styles.partInputContainer}>
               <input
                 name="part_location"
                 style={styles.txtInput}
                 placeholder='Location'
                 type="text"
-                value={this.state.part_location ? this.state.part_location : part.location}
+                value={this.state.part_location}
                 onChange={this._handleInputChange}
               />
             </div>
+
             <div style={styles.partInputContainer}>
               <input
                 name="part_name"
                 style={styles.txtInput}
                 placeholder='Name'
                 type="text"
-                value={this.state.part_name ? this.state.part_name : part.name}
+                value={this.state.part_name}
                 onChange={this._handleInputChange}
               />
             </div>
+
             <div style={styles.partInputContainer}>
               <input
                 name="part_type"
                 style={styles.txtInput}
                 placeholder='Type'
                 type="text"
-                value={this.state.part_type ? this.state.part_type : part.type}
+                value={this.state.part_type}
                 onChange={this._handleInputChange}
               />
             </div>
-            <Button btnStyles={styles.continueBtn} onClick={this._handleEditBodyPart}>Submit</Button>
+
+            <Button
+              btnStyles={styles.continueBtn}
+              onClick={part ? this._handleEditBodyPart : this._handleAddBodyPart}>
+              Submit
+            </Button>
+
           </div>)}
-          {addMoreParts && (
-            <div style={styles.partDetailsContainer}>
-              <div style={styles.partInputContainer}>
-                <input
-                  name="part_location"
-                  style={styles.txtInput}
-                  placeholder='Location'
-                  type="text"
-                  value={this.state.part_location}
-                  onChange={this._handleInputChange}
-                />
-              </div>
-              <div style={styles.partInputContainer}>
-                <input
-                  name="part_name"
-                  style={styles.txtInput}
-                  placeholder='Name'
-                  type="text"
-                  value={this.state.part_name}
-                  onChange={this._handleInputChange}
-                />
-              </div>
-              <div style={styles.partInputContainer}>
-                <input
-                  name="part_type"
-                  style={styles.txtInput}
-                  placeholder='Type'
-                  type="text"
-                  value={this.state.part_type}
-                  onChange={this._handleInputChange}
-                />
-              </div>
-              <Button btnStyles={styles.continueBtn} onClick={this._handleAddBodyPart}>Submit</Button>
-            </div>)}
+
       </div>
     );
   }
@@ -397,6 +416,7 @@ class Settings extends React.Component {
         {isMediumScreen && this._renderFlash()}
 
         <div style={{...styles.formContainer, order: 2}}>
+
           <div style={{...styles.txtInputContainer}}>
             <img src={KeyIcon} style={{height: 24, margin: 'auto' }} />
             <input
@@ -408,6 +428,7 @@ class Settings extends React.Component {
               onChange={this._handleInputChange}
             />
           </div>
+
           <div style={{...styles.txtInputContainer, border: 'none'}}>
             <div style={{width: 24, height: 24, margin: 'auto' }} />
             <input
@@ -419,6 +440,7 @@ class Settings extends React.Component {
               onChange={this._handleInputChange}
             />
           </div>
+
           <div style={{...styles.txtInputContainer, border: 'none'}}>
             <div style={{width: 24, height: 24, margin: 'auto' }} />
             <input
@@ -430,6 +452,7 @@ class Settings extends React.Component {
               onChange={this._handleInputChange}
             />
           </div>
+
         </div>
       </div>
     );
@@ -444,6 +467,45 @@ class Settings extends React.Component {
     )
   }
 
+  _renderConfigContainer = (showAccount, showPainPoints, showPassword) => {
+    const { isSmallScreen } = this.props;
+
+    return (
+      <div style={styles.configContainer(isSmallScreen)}>
+
+        <div style={styles.titleContainer(isSmallScreen)}>
+          <div style={styles.titleTxt}>Settings</div>
+          <div style={{...styles.subtitleTxt, marginTop: 8}}>Modify your account here.</div>
+        </div>
+
+        <div style={styles.configContentContainer(isSmallScreen)}>
+
+          <Button
+            onClick={() => {this.setState({ screenType: screenTypes.editAccount })}}
+            btnStyles={styles.configTitle(isSmallScreen, showAccount)}>
+            <div style={styles.configTitleTxt(isSmallScreen)}>Account</div>
+            <div style={styles.configTitleTxt(isSmallScreen)}>Settings</div>
+          </Button>
+
+          <Button
+            onClick={() => {this.setState({ screenType: screenTypes.editPainPoints })}}
+            btnStyles={styles.configTitle(isSmallScreen, showPainPoints)}>
+            <div style={styles.configTitleTxt(isSmallScreen)}>Edit</div>
+            <div style={styles.configTitleTxt(isSmallScreen)}>Pain Points</div>
+          </Button>
+
+          <Button
+            onClick={() => {this.setState({ screenType: screenTypes.editPassword })}}
+            btnStyles={styles.configTitle(isSmallScreen, showPassword)}>
+            <div style={styles.configTitleTxt(isSmallScreen)}>Change</div>
+            <div style={styles.configTitleTxt(isSmallScreen)}>Password</div>
+          </Button>
+
+        </div>
+      </div>
+    )
+  }
+
   render() {
     const { userInfo, windowWidth, isAwaitingResp, logout, isSmallScreen } = this.props;
     const { screenType } = this.state;
@@ -454,34 +516,12 @@ class Settings extends React.Component {
 
     return (
       <div style={styles.container(isSmallScreen)}>
+
         <Navbar userInfo={userInfo} logout={logout}/>
+
         <div style={styles.contentContainer(isSmallScreen)}>
-          <div style={styles.configContainer(isSmallScreen)}>
-            <div style={styles.titleContainer(isSmallScreen)}>
-              <div style={styles.titleTxt}>Settings</div>
-              <div style={{...styles.subtitleTxt, marginTop: 8}}>Modify your account here.</div>
-            </div>
-            <div style={styles.configContentContainer(isSmallScreen)}>
-              <Button
-                onClick={() => {this.setState({ screenType: screenTypes.editAccount })}}
-                btnStyles={styles.configTitle(isSmallScreen, showAccount)}>
-                <div style={styles.configTitleTxt(isSmallScreen)}>Account</div>
-                <div style={styles.configTitleTxt(isSmallScreen)}>Settings</div>
-              </Button>
-              <Button
-                onClick={() => {this.setState({ screenType: screenTypes.editPainPoints })}}
-                btnStyles={styles.configTitle(isSmallScreen, showPainPoints)}>
-                <div style={styles.configTitleTxt(isSmallScreen)}>Edit</div>
-                <div style={styles.configTitleTxt(isSmallScreen)}>Pain Points</div>
-              </Button>
-              <Button
-                onClick={() => {this.setState({ screenType: screenTypes.editPassword })}}
-                btnStyles={styles.configTitle(isSmallScreen, showPassword)}>
-                <div style={styles.configTitleTxt(isSmallScreen)}>Change</div>
-                <div style={styles.configTitleTxt(isSmallScreen)}>Password</div>
-              </Button>
-            </div>
-          </div>
+
+          {this._renderConfigContainer(showAccount, showPainPoints, showPassword)}
 
           {showAccount && this._renderEditAccount()}
           {showPainPoints && this._renderEditBodyParts()}
@@ -500,7 +540,9 @@ const mapStateToProps = state => {
   return {
     isAwaitingResp,
     userInfo: state.users.userInfo,
-    bodyParts: state.bodyParts.bodyParts
+    userUpdate: state.users.userUpdate,
+    bodyParts: state.bodyParts.bodyParts,
+    bodyPartUpdate: state.bodyParts.bodyPartUpdate
   }
 };
 
