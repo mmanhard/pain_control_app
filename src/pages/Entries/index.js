@@ -9,7 +9,7 @@ import withWindowDimensions from 'Common/AppDimens';
 import AppStyles from 'Common/AppStyles';
 import BodyVisualizer from 'Components/BodyVisualizer';
 import Button from 'Components/Button';
-import LoadingSpinner from 'Components/LoadingSpinner';
+import ScrollSpinner from 'Components/ScrollSpinner';
 import Navbar from 'Components/Navbar';
 import styles from './style';
 
@@ -305,11 +305,11 @@ class Entries extends React.Component {
           </div>
           <div style={styles.entriesContainer(isSmallScreen, isMediumScreen)}>
             {entries && entries.map(this._renderEntry)}
-            {(entries.length < numEntries) &&
+            {(entries.length < numEntries) && !isFetching &&
               <Button btnStyles={styles.continueBtn} onClick={this._reloadEntries}>Load More</Button>}
+            {isFetching && <ScrollSpinner />}
           </div>
 
-          {isFetching && <LoadingSpinner />}
 
         </div>
       </div>
