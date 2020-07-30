@@ -4,6 +4,7 @@ import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Tooltip } from 'rech
 import AppColors from 'Common/AppColors';
 import AppStyles from 'Common/AppStyles';
 import RotatedAxisTick from 'Components/RotatedAxisTick';
+import styles from './style';
 
 const daytimeOrder = {
   sleep: 0,
@@ -35,63 +36,85 @@ const daytimeStatTypes = {
 
 class DaytimeChart extends React.Component {
 
-  render() {
-    const { daytimeDatasets, statType, graphStyle, width, height, fontSize } = this.props;
+  _computeChartData = (statDisplayName) => {
+    const { daytimeStats, statType } = this.props;
 
-    const statDisplayName = daytimeStatTypes[statType];
-
+    // Initialize the dictionary with bucket names corresponding to time of day.
     let dataDict = {};
-    let i = 0;
-    for (var dataset of daytimeDatasets) {
-      for (const [daytime, stats] of Object.entries(dataset)) {
-        if (!dataDict[daytime]) {
-          dataDict[daytime] = { daytime, daytimeName: daytimes[daytime] };
-        }
-
-        dataDict[daytime][statDisplayName] = stats ? Number(stats[statType]).toFixed(1) : 0
-      }
-      i++;
+    for (const [daytime, daytimeName] of Object.entries(daytimes)) {
+      dataDict[daytime] = { daytimeName };
     }
 
+    // Fill the dictionary with daytime pain level data.
+    for (const [daytime, stats] of Object.entries(daytimeStats)) {
+      dataDict[daytime][statDisplayName] = stats ? Number(stats[statType]).toFixed(1) : 0
+    }
+
+    // Sort the buckets in ascending order of time of day.
     let data = Object.values(dataDict);
     data.sort((a, b) => {
       return daytimeOrder[a.daytime] - daytimeOrder[b.daytime];
     });
 
+    return data;
+  }
+
+  _renderChart = (statDisplayName) => {
+    const { width, height, fontSize } = this.props;
+
+    const data = this._computeChartData(statDisplayName);
+
     return (
-      <div style={AppStyles.rowCenter}>
-        <div style={{...AppStyles.center, height: (height-66), alignSelf: 'flex-start'}}>
-          <div style={styles.yLabel}>{statDisplayName} Pain Level</div>
-        </div>
-        <BarChart width={width} height={height} data={data} margin={{ top: 8, right: 0, bottom: 32, left: -30 }}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            interval={0}
-            tick={width < 500 ? <RotatedAxisTick fontSize={fontSize}/> : {fontSize}}
-            dataKey='daytimeName' />
-          <YAxis domain={[0, 10]} ticks={[0, 2, 4, 6, 8, 10]} />
-          <Tooltip />
-          {daytimeDatasets.map((_, index) => {
-            const key = statDisplayName
-            return <Bar key={key} dataKey={key} fill={AppColors.barSeries[index % AppColors.barSeries.length]} />
-          })}
-        </BarChart>
+      <BarChart
+        style={{position: 'relative'}}
+        margin={{ top: 8, right: 0, bottom: 32, left: -30 }}
+        width={width} height={height}
+        data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis
+          interval={0}
+          tick={width < 500 ? <RotatedAxisTick fontSize={fontSize}/> : {fontSize}}
+          dataKey='daytimeName' />
+        <YAxis
+          domain={[0, 10]}
+          ticks={[0, 2, 4, 6, 8, 10]} />
+        <Tooltip />
+        <Bar
+          dataKey={statDisplayName}
+          fill={AppColors.barSeries[0]} />
+      </BarChart>
+    );
+  }
+
+  _renderNoDataAlert = () => {
+    const { width, height } = this.props;
+
+    return (
+      <div style={styles.noDataContainer(height, width)}>
+        <div>Not enough entries yet!</div>
+        <div>Add more to see a histogram of your pain levels.</div>
       </div>
     )
   }
-}
 
-const styles = {
-  yLabel: {
-    width: 30,
-    borderRadius: 20,
-    paddingTop: 12,
-    paddingBottom: 12,
-    paddingRight: 10,
-    backgroundColor: AppColors.lilac,
-    color: AppColors.blue,
-    writingMode: 'vertical-rl',
-    textOrientation: 'sideways',
+  render() {
+    const { daytimeStats, statType, height } = this.props;
+
+    const statDisplayName = daytimeStatTypes[statType];
+
+    return (
+      <div style={AppStyles.rowCenter}>
+
+        <div style={styles.yLabelContainer(height)}>
+          <div style={styles.yLabel}>{statDisplayName} Pain Level</div>
+        </div>
+
+        {this._renderChart(statDisplayName)}
+
+        {(daytimeStats.length <= 0) && this._renderNoDataAlert()}
+
+      </div>
+    )
   }
 }
 

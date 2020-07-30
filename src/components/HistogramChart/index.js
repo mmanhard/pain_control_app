@@ -1,8 +1,9 @@
 import React from "react";
 
-import AppStyles from 'Common/AppStyles';
 import AppColors from 'Common/AppColors';
+import AppStyles from 'Common/AppStyles';
 import RotatedAxisTick from 'Components/RotatedAxisTick';
+import styles from './style';
 
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Label, Tooltip } from 'recharts';
 
@@ -31,80 +32,93 @@ const histogramStatTypes = {
 
 class HistogramChart extends React.Component {
 
-  render() {
-    const { histograms, statType, width, height, fontSize } = this.props;
+  _computeChartData = () => {
+    const { histogram, statType, width } = this.props;
 
-    const statDisplayName = histogramStatTypes[statType];
-
-    let maxCount = 0;
+    // Initialize the dictionary with bucket names corresponding to pain levels.
     let dataDict = {};
-    let i = 0;
-    for (var histogram of histograms) {
-      for (const [key, value] of Object.entries(histogram[statType])) {
-        const bucketName = width < 500 ? bucketNames[key].split(' ').slice(0, -1).join(' ') : bucketNames[key];
-        if (!dataDict[key]) {
-          dataDict[key] = { key, bucketName };
-        }
+    for (var [bucket, bucketName] of Object.entries(bucketNames)) {
+      bucketName = width < 500 ? bucketName.split(' ').slice(0, -1).join(' ') : bucketName;
 
-        dataDict[key]['Quantity'] = value;
-        if (value > maxCount) maxCount = value;
-      }
-      i++;
+      dataDict[bucket] = { bucketName };
     }
 
+    // Fill the dictionary with histogram data.
+    let maxCount = 0;
+    if (histogram[statType]) {
+      for (const [bucket, count] of Object.entries(histogram[statType])) {
+        dataDict[bucket]['Quantity'] = count;
+        if (count > maxCount) maxCount = count;
+      }
+    }
+
+    // Sort the buckets in ascending order of pain level.
     let data = Object.values(dataDict);
     data.sort((a, b) => {
       return bucketOrder[a.key] - bucketOrder[b.key];
     });
 
+    return {data, maxCount};
+  }
+
+  _renderChart = () => {
+    const { width, height, fontSize } = this.props;
+
+    const { data, maxCount } = this._computeChartData();
 
     return (
-      <div style={AppStyles.rowCenter}>
-        <div style={{...AppStyles.center, height: height}}>
-          <div style={styles.yLabel}># of Daily Occurences</div>
-        </div>
-        <div style={AppStyles.center}>
-          <BarChart width={width} height={height} data={data} margin={{ top: 8, right: 0, bottom: width < 500 ? 32 : 8, left: -30 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              interval={0}
-              tick={width < 500 ? <RotatedAxisTick fontSize={fontSize}/> : {fontSize}}
-              dataKey='bucketName' />
-            <YAxis domain={[0, Math.ceil(1.25 * maxCount)]} type='number' />
-            <Tooltip />
-            {histograms.map((_, index) => {
-              const key = 'Quantity';
-              return <Bar key={key} dataKey={key} fill={AppColors.barSeries[index % AppColors.barSeries.length]} />
-            })}
-          </BarChart>
-          {width >= 400 && <div style={styles.xLabel}>{statDisplayName} Pain Levels</div>}
-        </div>
+      <BarChart
+        style={{position: 'relative'}}
+        width={width} height={height}
+        data={data}
+        margin={{ top: 8, right: 0, bottom: width < 500 ? 32 : 8, left: -30 }}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis
+          interval={0}
+          tick={width < 500 ? <RotatedAxisTick fontSize={fontSize}/> : {fontSize}}
+          dataKey='bucketName' />
+        <YAxis
+          domain={[0, maxCount + 2]}
+          type='number' />
+        <Tooltip />
+        <Bar
+          dataKey={'Quantity'}
+          fill={AppColors.barSeries[0]} />
+      </BarChart>
+    );
+  }
+
+  _renderNoDataAlert = () => {
+    const { width, height } = this.props;
+
+    return (
+      <div style={styles.noDataContainer(height, width)}>
+        <div>Not enough entries yet!</div>
+        <div>Add more to see a histogram of your pain levels.</div>
       </div>
     )
   }
-}
 
-const styles = {
-  xLabel: {
-    height: 30,
-    marginBottom: 20,
-    borderRadius: 20,
-    paddingLeft: 12,
-    paddingRight: 12,
-    paddingTop: 10,
-    backgroundColor: AppColors.lilac,
-    color: AppColors.blue,
-  },
-  yLabel: {
-    width: 30,
-    borderRadius: 20,
-    paddingTop: 12,
-    paddingBottom: 12,
-    paddingRight: 10,
-    backgroundColor: AppColors.lilac,
-    color: AppColors.blue,
-    writingMode: 'vertical-rl',
-    textOrientation: 'sideways',
+  render() {
+    const { histogram, statType, width, height } = this.props;
+
+    const statDisplayName = histogramStatTypes[statType];
+
+    return (
+      <div style={AppStyles.rowCenter}>
+
+        <div style={styles.yLabelContainer(height)}>
+          <div style={styles.yLabel}># of Daily Occurences</div>
+        </div>
+
+        <div style={AppStyles.center}>
+          {this._renderChart()}
+          {width >= 400 && <div style={styles.xLabel}>{statDisplayName} Pain Levels</div>}
+          {(!histogram[statType]) && this._renderNoDataAlert()}
+        </div>
+
+      </div>
+    )
   }
 }
 
