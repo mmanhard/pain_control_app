@@ -24,6 +24,7 @@ class Navigation extends React.Component {
       <Router>
         <div style={AppFonts.Raleway.bold}>
           <Switch>
+
             <Route path="/" exact={true}>
               <Pages.Login />
             </Route>
@@ -63,6 +64,7 @@ class Navigation extends React.Component {
   }
 }
 
+// PrivateRoute is only accessible when isLogin is set to true.
 function PrivateRoute({ isLogin, children, ...rest }) {
   return (
     <Route
@@ -76,11 +78,13 @@ function PrivateRoute({ isLogin, children, ...rest }) {
   );
 }
 
+// Hook to give pain entry detail page access to entryID in URL params.
 function Entry() {
   let { entryID } = useParams();
   return <Pages.EntryDetail entryID={entryID} />;
 }
 
+// Hook to give pain point detail page access to bodyPartID in URL params.
 function PainPoint() {
   let { bodyPartID } = useParams();
   return <Pages.PainPointDetail bodyPartID={bodyPartID} />;
@@ -88,10 +92,6 @@ function PainPoint() {
 
 const mapStateToProps = state => ({
   isLogin: state.users.isLogin,
-  userInfo: state.users.userInfo,
-  userUpdate: state.users.userUpdate,
-  entryUpdate: state.users.entryUpdate,
-  bodyPartUpdate: state.users.bodyPartUpdate
 });
 
 const mapDispatchToProps = dispatch => ({
