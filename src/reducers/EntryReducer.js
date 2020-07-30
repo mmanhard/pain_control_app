@@ -46,6 +46,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         entryInfo: payload.data.entry_info,
+        entryUpdate: false,
         isFetching: false,
       };
     case actions.entryActions.GET_ENTRY_FAIL:

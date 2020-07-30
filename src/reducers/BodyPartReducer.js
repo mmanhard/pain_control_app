@@ -38,6 +38,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         bodyPartInfo: payload.data.body_part_info,
+        bodyPartUpdate: false,
         isFetching: false,
       };
     case actions.bodyPartActions.GET_BODY_PART_FAIL:
