@@ -11,6 +11,9 @@ const screenHeights = {
   small: 640
 }
 
+// Component wrapper that gives the wrapped component access to the current size
+// of the user's window. Also, provides categories for window size, e.g. mobile,
+// small, large, short screens.
 export default function withWindowDimensions(WrappedComponent) {
     return class extends Component {
         state = { width: 0, height: 0 };
