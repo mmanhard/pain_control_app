@@ -171,7 +171,6 @@ class Onboarding extends React.Component {
     // Check that at least one field has been completed.
     if (Object.entries(userUpdates).length > 0) {
       this.props.updateUser(this.props.userInfo, userUpdates, this._submitCallback);
-      this._switchScreen();
     } else {
       this._setFlashMessage(false, 'You must fill in at least one field!');
     }
