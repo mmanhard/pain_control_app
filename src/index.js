@@ -13,7 +13,7 @@ const { store, persistor } = configureStore();
 
 WebFont.load({
    google: {
-     families: ['Raleway:ital,wght@0,200;0,400;0,900;1,700', 'sans-serif']
+     families: ['Raleway:ital,wght@0,400;0,900;1,700', 'sans-serif']
    }
 });
 

@@ -1,8 +1,4 @@
 const Raleway = {
-  light: {
-    fontFamily: 'Raleway',
-    fontWeight: '200'
-  },
   regular: {
     fontFamily: 'Raleway',
     fontWeight: '400'
