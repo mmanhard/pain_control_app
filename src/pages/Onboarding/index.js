@@ -2,8 +2,10 @@ import React from "react";
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
+import validator from 'validator';
 
 import actions from 'Actions';
+import { flashDuration } from 'Common/AppConst';
 import withWindowDimensions from 'Common/AppDimens';
 import BubbleList from 'Components/BubbleList';
 import Button from 'Components/Button';
@@ -19,6 +21,7 @@ const lr = ['L', 'R'];
 const ul = ['Up', 'Lo'];
 
 const maxBodyPartNameLength = 12;
+const validBirthdayLength = 10;
 
 const defaultUpperJoints = [
   {
@@ -137,15 +140,37 @@ class Onboarding extends React.Component {
   };
 
   _handleSubmitInfo = (event) => {
+    const { phone, birthday, hometown } = this.state;
+
     event.preventDefault();
 
     let userUpdates = {};
-    if (this.state.phone.length > 0) userUpdates.phone = this.state.phone;
-    if (this.state.birthday.length > 0) userUpdates.birthday = this.state.birthday;
-    if (this.state.hometown.length > 0) userUpdates.hometown = this.state.hometown;
-    this.props.updateUser(this.props.userInfo, userUpdates, this._submitCallback);
 
-    this._switchScreen();
+    // Validate the user's phone number and add it to updates if it has changed.
+    if (phone && !validator.isMobilePhone(phone)) {
+      this._setFlashMessage(false, 'Please enter a valid phone number!');
+      return;
+    } else if (phone.length > 0) {
+      userUpdates.phone = phone;
+    }
+
+    // Validate the user's birthday and add it to updates if it has changed.
+    if (birthday && birthday.length !== validBirthdayLength) {
+      this._setFlashMessage(false, 'Please enter a valid date!');
+      return;
+    } else if (birthday.length > 0) {
+      userUpdates.birthday = birthday;
+    }
+
+    if (this.state.hometown.length > 0) userUpdates.hometown = this.state.hometown;
+
+    // Check that at least one field has been completed.
+    if (Object.entries(userUpdates).length > 0) {
+      this.props.updateUser(this.props.userInfo, userUpdates, this._submitCallback);
+      this._switchScreen();
+    } else {
+      this._setFlashMessage(false, 'You must fill in at least one field!');
+    }
   }
 
   _handleSubmitBodyParts = (event) => {
