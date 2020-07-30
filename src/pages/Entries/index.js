@@ -48,6 +48,7 @@ class Entries extends React.Component {
       currentBodyPartID: null,
       daytime: 'all_day',
       sortBy: 'date',
+      page: 0
     };
   }
 
@@ -57,9 +58,9 @@ class Entries extends React.Component {
 
   _reloadEntries = () => {
     const { userInfo } = this.props;
-    const { startDate, endDate, daytime, currentBodyPartID, sortBy } = this.state;
+    const { startDate, endDate, daytime, currentBodyPartID, sortBy, page } = this.state;
 
-    let params = { sort_by: sortBy, detail_level: 'high' };
+    let params = { sort_by: sortBy, detail_level: 'medium', page };
     if (daytime !== 'all_day') {
       params = { ...params, time_of_day: daytime };
     }
@@ -73,12 +74,18 @@ class Entries extends React.Component {
       params = { ...params, end_date: endDate.toISOString(true) };
     }
 
-    this.props.getEntries(userInfo, params);
+    this.props.getEntries(userInfo, params, this._getEntriesCallback);
+  }
+
+  _getEntriesCallback = (success) => {
+    if (success) {
+      this.setState({ page: this.state.page + 1 })
+    }
   }
 
   _handleInputChange = (event) => {
     const target = event.target;
-    this.setState({ [target.name]: target.value }, this._reloadEntries);
+    this.setState({ [target.name]: target.value, page: 0 }, this._reloadEntries);
   }
 
   _handleDateRangeChange = (event) => {
@@ -103,11 +110,11 @@ class Entries extends React.Component {
         console.log('Need to handle custom case!!!');
     }
 
-    this.setState({ startDate }, this._reloadEntries);
+    this.setState({ startDate, page: 0 }, this._reloadEntries);
   }
 
   _handleSortChange = (sortBy) => {
-    this.setState({ sortBy }, this._reloadEntries);
+    this.setState({ sortBy, page: 0 }, this._reloadEntries);
   }
 
   _goToEntry = (entryID) => {
@@ -131,16 +138,8 @@ class Entries extends React.Component {
       });
     });
 
-    let min = 10;
-    let max = 0;
-    for (let subentry of entry.pain_subentries) {
-      if (subentry.pain_level < min) {
-        min = subentry.pain_level
-      }
-      if (subentry.pain_level > max) {
-        max = subentry.pain_level
-      }
-    }
+    let min = Number(entry.stats.low).toFixed(0);
+    let max = Number(entry.stats.high).toFixed(0);
 
     const date = moment(entry.date).utc();
 
@@ -207,7 +206,7 @@ class Entries extends React.Component {
   }
 
   _renderConfiguration = () => {
-    const { bodyParts, entries, isSmallScreen, isMediumScreen } = this.props;
+    const { bodyParts, entries, numEntries, isSmallScreen, isMediumScreen } = this.props;
     const { sortBy } = this.state;
 
     let filterTitle = (
@@ -284,13 +283,13 @@ class Entries extends React.Component {
             })}
           </div>
         </div>
-        {!isSmallScreen && <div style={styles.entryNumberText}># of Entries: {entries.length}</div>}
+        {!isSmallScreen && <div style={styles.entryNumberText}># of Entries: {numEntries}</div>}
       </div>
     );
   }
 
   render() {
-    const { userInfo, entries, isFetching, logout, isSmallScreen, isMediumScreen } = this.props;
+    const { userInfo, entries, numEntries, isFetching, logout, isSmallScreen, isMediumScreen } = this.props;
 
     return (
       <div style={styles.container(isSmallScreen)}>
@@ -306,6 +305,8 @@ class Entries extends React.Component {
           </div>
           <div style={styles.entriesContainer(isSmallScreen, isMediumScreen)}>
             {entries && entries.map(this._renderEntry)}
+            {(entries.length < numEntries) &&
+              <Button btnStyles={styles.continueBtn} onClick={this._reloadEntries}>Load More</Button>}
           </div>
 
           {isFetching && <LoadingSpinner />}
@@ -320,7 +321,8 @@ const mapStateToProps = state => ({
   isFetching: state.entries.isFetching,
   userInfo: state.users.userInfo,
   bodyParts: state.bodyParts.bodyParts,
-  entries: state.entries.entries
+  entries: state.entries.entries,
+  numEntries: state.entries.numEntries
 });
 
 const mapDispatchToProps = dispatch => ({

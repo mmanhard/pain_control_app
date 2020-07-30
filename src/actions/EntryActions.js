@@ -18,7 +18,7 @@ const entryActions = {
   ADD_ENTRY_FAIL: 'ADD_' + ENTRY_PREFIX + '_FAIL',
 };
 
-const getEntries = (userInfo, params) => {
+const getEntries = (userInfo, params, cb = () => {}) => {
   return async dispatch => {
     dispatch({
       type: entryActions.GET_ALL_ENTRIES_REQUEST
@@ -29,12 +29,16 @@ const getEntries = (userInfo, params) => {
       if (!response.fail) {
         dispatch({
           type: entryActions.GET_ALL_ENTRIES_SUCCESS,
-          payload: { data: { ...response.data } }
+          payload: { page: params?.page, data: { ...response.data } }
         });
+
+        cb(true, response.data.message);
       } else {
         dispatch({
           type: entryActions.GET_ALL_ENTRIES_FAIL,
         });
+
+        cb(false, response.data.message);
       }
     } catch (err) {
       console.log(err);
