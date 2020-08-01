@@ -6,6 +6,7 @@ class BodyVisualizer extends React.Component {
     super(props);
 
     this.state = {
+      hoverID: undefined
     };
   }
   _getColor = (bodyPartName) => {
@@ -24,6 +25,7 @@ class BodyVisualizer extends React.Component {
     const { bodyParts, clickBodyPartFound, clickBodyPartNotFound } = this.props;
 
     event.stopPropagation();
+
     let part;
     for (part of bodyParts) {
       if (part.name === clickedBodyPart) {
@@ -43,9 +45,9 @@ class BodyVisualizer extends React.Component {
     clickBodyPartNotFound(newBodyPart);
   }
 
-  // _handlePartHoverStart = (event) => {
-  //   console.log(event.target);
-  // }
+  _handlePartHoverStart = (event, shapeID) => {
+    this.setState({hoverID: shapeID});
+  }
   //
   // _handlePartHoverEnd = (event) => {
   //   console.log(event.target);
@@ -53,6 +55,8 @@ class BodyVisualizer extends React.Component {
 
   render() {
     const { contentContainerStyle, clickBackground } = this.props;
+    const { hoverID } = this.state;
+
     return (
       <div
         style={{...contentContainerStyle, display: 'flex', justifyContent: 'center', alignItems: 'center'}}
@@ -60,16 +64,31 @@ class BodyVisualizer extends React.Component {
         onClick={clickBackground}
       >
         <div style={{height: '100%'}}>
-          <svg width="100%" height='100%' viewBox='0 0 200 310'>
+          <svg width="100%" height='100%' viewBox='0 0 200 310' style={{overflow: 'visible'}}>
+            <defs>
+              <filter id="blur" x="-0.2" y="-0.2" width="140%" height="140%">
+                <feOffset result="offOut" in="SourceGraphic" dx="2" dy="2" />
+                <feColorMatrix result="matrixOut" in="offOut" type="matrix"
+                  values="0.5 0 0 0 0 0 0.5 0 0 0 0 0 0.5 0 0 0 0 0 0.5 0" />
+                <feGaussianBlur result="blurOut" in="matrixOut" stdDeviation="2" />
+                <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+              </filter>
+            </defs>
             <g>
               <title>Body BodyVisualizer</title>
               {shapes.map((shape) => {
+                const selected = hoverID && hoverID == shape.id;
+
+                const r = selected ? 1.08 * shape.r : shape.r;
+
                 return (
                   <ellipse key={shape.id}
                     onClick={(event) => {this._handlePartClick(event, shape.id)}}
-                    onMouseOver={this._handlePartHoverStart}
+                    onMouseOver={(event) => {this._handlePartHoverStart(event, shape.id)}}
                     onMouseLeave={this._handlePartHoverEnd}
-                    id={shape.id} ry={shape.r} rx={shape.r} cy={shape.cy} cx={shape.cx} stroke="#000" fill={this._getColor(shape.id)}/>
+                    id={shape.id} ry={r} rx={r} cy={shape.cy} cx={shape.cx}
+                    stroke="#000" fill={this._getColor(shape.id)}
+                    filter='url(#blur)'/>
                 );
               })}
             </g>
