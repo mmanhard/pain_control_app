@@ -12,6 +12,7 @@ import BodyVisualizer from 'Components/BodyVisualizer';
 import Button from 'Components/Button';
 import LoadingSpinner from 'Components/LoadingSpinner';
 import Navbar from 'Components/Navbar';
+import PainLegend from 'Components/PainLegend';
 import styles from './style';
 
 class EntryDetail extends React.Component {
@@ -28,43 +29,10 @@ class EntryDetail extends React.Component {
     this.props.getEntry(userInfo, entryID, {});
   }
 
-  _renderPainLegend = () => {
-    return (
-      <div style={styles.painLegend}>
-        <div>
-          <p style={{marginLeft: 40, marginBottom: 0  }}>Pain</p>
-          <p style={{marginLeft: 40, marginTop: 0 }}>Legend</p>
-        </div>
-        <div style={{flex: 1}}>
-          <div style={styles.painLegendNumbers}>
-            <div style={{flex: 0.5}}></div>
-            {Object.entries(AppColors.painLevelColors).map(([type, color]) => {
-              if (type === 'none') {
-                return (
-                  <div key={type} style={{flex: 1.5, ...AppStyles.rowEnd, paddingRight: 18}}>
-                    <div style={{ ...styles.painLegendColor, backgroundColor: color}}></div>
-                  </div>
-                );
-              }
-              return (
-                <div key={type} style={{flex: 1, ...AppStyles.rowCenter}}>
-                  <div style={{ ...styles.painLegendColor, backgroundColor: color}}></div>
-                </div>
-              );
-            })}
-          </div>
-          <div style={styles.painLegendNumbers}>
-            <span style={{flex: 1, textAlign: 'center'}}>0</span>
-            <span style={{flex: 1, textAlign: 'center'}}>2</span>
-            <span style={{flex: 1, textAlign: 'center'}}>4</span>
-            <span style={{flex: 1, textAlign: 'center'}}>6</span>
-            <span style={{flex: 1, textAlign: 'center'}}>8</span>
-            <span style={{flex: 1, textAlign: 'center'}}>10</span>
-            <span style={{flex: 1, textAlign: 'end', paddingRight: 16}}>N/A</span>
-          </div>
-        </div>
-      </div>
-    );
+  // Format the given stat. If it does not exist or is not a number, return '-'.
+  // Otherwise, return the number to one decimal place.
+  _formatStat = (stat) => {
+    return isNaN(stat) ? '-' : Number(stat).toFixed(1);
   }
 
   _renderLeftContainer = (currentBodyPart, currentSubentry) => {
@@ -104,35 +72,37 @@ class EntryDetail extends React.Component {
           {isSmallScreen && this._renderTitle(currentBodyPart, currentSubentry)}
         </div>
         {isSmallScreen && this._renderRightContainer(currentBodyPart, currentSubentry)}
-        {!isSmallScreen && this._renderPainLegend()}
+        {!isSmallScreen && <PainLegend contentContainerStyle={styles.painLegend} />}
       </div>
     );
   }
 
+  // Renders stats for the current selected body part. Includes the pain level
+  // indicated for the entry and compares it to previous entries.
   _renderBodyPartStats = (currentSubentry) => {
     const { entryInfo, isSmallScreen, isMediumScreen, history } = this.props;
     const { currentBodyPartID } = this.state;
 
-    let currentComparisons;
+    // Format the comparisons to the most recent entry, yesterday, and last week.
+    let lastEntry, yesterday, lastWeek;
     if (currentBodyPartID) {
-      currentComparisons = {};
 
-      const lastEntry = entryInfo.comparisons.most_recent[currentBodyPartID];
-      currentComparisons.lastEntry = lastEntry ? lastEntry.toString() : '-';
-      if (!currentComparisons.lastEntry.startsWith('-')) {
-        currentComparisons.lastEntry = '+' + currentComparisons.lastEntry;
+      lastEntry = entryInfo.comparisons.most_recent[currentBodyPartID];
+      lastEntry = this._formatStat(lastEntry);
+      if (!isNaN(lastEntry) && lastEntry > 0) {
+        lastEntry = '+' + lastEntry.toString();
       }
 
-      const yesterday = entryInfo.comparisons.yesterday[currentBodyPartID];
-      currentComparisons.yesterday = yesterday ? yesterday.toString() : '-';
-      if (!currentComparisons.yesterday.startsWith('-')) {
-        currentComparisons.yesterday = '+' + currentComparisons.yesterday;
+      yesterday = entryInfo.comparisons.yesterday[currentBodyPartID];
+      yesterday = this._formatStat(yesterday);
+      if (!isNaN(yesterday) && yesterday > 0) {
+        yesterday = '+' + yesterday.toString();
       }
 
-      const lastWeekComp = entryInfo.comparisons.last_week[currentBodyPartID];
-      currentComparisons.lastWeek = lastWeekComp ? lastWeekComp.toString() : '-';
-      if (!currentComparisons.lastWeek.startsWith('-')) {
-        currentComparisons.lastWeek = '+' + currentComparisons.lastWeek;
+      lastWeek = entryInfo.comparisons.last_week[currentBodyPartID];
+      lastWeek = this._formatStat(lastWeek);
+      if (!isNaN(lastWeek) && lastWeek > 0) {
+        lastWeek = '+' + lastWeek.toString();
       }
 
     }
@@ -143,17 +113,17 @@ class EntryDetail extends React.Component {
           <div style={styles.subtitleContainer}>Changes</div>
 
           <div style={styles.statContainer}>
-            <div style={styles.statTxt}>{currentComparisons.lastEntry}</div>
+            <div style={styles.statTxt}>{lastEntry}</div>
             <div style={styles.statTitle}>Last Entry</div>
           </div>
 
           <div style={styles.statContainer}>
-            <div style={styles.statTxt}>{currentComparisons.yesterday}</div>
+            <div style={styles.statTxt}>{yesterday}</div>
             <div style={styles.statTitle}>Yesterday</div>
           </div>
 
           <div style={styles.statContainer}>
-            <div style={styles.statTxt}>{currentComparisons.lastWeek}</div>
+            <div style={styles.statTxt}>{lastWeek}</div>
             <div style={styles.statTitle}>Last Week</div>
           </div>
         </div>
@@ -174,37 +144,42 @@ class EntryDetail extends React.Component {
     );
   }
 
+  // Renders general stats. Displayed when no body part has been selected.
   _renderGeneralStats = () => {
     const { entryInfo, isSmallScreen, isMediumScreen } = this.props;
+
+    let stats = entryInfo?.stats;
 
     return (
       <div style={styles.statsContainer(isSmallScreen)}>
         <div style={styles.statsRow}>
+
           <div style={styles.subtitleContainer}>Stats</div>
 
           <div style={styles.statContainer}>
-            <div style={styles.statTxt}>{Number(entryInfo.stats?.high).toFixed(1)}</div>
+            <div style={styles.statTxt}>{this._formatStat(stats?.high)}</div>
             <div style={{...styles.statTitle, marginBottom: 0}}>Max</div>
             <div style={{...styles.statTitle, marginTop: 0}}>Pain Level</div>
           </div>
 
           <div style={styles.statContainer}>
-            <div style={styles.statTxt}>{Number(entryInfo.stats?.low).toFixed(1)}</div>
+            <div style={styles.statTxt}>{this._formatStat(stats?.low)}</div>
             <div style={{...styles.statTitle, marginBottom: 0}}>Min</div>
             <div style={{...styles.statTitle, marginTop: 0}}>Pain Level</div>
           </div>
 
           <div style={styles.statContainer}>
-            <div style={styles.statTxt}>{Number(entryInfo.stats?.avg).toFixed(1)}</div>
+            <div style={styles.statTxt}>{this._formatStat(stats?.avg)}</div>
             <div style={{...styles.statTitle, marginBottom: 0}}>Mean</div>
             <div style={{...styles.statTitle, marginTop: 0}}>Pain Level</div>
           </div>
 
           {!isMediumScreen && <div style={styles.statContainer}>
-            <div style={styles.statTxt}>{entryInfo.stats?.num_body_parts}</div>
+            <div style={styles.statTxt}>{this._formatStat(stats?.num_body_parts)}</div>
             <div style={{...styles.statTitle, marginBottom: 0}}># of Pain</div>
             <div style={{...styles.statTitle, marginTop: 0}}>Points</div>
           </div>}
+
         </div>
 
         <div style={styles.statsRow}>
@@ -212,6 +187,7 @@ class EntryDetail extends React.Component {
             {entryInfo.notes}
           </div>
         </div>
+
       </div>
     );
   }
@@ -221,10 +197,18 @@ class EntryDetail extends React.Component {
 
     return (
       <div style={styles.titleRow(isSmallScreen, isMediumScreen)}>
+
         <div style={styles.titleContainer(isMediumScreen)}>
-          <div>{currentBodyPart ? `${currentBodyPart.location} ${currentBodyPart.name}` : 'General'}</div>
+          <div>{currentBodyPart ?
+            `${currentBodyPart.location} ${currentBodyPart.name}`
+            : 'General'}</div>
         </div>
-        {currentSubentry && <div style={styles.painLevelTxt(isSmallScreen)}>{currentSubentry.pain_level.toFixed(1)}</div>}
+
+        {currentSubentry &&
+          <div style={styles.painLevelTxt(isSmallScreen)}>
+            {currentSubentry.pain_level.toFixed(1)}
+          </div>}
+
       </div>
     )
   }
@@ -244,12 +228,13 @@ class EntryDetail extends React.Component {
     const { userInfo, entryInfo, isFetching, isSmallScreen, isMediumScreen, logout } = this.props;
     const { currentBodyPartID } = this.state;
 
-
+    // If current body part is selected, extract the appropriate pain subentry
+    // from the entry as well as the actual body part.
     let subentry, currentSubentry, currentBodyPart;
-    if (entryInfo) {
+    if (entryInfo && currentBodyPartID) {
       for (subentry of entryInfo.pain_subentries) {
         const part = subentry.body_part;
-        if (currentBodyPartID && part.id == currentBodyPartID) {
+        if (part.id == currentBodyPartID) {
           currentBodyPart = part;
           currentSubentry = subentry;
           break;
@@ -259,12 +244,16 @@ class EntryDetail extends React.Component {
 
     return (
       <div style={styles.container(isSmallScreen)}>
+
         <Navbar userInfo={userInfo} logout={logout}/>
+
         <div style={styles.contentContainer(isSmallScreen, isMediumScreen)}>
+
           {entryInfo && this._renderLeftContainer(currentBodyPart, currentSubentry)}
           {entryInfo && !isMediumScreen && this._renderRightContainer(currentBodyPart, currentSubentry)}
 
           {(!entryInfo || isFetching) && <LoadingSpinner />}
+
         </div>
 
       </div>
