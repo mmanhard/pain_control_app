@@ -12,7 +12,6 @@ import AppStyles from 'Common/AppStyles';
 import ActionModal from 'Components/ActionModal';
 import BodyVisualizer from 'Components/BodyVisualizer';
 import Button from 'Components/Button';
-import HelpModal from 'Components/HelpModal';
 import LoadingSpinner from 'Components/LoadingSpinner';
 import Navbar from 'Components/Navbar';
 import PainLegend from 'Components/PainLegend';
@@ -70,7 +69,6 @@ class Dashboard extends React.Component {
 
     // Create references to the two modal types.
     this.actionModalRef = React.createRef();
-    this.helpModalRef = React.createRef();
   }
 
   componentDidMount() {
@@ -464,11 +462,6 @@ class Dashboard extends React.Component {
 
           {!isSmallScreen && this._renderFlash()}
 
-          <Button
-            onClick={() => {this.helpModalRef.current.open()}}
-            btnStyles={styles.helpBtn}>
-            <div style={styles.helpIcon}>?</div>
-          </Button>
         </div>
 
         {isSmallScreen && this._renderFlash()}
@@ -627,10 +620,6 @@ class Dashboard extends React.Component {
             Would you like to start tracking your {newBodyPart && newBodyPart.displayName}?
           </p>
         </ActionModal>
-
-        <HelpModal
-          ref={this.helpModalRef}
-          contentStyle={styles.formModalContainer} />
 
       </div>
     )
