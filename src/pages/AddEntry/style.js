@@ -324,4 +324,28 @@ export default {
         color: flashSuccess ? AppColors.flashGreenTxt : AppColors.flashRedTxt
       };
     },
+    helpModal: {
+      position: 'absolute',
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      top: 140,
+      height: 465,
+      width: 500,
+      fontSize: AppFonts.size.xSmall,
+      color: AppColors.lightGrey,
+      ...AppStyles.typContentContainer,
+      ...AppStyles.columnStart
+    },
+    modalHeader: {
+      ...AppStyles.center,
+      height: 48,
+      borderRadius: 24,
+      width: 120,
+      fontSize: AppFonts.size.medLarge,
+      backgroundColor: AppColors.lilac,
+      color: AppColors.blue,
+    },
+    modalTxt: {
+      fontSize: AppFonts.size.medium
+    }
 }
