@@ -199,7 +199,7 @@ export default {
       paddingRight: isSmallScreen ? 12 : 24,
       marginTop: isSmallScreen ? 0 : 20,
       marginLeft: isSmallScreen ? 0 : 20,
-      fontSize: isSmallScreen ? AppFonts.size.medSmall : AppFonts.size.large,
+      fontSize: isSmallScreen ? AppFonts.size.medSmall : 24,
       color: AppColors.white,
       borderRadius: 20,
       boxShadow: AppStyles.typBoxShadow
