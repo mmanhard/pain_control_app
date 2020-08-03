@@ -192,6 +192,19 @@ export default {
         margin: 20,
       }
     },
+    painLegend: {
+      ...AppStyles.rowStart,
+      ...AppStyles.typContentContainer,
+      alignItems: 'center',
+      maxWidth: 600,
+      marginTop: 20,
+      marginBottom: 20,
+      width: '90%',
+      height: 100,
+      ...AppFonts.Raleway.bold,
+      fontSize: AppFonts.size.medLarge,
+      color: AppColors.blue,
+    },
     backBtn: {
       addStyles: {
         ...AppStyles.closeBtn,
@@ -311,4 +324,29 @@ export default {
         color: flashSuccess ? AppColors.flashGreenTxt : AppColors.flashRedTxt
       };
     },
+    helpModal: {
+      position: 'absolute',
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      top: 140,
+      height: 440,
+      width: 500,
+      fontSize: AppFonts.size.xSmall,
+      color: AppColors.black,
+      ...AppStyles.typContentContainer,
+      ...AppStyles.columnStart
+    },
+    modalHeader: {
+      ...AppStyles.center,
+      height: 48,
+      borderRadius: 24,
+      width: 120,
+      fontSize: AppFonts.size.medLarge,
+      backgroundColor: AppColors.lilac,
+      color: AppColors.blue,
+    },
+    modalTxt: {
+      margin: 8,
+      fontSize: AppFonts.size.medium
+    }
 }

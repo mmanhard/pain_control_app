@@ -162,8 +162,6 @@ class PainPointDetail extends React.Component {
         <div style={styles.titleTxt(isSmallScreen)}>My {displayName}</div>
 
         {!isSmallScreen && <BodyVisualizer
-          clickBodyPartFound={() => {}}
-          clickBodyPartNotFound={() => {}}
           contentContainerStyle={styles.miniVisualizer}
           bodyParts={[{name: visualizerName, stats: 1}]}/>}
 

@@ -11,6 +11,7 @@ import Button from 'Components/Button';
 import LogoIcon from 'Icons/icons8-p.png';
 import AddIcon from 'Icons/icons8-plus.png';
 import BackIcon from 'Icons/icons8-back.png';
+import EntryIcon from 'Icons/icons8-entry.png';
 import SettingsIcon from 'Icons/icons8-settings.png';
 import ExitIcon from 'Icons/icons8-exit.png';
 
@@ -36,6 +37,11 @@ class Navbar extends React.Component {
     const { isMobile } = this.props;
     return (
       <div style={styles.dropdownMenu(isMobile)}>
+        <Button btnStyles={styles.dropdownItem} onClick={() => {this._goToPage('entries')}} onMouseDown={(event) => {event.preventDefault()}}>
+          <img src={EntryIcon} style={{ height: 24, width: 24 }} />
+          <p style={{ flex: 1, marginLeft: 8 }}>View Entries</p>
+        </Button>
+        <hr style={{width: '85%', height: 0, borderTop: `solid 1px black`}}/>
         <Button btnStyles={styles.dropdownItem} onClick={() => {this._goToPage('settings')}} onMouseDown={(event) => {event.preventDefault()}}>
           <img src={SettingsIcon} style={{ height: 24, width: 24 }} />
           <p style={{ flex: 1, marginLeft: 8 }}>Settings</p>

@@ -22,16 +22,17 @@ class HelpModal extends React.Component {
   }
 
   render() {
-    const { handleInputChange, handleRegister, children } = this.props;
+    const { contentStyle, children } = this.props;
+
     return (
       <Modal
         ref={this.modalRef}
-        contentStyle={styles.container}
-      >
-        <div style={styles.formContainer}>
-          {children}
-          <Button btnStyles={styles.okBtn} onClick={this.close}>OK</Button>
-        </div>
+        contentStyle={contentStyle || styles.container}>
+
+        {children}
+
+        <Button btnStyles={styles.okBtn} onClick={this.close}>OK</Button>
+
       </Modal>
     )
   }

@@ -27,15 +27,16 @@ const dateRanges = {
   today: 'Today',
   this_week: 'This Week',
   this_month: 'This Month',
-  this_year: 'This Year',
-  custom: 'Custom'
+  this_year: 'This Year'
 };
 
 const sortOptions = {
   date: 'Date',
   max_pain: 'Max Pain',
   min_pain: 'Min Pain'
-}
+};
+
+const rqdDetail = 'medium';
 
 class Entries extends React.Component {
   constructor(props) {
@@ -60,7 +61,8 @@ class Entries extends React.Component {
     const { userInfo } = this.props;
     const { startDate, endDate, daytime, currentBodyPartID, sortBy, page } = this.state;
 
-    let params = { sort_by: sortBy, detail_level: 'medium', page };
+    // Determine relevant parameters for fetching entries.
+    let params = { sort_by: sortBy, detail_level: rqdDetail, page };
     if (daytime !== 'all_day') {
       params = { ...params, time_of_day: daytime };
     }
@@ -79,12 +81,17 @@ class Entries extends React.Component {
 
   _getEntriesCallback = (success) => {
     if (success) {
+      // If entries were loaded properly, increase the page number to reload
+      // the next set of entries next time _reloadEntries() is called.
       this.setState({ page: this.state.page + 1 })
     }
   }
 
   _handleInputChange = (event) => {
     const target = event.target;
+
+    // Reset the page number every time an input changes as the parameters for
+    // filtering have changed.
     this.setState({ [target.name]: target.value, page: 0 }, this._reloadEntries);
   }
 
@@ -92,6 +99,7 @@ class Entries extends React.Component {
     const { userInfo } = this.props;
     const target = event.target;
 
+    // Set the start date and end date based on the given date range.
     let startDate, endDate;
     switch (target.value) {
       case 'today':
@@ -106,14 +114,16 @@ class Entries extends React.Component {
       case 'this_year':
         startDate = moment().subtract(1,'Y').startOf('day');
         break;
-      case 'custom':
-        console.log('Need to handle custom case!!!');
     }
 
+    // Reset the page number every time an input changes as the parameters for
+    // filtering have changed.
     this.setState({ startDate, page: 0 }, this._reloadEntries);
   }
 
   _handleSortChange = (sortBy) => {
+    // Reset the page number every time an input changes as the parameters for
+    // filtering have changed.
     this.setState({ sortBy, page: 0 }, this._reloadEntries);
   }
 
@@ -124,10 +134,12 @@ class Entries extends React.Component {
   _renderEntry = (entry) => {
     const { isSmallScreen, isMediumScreen } = this.props;
 
+    // If the entry has no subentries, ignore it.
     if (!entry.pain_subentries) {
       return (<div key={entry.id}/>);
     }
 
+    // Compile info on body parts for the visualizer.
     let visualizerBodyParts = entry.pain_subentries && entry.pain_subentries.map(subentry => {
       const part = subentry.body_part;
       const displayName = part.location ? `${part.location}_${part.name}` : part.name;
@@ -145,23 +157,30 @@ class Entries extends React.Component {
 
     let entryContent = (
       <div style={styles.entryContent}>
+
         <BodyVisualizer
           contentContainerStyle={styles.visualizer(isSmallScreen)}
           bodyParts={visualizerBodyParts} />
+
         <div style={styles.statsRow}>
+
           <div style={styles.statContainer}>
             <div style={styles.statTxt}>{max}</div>
             <div style={styles.statTitle}>Max</div>
           </div>
+
           <div style={styles.statContainer}>
             <div style={styles.statTxt}>{min}</div>
             <div style={styles.statTitle}>Min</div>
           </div>
+
           <div style={styles.statContainer}>
             <div style={styles.statTxt}>{entry.pain_subentries.length}</div>
             <div style={styles.statTitle}>Pain Points</div>
           </div>
+
         </div>
+
       </div>
     );
 
@@ -173,14 +192,17 @@ class Entries extends React.Component {
 
     let stats = (
       <div style={styles.statsRow(isSmallScreen)}>
+
         <div style={styles.statContainer}>
           <div style={styles.statTxt}>{max}</div>
           <div style={styles.statTitle(isSmallScreen)}>Max</div>
         </div>
+
         <div style={styles.statContainer}>
           <div style={styles.statTxt}>{min}</div>
           <div style={styles.statTitle(isSmallScreen)}>Min</div>
         </div>
+
         {!isSmallScreen && <div style={styles.statContainer}>
           <div style={styles.statTxt}>{entry.pain_subentries.length}</div>
           <div style={styles.statTitle(isSmallScreen)}>Pain Points</div>
@@ -190,18 +212,29 @@ class Entries extends React.Component {
 
     return (<div key={entry.id} style={styles.entryContainer}>
       <div style={styles.entryDetailsContainer(isSmallScreen, isMediumScreen)}>
+
         <div style={styles.entryTitleContainer(isSmallScreen)}>
           <div>{date.format('MMMM Do, YYYY')}</div>
           <div>{date.format('h:mm a')}</div>
         </div>
+
         {isMediumScreen && visualizer}
+
         {isMediumScreen && stats}
-        <Button btnStyles={styles.continueBtn} onClick={() => { this._goToEntry(entry.id) }}>View Details</Button>
+
+        <Button
+          btnStyles={styles.continueBtn}
+          onClick={() => { this._goToEntry(entry.id) }}>
+          View Details
+        </Button>
+
       </div>
+
       {!isMediumScreen && <div style={styles.entryContent}>
         {visualizer}
         {stats}
       </div>}
+
     </div>);
   }
 
@@ -225,11 +258,15 @@ class Entries extends React.Component {
 
     return (
       <div style={styles.configContentContainer(isSmallScreen)}>
+
         {!isSmallScreen && <div style={styles.configRow}>
           {filterTitle}
         </div>}
+
         <div style={{...styles.configRow, ...AppStyles.rowSpace}}>
+
           {isSmallScreen && filterTitle}
+
           <div style={styles.filterOption}>
             {!isSmallScreen && <div style={styles.filterOptionTitle}>Dates</div>}
             <select name="dateRange" style={styles.filterOptionTxt(isSmallScreen)} onChange={this._handleDateRangeChange}>
@@ -266,8 +303,11 @@ class Entries extends React.Component {
           </div>
 
         </div>
+
         <div style={{...styles.configRow, marginTop: isSmallScreen ? 18 : 32}}>
+
           {!isSmallScreen && sortTitle}
+
           <div style={styles.sortOptions(isSmallScreen)}>
             {isSmallScreen && sortTitle}
             {Object.entries(sortOptions).map(([key, value]) => {
@@ -282,8 +322,11 @@ class Entries extends React.Component {
               );
             })}
           </div>
+
         </div>
+
         {!isSmallScreen && <div style={styles.entryNumberText}># of Entries: {numEntries}</div>}
+
       </div>
     );
   }
@@ -293,20 +336,33 @@ class Entries extends React.Component {
 
     return (
       <div style={styles.container(isSmallScreen)}>
+
         <Navbar userInfo={userInfo} logout={logout}/>
+
         <div style={styles.contentContainer(isSmallScreen)}>
           <div style={styles.configContainer(isSmallScreen)}>
+
             <div style={styles.titleContainer(isSmallScreen)}>
               <div style={styles.titleTxt(isMediumScreen)}>My Entry Feed</div>
               <div style={{...styles.subtitleTxt, marginTop: 8}}>Scroll down to see more entries.</div>
               {!isSmallScreen && <div style={styles.subtitleTxt}>Add filters below.</div>}
             </div>
+
             {this._renderConfiguration()}
+
           </div>
+
           <div style={styles.entriesContainer(isSmallScreen, isMediumScreen)}>
+
             {entries && entries.map(this._renderEntry)}
+
             {(entries.length < numEntries) && !isFetching &&
-              <Button btnStyles={styles.continueBtn} onClick={this._reloadEntries}>Load More</Button>}
+              <Button
+                btnStyles={styles.continueBtn}
+                onClick={this._reloadEntries}>
+                Load More
+              </Button>}
+
             {isFetching && <ScrollSpinner />}
           </div>
 
