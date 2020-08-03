@@ -1,6 +1,8 @@
 import React from "react";
 import utils from 'Utils';
 
+const hoverScale = 1.08;
+
 class BodyVisualizer extends React.Component {
   constructor(props) {
     super(props);
@@ -9,13 +11,28 @@ class BodyVisualizer extends React.Component {
       hoverID: undefined
     };
   }
-  _getColor = (bodyPartName) => {
+
+  // Look to see if the user has a body part corresponding to the body part
+  // being passed in (correspendence is by name).
+  _getPart = (bodyPartName) => {
     const { bodyParts, stats } = this.props;
+
     let part;
     for (part of bodyParts) {
-      if (part.name === bodyPartName && typeof part.stats !== 'undefined') {
-        return utils.convertPainLeveltoHexColor(part.stats);
+      if (part.name === bodyPartName) {
+        return part
       }
+    }
+
+    return undefined;
+  }
+
+  // If the body part in the SVG corresponds to one of the user's body parts (
+  // correspondence is by name), return the color associated with its pain level.
+  // Otherwise, return the empty pain level color set it utils.
+  _getColor = (bodyPart) => {
+    if (bodyPart && typeof bodyPart.stats !== 'undefined') {
+      return utils.convertPainLeveltoHexColor(bodyPart.stats);
     }
 
     return utils.convertPainLeveltoHexColor();
@@ -24,70 +41,83 @@ class BodyVisualizer extends React.Component {
   _handlePartClick = (event, clickedBodyPart) => {
     const { bodyParts, clickBodyPartFound, clickBodyPartNotFound } = this.props;
 
+    // Stop the background from also being clicked when clicking this body part.
     event.stopPropagation();
 
-    let part;
-    for (part of bodyParts) {
-      if (part.name === clickedBodyPart) {
-        clickBodyPartFound(part);
-        return;
-      }
-    }
+    const part = this._getPart(clickedBodyPart);
 
-    let newBodyPart = {}
-    const splitName = clickedBodyPart.split('_')
-    if (splitName.length > 1) {
-      const displayName = clickedBodyPart.replace('_',' ');
-      newBodyPart = { name: splitName[1], displayName, type: 'None', location: splitName[0]}
-    } else {
-      newBodyPart = { name: splitName[0], displayName: splitName[0], type: 'None' }
+    // If the part exists, use clickBodyPartFound. Otherwise, use clickBodyPartNotFound
+    // and pass a user friendly display name for the body part.
+    if (part) {
+      if (clickBodyPartFound) clickBodyPartFound(part);
+    } else if (clickBodyPartNotFound) {
+
+      // Determine the user friendly display name.
+      let newBodyPart = {}
+      const splitName = clickedBodyPart.split('_')
+      if (splitName.length > 1) {
+        const displayName = clickedBodyPart.replace('_',' ');
+        newBodyPart = { name: splitName[1], displayName, type: 'None', location: splitName[0]}
+      } else {
+        newBodyPart = { name: splitName[0], displayName: splitName[0], type: 'None' }
+      }
+
+      clickBodyPartNotFound(newBodyPart);
     }
-    clickBodyPartNotFound(newBodyPart);
   }
 
   _handlePartHoverStart = (event, shapeID) => {
     this.setState({hoverID: shapeID});
   }
-  //
-  // _handlePartHoverEnd = (event) => {
-  //   console.log(event.target);
-  // }
 
   render() {
-    const { contentContainerStyle, clickBackground } = this.props;
+    const { contentContainerStyle, clickBackground, clickBodyPartFound, clickBodyPartNotFound } = this.props;
     const { hoverID } = this.state;
+
+    // The following adds a blur to each ellipse within the svg.
+    const ellipseBlur = (
+      <defs>
+        <filter id="blur" x="-0.2" y="-0.2" width="140%" height="140%">
+          <feOffset result="offOut" in="SourceGraphic" dx="2" dy="2" />
+          <feColorMatrix result="matrixOut" in="offOut" type="matrix"
+            values="0.5 0 0 0 0 0 0.5 0 0 0 0 0 0.5 0 0 0 0 0 0.5 0" />
+          <feGaussianBlur result="blurOut" in="matrixOut" stdDeviation="2" />
+          <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+        </filter>
+      </defs>
+    );
 
     return (
       <div
         style={{...contentContainerStyle, display: 'flex', justifyContent: 'center', alignItems: 'center'}}
         ref={ (divContainer) => { this.divContainer = divContainer } }
-        onClick={clickBackground}
-      >
+        onClick={clickBackground}>
         <div style={{height: '100%'}}>
           <svg width="100%" height='100%' viewBox='0 0 200 310' style={{overflow: 'visible'}}>
-            <defs>
-              <filter id="blur" x="-0.2" y="-0.2" width="140%" height="140%">
-                <feOffset result="offOut" in="SourceGraphic" dx="2" dy="2" />
-                <feColorMatrix result="matrixOut" in="offOut" type="matrix"
-                  values="0.5 0 0 0 0 0 0.5 0 0 0 0 0 0.5 0 0 0 0 0 0.5 0" />
-                <feGaussianBlur result="blurOut" in="matrixOut" stdDeviation="2" />
-                <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
-              </filter>
-            </defs>
-            <g>
-              <title>Body BodyVisualizer</title>
-              {shapes.map((shape) => {
-                const selected = hoverID && hoverID == shape.id;
 
-                const r = selected ? 1.08 * shape.r : shape.r;
+            {ellipseBlur}
+
+            <g>
+              {shapes.map((shape) => {
+
+                // Determine if the current ellipse is selected and if this
+                // ellipse corresponds to one of the user's body parts.
+                const selected = hoverID && hoverID == shape.id;
+                const part = this._getPart(shape.id);
+
+                // Determine if the ellipse should scale when hovered over.
+                const shouldHover = (part && clickBodyPartFound) ||
+                  (!part && clickBodyPartNotFound);
+
+                // Calculate the size of the ellipse if it is hovered over.
+                const r = (selected && shouldHover) ? hoverScale * shape.r : shape.r;
 
                 return (
                   <ellipse key={shape.id}
                     onClick={(event) => {this._handlePartClick(event, shape.id)}}
                     onMouseOver={(event) => {this._handlePartHoverStart(event, shape.id)}}
-                    onMouseLeave={this._handlePartHoverEnd}
                     id={shape.id} ry={r} rx={r} cy={shape.cy} cx={shape.cx}
-                    stroke="#000" fill={this._getColor(shape.id)}
+                    stroke="#000" fill={this._getColor(part)}
                     filter='url(#blur)'/>
                 );
               })}
@@ -99,6 +129,7 @@ class BodyVisualizer extends React.Component {
   }
 }
 
+// Coordinates and radii for the visualizer's svg.
 const shapes = [
   {
     id: 'Head',
