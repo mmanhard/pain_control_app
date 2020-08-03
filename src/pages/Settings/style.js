@@ -128,18 +128,19 @@ export default {
       ...btnType
     };
   },
-  addMorePartsBtn: (selected) => {
-    const btnType = selected ? AppStyles.activeBtn : AppStyles.inactiveBtn;
+  addMorePartsBtn: (selected, noParts) => {
+    const btnType = (selected ^ noParts) ? AppStyles.activeBtn : AppStyles.inactiveBtn;
     return {
       addStyles: {
         ...AppFonts.Raleway.bold,
-        fontSize: AppFonts.size.medium,
+        fontSize: noParts ? AppFonts.size.large : AppFonts.size.medium,
         borderRadius: 18,
-        width: 140,
-        height: 36,
+        width: noParts ? 280 :140,
+        height: noParts ? 100: 36,
         marginLeft: 4,
         marginRight: 4,
-        marginBottom: 16,
+        marginBottom: noParts ? 48 : 16,
+        boxShadow: (selected ^ noParts) ? AppStyles.typBoxShadow : 'none',
       },
       ...btnType
     };

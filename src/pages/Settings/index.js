@@ -292,7 +292,7 @@ class Settings extends React.Component {
   // Renders a bubble button (to be used with BubbleList) for the given part. If
   // the part does not have a name, an add more parts button will be returned.
   _renderPart = (part) => {
-    const { isSmallScreen } = this.props;
+    const { isSmallScreen, bodyParts } = this.props;
     const { currentBodyPart, addMoreParts } = this.state;
 
     if (part.name) {
@@ -309,14 +309,15 @@ class Settings extends React.Component {
         </Button>
       );
     } else {
+      const noParts = bodyParts?.length <= 0;
 
       // Return a button to add more parts if part name does not exist.
       return (
         <Button
           key='addMoreBtn'
-          btnStyles={styles.addMorePartsBtn(addMoreParts)}
+          btnStyles={styles.addMorePartsBtn(addMoreParts, noParts)}
           onClick={() => {this.setState({ currentBodyPart: null, addMoreParts: true, part_name: '', part_location: '', part_type: '' })}}>
-            Add More
+            {noParts ? 'Add a Pain Point' : 'Add More'}
         </Button>
       );
     }
