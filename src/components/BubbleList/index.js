@@ -1,13 +1,9 @@
 import React from "react";
 
 class BubbleList extends React.Component {
-  constructor(props) {
-    super(props);
 
-    this.state = {
-    };
-  }
-
+  // Given a list of items and a number of items per row. Separate the items
+  // into lists of length equal to the provided number of items per row.
   _createRows = () => {
     const { items, itemsPerRow } = this.props;
 
@@ -21,16 +17,17 @@ class BubbleList extends React.Component {
     return rows;
   }
 
+  // Given a row (i.e. sublist of items), render the row using the provided
+  // renderItem() function.
   _renderRow = (rowItems, row) => {
     const { renderItem, rowContainerStyle, offset } = this.props;
 
+    // Shift even rows left, odd rows right.
     const margin = row % 2 ? offset : -offset;
 
     return (
       <div key={row} style={{...rowContainerStyle, marginLeft: margin}}>
-        {rowItems.map(item => {
-          return renderItem(item);
-        })}
+        {rowItems.map(renderItem)}
       </div>
     );
   }

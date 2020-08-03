@@ -9,6 +9,7 @@ class Button extends React.Component {
 
     const appliedActiveStyle = activeStyle ? activeStyle : hoverStyle;
 
+    // Set up styles for hovering over, focusing on, and activating the button.
     const btnStyle = {
       ...normalStyle,
       ...addStyles,
@@ -25,4 +26,6 @@ class Button extends React.Component {
   }
 }
 
+// Radium allows the Button class to use inline styles for events such as
+// hovering, focusing, being activated.
 export default Radium(Button);

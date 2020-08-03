@@ -37,17 +37,33 @@ class Navbar extends React.Component {
     const { isMobile } = this.props;
     return (
       <div style={styles.dropdownMenu(isMobile)}>
-        <Button btnStyles={styles.dropdownItem} onClick={() => {this._goToPage('entries')}} onMouseDown={(event) => {event.preventDefault()}}>
+        <Button
+          btnStyles={styles.dropdownItem}
+          onClick={() => {this._goToPage('entries')}}
+          onMouseDown={(event) => {event.preventDefault()}}>
+
           <img src={EntryIcon} style={{ height: 24, width: 24 }} />
           <p style={{ flex: 1, marginLeft: 8 }}>View Entries</p>
         </Button>
+
         <hr style={{width: '85%', height: 0, borderTop: `solid 1px black`}}/>
-        <Button btnStyles={styles.dropdownItem} onClick={() => {this._goToPage('settings')}} onMouseDown={(event) => {event.preventDefault()}}>
+
+        <Button
+          btnStyles={styles.dropdownItem}
+          onClick={() => {this._goToPage('settings')}}
+          onMouseDown={(event) => {event.preventDefault()}}>
+
           <img src={SettingsIcon} style={{ height: 24, width: 24 }} />
           <p style={{ flex: 1, marginLeft: 8 }}>Settings</p>
         </Button>
+
         <hr style={{width: '85%', height: 0, borderTop: `solid 1px black`}}/>
-        <Button btnStyles={styles.dropdownItem} onClick={this.props.logout} onMouseDown={(event) => {event.preventDefault()}}>
+
+        <Button
+          btnStyles={styles.dropdownItem}
+          onClick={this.props.logout}
+          onMouseDown={(event) => {event.preventDefault()}}>
+
           <img src={ExitIcon} style={{ height: 24, width: 24 }} />
           <p style={{ flex: 1, marginLeft: 8 }}>Log Out</p>
         </Button>
@@ -61,24 +77,41 @@ class Navbar extends React.Component {
 
     return (
       <div style={styles.container}>
+
         <div>
           <Button
             btnStyles={styles.homeBtn(isMobile)}
             onClick={() => {this._goToPage('dashboard')}}>
+
             <img src={LogoIcon} style={{ height: 36}} />
           </Button>
         </div>
+
         {userInfo && <div style={styles.rightContainer}>
+
           <div style={styles.welcomeTxt}>
             {userInfo.first_name
                 ? `Hi, ${userInfo.first_name}!`
                 : 'Hello there!' }
           </div>
-          <Button onClick={this._toggleDropdown} onBlur={() => {this.setState({ dropdownVisible: false })}} btnStyles={styles.dropdownToggle(isMobile, dropdownVisible)}><img src={BackIcon} style={{ height: 21 }} /></Button>
+
+          <Button
+            onClick={this._toggleDropdown}
+            onBlur={() => {this.setState({ dropdownVisible: false })}}
+            btnStyles={styles.dropdownToggle(isMobile, dropdownVisible)}>
+
+            <img src={BackIcon} style={{ height: 21 }} />
+          </Button>
+
           {dropdownVisible && this._renderDropdown()}
-          <Button btnStyles={styles.addIconBtn(isMobile)} onClick={() => {this._goToPage('add_entry')}}>
+
+          <Button
+            btnStyles={styles.addIconBtn(isMobile)}
+            onClick={() => {this._goToPage('add_entry')}}>
+
             <img src={AddIcon} style={{height: 32 }} />
           </Button>
+
         </div>}
       </div>
     );

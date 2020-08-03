@@ -21,6 +21,7 @@ class RegistrationModal extends React.Component {
       flashMessage: ''
     };
 
+    // Create a reference to the underlying modal.
     this.modalRef = React.createRef();
   }
 
@@ -58,6 +59,7 @@ class RegistrationModal extends React.Component {
         {flashMessage && this._renderFlash()}
 
         <div style={styles.formContainer(flashMessage)}>
+
           <div style={styles.txtInputContainer}>
             <img src={NameIcon} style={{width: 24, height: 24, margin: 'auto'}} />
             <input
@@ -77,6 +79,7 @@ class RegistrationModal extends React.Component {
               onChange={handleInputChange}
             />
           </div>
+
           <div style={styles.txtInputContainer}>
             <img src={EmailIcon} style={{height: 24, margin: 'auto'}} />
             <input
@@ -88,6 +91,7 @@ class RegistrationModal extends React.Component {
               onChange={handleInputChange}
             />
           </div>
+
           <div style={styles.txtInputContainer}>
             <img src={KeyIcon} style={{height: 24, margin: 'auto' }} />
             <input
@@ -99,7 +103,13 @@ class RegistrationModal extends React.Component {
               onChange={handleInputChange}
             />
           </div>
-          <Button btnStyles={styles.registerBtn} onClick={handleRegister}>Register</Button>
+
+          <Button
+            btnStyles={styles.registerBtn}
+            onClick={handleRegister}>
+            Register
+          </Button>
+          
         </div>
       </Modal>
     )

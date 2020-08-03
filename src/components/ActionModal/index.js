@@ -23,7 +23,9 @@ class ActionModal extends React.Component {
 
   _handleOK = () => {
     const { action } = this.props;
+
     if (action) this.props.action();
+
     this.close();
   }
 
@@ -32,8 +34,7 @@ class ActionModal extends React.Component {
     return (
       <Modal
         ref={this.modalRef}
-        contentStyle={styles.container}
-      >
+        contentStyle={styles.container}>
         <div style={styles.contentContainer}>
           {children}
           <div style={styles.btnContainer}>
