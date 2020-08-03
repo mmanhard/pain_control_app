@@ -40,7 +40,7 @@ class AddEntry extends React.Component {
       bodyPartsIncluded: {},
       entryDate: 'Right Now',
       entryTime: undefined,
-      entryTimePeriod: 'PM',
+      entryTimePeriod: moment().format('A') || 'PM',
       entryMoment: undefined,
       notes: '',
       flashMessage: '',
@@ -105,6 +105,72 @@ class AddEntry extends React.Component {
     // Add the notes input to the target body part.
     bodyPartsIncluded[target.name].notes = target.value;
     this.setState({ bodyPartsIncluded });
+  }
+
+  _handleDateChange = (event) => {
+    const target = event.target;
+    const { entryDate, entryTime, entryTimePeriod } = this.state;
+
+    if (entryDate === 'Right Now') {
+      this.setState({
+        entryDate: moment().format('MM/DD/YYYY'),
+        entryTime: moment().format('hh:mm')});
+    } else {
+
+      // If the user has input a manual date, format it and convert it to a moment.
+      let newDateValue = Utils.formatDateInput(target.value);
+      let inputMoment = Utils.convertDateTimeToMoment(newDateValue, entryTime, entryTimePeriod);
+
+      // If the new moment is the current moment, display 'Right Now'
+      // rather than the typical date format.
+      if (inputMoment && inputMoment.diff(moment(), 'minutes') == 0) {
+        this.setState({
+          entryDate: 'Right Now',
+          entryTime: undefined,
+        });
+      } else {
+        this.setState({ entryDate: newDateValue});
+      }
+    }
+  }
+
+  _handleTimeChange = (event) => {
+    const target = event.target;
+    const { entryDate, entryTimePeriod } = this.state;
+
+    // If the user has input a manual time, format it and convert it to a moment.
+    let newTimeValue = Utils.formatTimeInput(target.value);
+    let inputMoment = Utils.convertDateTimeToMoment(entryDate, newTimeValue, entryTimePeriod);
+
+    // If the new moment is the current moment, display 'Right Now'
+    // rather than the typical date format.
+    if (inputMoment && inputMoment.diff(moment(), 'minutes') == 0) {
+      this.setState({
+        entryDate: 'Right Now',
+        entryTime: undefined,
+      });
+    } else {
+      this.setState({ entryTime: newTimeValue});
+    }
+  }
+
+  // Handler for changing from AM to PM.
+  _handleTimePeriodChange = (event) => {
+    const target = event.target;
+    const { entryDate, entryTime } = this.state;
+
+    let inputMoment = Utils.convertDateTimeToMoment(entryDate, entryTime, target.value);
+
+    // If the new moment is the current moment, display 'Right Now'
+    // rather than the typical date format.
+    if (inputMoment && inputMoment.diff(moment(), 'minutes') == 0) {
+      this.setState({
+        entryDate: 'Right Now',
+        entryTime: undefined,
+      });
+    }
+
+    this.setState({ entryTimePeriod: target.value});
   }
 
   _handleSubmitPainLevels = () => {
@@ -192,6 +258,17 @@ class AddEntry extends React.Component {
       });
     } else {
       this._setFlashMessage(success, message);
+    }
+  }
+
+  _setFlashMessage = (success, message) => {
+    // Only set the flash message if the component is mounted.
+    if (this._isMounted) {
+      this.setState({flashMessage: message, flashSuccess: success});
+
+      if (message) {
+        setTimeout(() => this.setState({flashMessage: ''}), flashDuration);
+      }
     }
   }
 
@@ -378,62 +455,6 @@ class AddEntry extends React.Component {
     );
   }
 
-  _handleDateChange = (event) => {
-    const target = event.target;
-    const { entryDate, entryTime, entryTimePeriod } = this.state;
-
-    if (entryDate === 'Right Now') {
-      this.setState({
-        entryDate: moment().format('MM/DD/YYYY'),
-        entryTime: moment().format('hh:mm')});
-    } else {
-      let newDateValue = Utils.formatDateInput(target.value);
-      let inputMoment = Utils.convertDateTimeToMoment(newDateValue, entryTime, entryTimePeriod);
-
-      if (inputMoment && inputMoment.diff(moment(), 'minutes') == 0) {
-        this.setState({
-          entryDate: 'Right Now',
-          entryTime: undefined,
-        });
-      } else {
-        this.setState({ entryDate: newDateValue});
-      }
-    }
-  }
-
-  _handleTimeChange = (event) => {
-    const target = event.target;
-    const { entryDate, entryTimePeriod } = this.state;
-
-    let newTimeValue = Utils.formatTimeInput(target.value);
-    let inputMoment = Utils.convertDateTimeToMoment(entryDate, newTimeValue, entryTimePeriod);
-
-    if (inputMoment && inputMoment.diff(moment(), 'minutes') == 0) {
-      this.setState({
-        entryDate: 'Right Now',
-        entryTime: undefined,
-      });
-    } else {
-      this.setState({ entryTime: newTimeValue});
-    }
-  }
-
-  _handleTimePeriodChange = (event) => {
-    const target = event.target;
-    const { entryDate, entryTime } = this.state;
-
-    let inputMoment = Utils.convertDateTimeToMoment(entryDate, entryTime, target.value);
-
-    if (inputMoment && inputMoment.diff(moment(), 'minutes') == 0) {
-      this.setState({
-        entryDate: 'Right Now',
-        entryTime: undefined,
-      });
-    } else {
-      this.setState({ entryTimePeriod: target.value});
-    }
-  }
-
   _renderConfiguration = () => {
     const { isSmallScreen } = this.props;
     const { screenType, highDetail, entryTime, entryMoment } = this.state;
@@ -465,7 +486,7 @@ class AddEntry extends React.Component {
                     value={this.state.entryTime}
                     onChange={this._handleTimeChange}
                   />
-                  <select style={styles.configAMPM} name='entryTimePeriod' onChange={this._handleTimePeriodChange}>
+                  <select style={styles.configAMPM} name='entryTimePeriod' value={this.state.entryTimePeriod} onChange={this._handleTimePeriodChange}>
                     <option value={'PM'}>PM</option>
                     <option value={'AM'}>AM</option>
                   </select>
@@ -526,16 +547,6 @@ class AddEntry extends React.Component {
 
   }
 
-  _setFlashMessage = (success, message) => {
-    if (this._isMounted) {
-      this.setState({flashMessage: message, flashSuccess: success});
-
-      if (message) {
-        setTimeout(() => this.setState({flashMessage: ''}), flashDuration);
-      }
-    }
-  }
-
   _renderFlash = () => {
     const { isSmallScreen } = this.props;
     const { flashMessage, flashSuccess } = this.state;
@@ -545,7 +556,6 @@ class AddEntry extends React.Component {
         <div style={{margin: 10, textAlign: 'center'}}>{flashMessage}</div>
       </div>
     );
-
   }
 
   render() {
@@ -554,8 +564,11 @@ class AddEntry extends React.Component {
 
     return (
       <div style={styles.container(isSmallScreen)}>
+
         <Navbar userInfo={userInfo} logout={logout}/>
+
         <div style={styles.contentContainer(isSmallScreen)}>
+
           <div style={styles.configContainer(isSmallScreen)}>
             <div style={styles.titleContainer(isSmallScreen)}>
               <p style={styles.titleTxt(isMediumScreen)}>
@@ -576,9 +589,7 @@ class AddEntry extends React.Component {
 
         <HelpModal
           ref={this.helpModalRef}
-          contentStyle={styles.formModalContainer}
-        >
-        </HelpModal>
+          contentStyle={styles.formModalContainer} />
 
       </div>
     )
