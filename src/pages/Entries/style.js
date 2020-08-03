@@ -1,3 +1,5 @@
+import color from 'color';
+
 import AppColors from 'Common/AppColors';
 import AppConst from 'Common/AppConst';
 import AppStyles from 'Common/AppStyles';
@@ -208,6 +210,28 @@ export default {
       marginBottom: 20,
     },
     ...AppStyles.activeBtn
+  },
+  deleteBtn: {
+    normalStyle: {
+      height: 40,
+      width: 90,
+      borderRadius: 10,
+      border: 'none',
+      marginBottom: 20,
+      backgroundColor: AppColors.deleteRed,
+      color: AppColors.white,
+      boxShadow: AppStyles.typBoxShadow,
+      ...AppFonts.Raleway.bold,
+      fontSize: AppFonts.size.small,
+    },
+    hoverStyle: {
+      backgroundColor: color(AppColors.deleteRed).darken(0.01).hex(),
+      transform: 'scale(0.99) rotate(0.2deg) translateY(1px)',
+    },
+    activeStyle: {
+      backgroundColor: color(AppColors.deleteRed).darken(0.03).hex(),
+      transform: 'scale(0.97) rotate(0.5deg) translateY(3px)',
+    }
   },
   entryContent: {
     ...AppStyles.center,

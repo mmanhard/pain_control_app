@@ -131,8 +131,19 @@ class Entries extends React.Component {
     this.props.history.push(`entries/${entryID}`);
   }
 
+  // Callback for deletion of an entry.
+  _deleteEntryCallback = (success, message) => {
+    if (success) {
+
+      // If deleted succesfully, reload entries from first page.
+      this.setState({page: 0}, this._reloadEntries);
+    } else {
+      console.log('Something went wrong!');
+    }
+  }
+
   _renderEntry = (entry) => {
-    const { isSmallScreen, isMediumScreen } = this.props;
+    const { userInfo, isSmallScreen, isMediumScreen } = this.props;
 
     // If the entry has no subentries, ignore it.
     if (!entry.pain_subentries) {
@@ -222,11 +233,21 @@ class Entries extends React.Component {
 
         {isMediumScreen && stats}
 
-        <Button
-          btnStyles={styles.continueBtn}
-          onClick={() => { this._goToEntry(entry.id) }}>
-          View Details
-        </Button>
+        <div style={AppStyles.center}>
+
+          <Button
+            btnStyles={styles.continueBtn}
+            onClick={() => { this._goToEntry(entry.id) }}>
+            View Details
+          </Button>
+
+          <Button
+            btnStyles={styles.deleteBtn}
+            onClick={() => { this.props.deleteEntry(userInfo, entry.id, this._deleteEntryCallback)}}>
+            Delete Entry
+          </Button>
+
+        </div>
 
       </div>
 

@@ -22,4 +22,5 @@ export default {
   flashRedTxt: 'rgba(128,0,0,1.0)',
   flashGreen: 'rgba(55,205,100,0.5)',
   flashGreenTxt: 'rgba(0,128,0,1.0)',
+  deleteRed: '#d51133'
 }
