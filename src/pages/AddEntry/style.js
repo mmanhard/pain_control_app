@@ -329,10 +329,10 @@ export default {
       marginLeft: 'auto',
       marginRight: 'auto',
       top: 140,
-      height: 465,
+      height: 440,
       width: 500,
       fontSize: AppFonts.size.xSmall,
-      color: AppColors.lightGrey,
+      color: AppColors.black,
       ...AppStyles.typContentContainer,
       ...AppStyles.columnStart
     },
@@ -346,6 +346,7 @@ export default {
       color: AppColors.blue,
     },
     modalTxt: {
+      margin: 8,
       fontSize: AppFonts.size.medium
     }
 }
