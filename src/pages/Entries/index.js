@@ -5,6 +5,7 @@ import { withRouter } from 'react-router';
 import moment from 'moment';
 
 import actions from 'Actions';
+import { flashDuration } from 'Common/AppConst';
 import withWindowDimensions from 'Common/AppDimens';
 import AppStyles from 'Common/AppStyles';
 import BodyVisualizer from 'Components/BodyVisualizer';
@@ -49,7 +50,9 @@ class Entries extends React.Component {
       currentBodyPartID: null,
       daytime: 'all_day',
       sortBy: 'date',
-      page: 0
+      page: 0,
+      flashMessage: '',
+      flashSuccess: false
     };
   }
 
@@ -134,12 +137,16 @@ class Entries extends React.Component {
   // Callback for deletion of an entry.
   _deleteEntryCallback = (success, message) => {
     if (success) {
-
       // If deleted succesfully, reload entries from first page.
       this.setState({page: 0}, this._reloadEntries);
-    } else {
-      console.log('Something went wrong!');
     }
+
+    this._setFlashMessage(success, message);
+  }
+
+  _setFlashMessage = (success, message) => {
+    this.setState({flashMessage: message, flashSuccess: success});
+    setTimeout(() => this.setState({flashMessage: ''}), flashDuration)
   }
 
   _renderEntry = (entry) => {
@@ -269,6 +276,18 @@ class Entries extends React.Component {
     );
   }
 
+  _renderFlash = () => {
+    const { isSmallScreen } = this.props;
+    const { flashMessage, flashSuccess } = this.state;
+
+    return (
+      <div style={styles.flashMessage(isSmallScreen, flashMessage, flashSuccess)}>
+        <div style={{margin: 10, textAlign: 'center'}}>{flashMessage}</div>
+      </div>
+    );
+
+  }
+
   _renderConfiguration = () => {
     const { bodyParts, entries, numEntries, isSmallScreen, isMediumScreen } = this.props;
     const { sortBy } = this.state;
@@ -286,6 +305,7 @@ class Entries extends React.Component {
         {!isSmallScreen && <div style={styles.configTitleTxt(isSmallScreen)}>Entries</div>}
       </div>
     );
+
 
     return (
       <div style={styles.configContentContainer(isSmallScreen)}>
@@ -378,6 +398,8 @@ class Entries extends React.Component {
               <div style={{...styles.subtitleTxt, marginTop: 8}}>Scroll down to see more entries.</div>
               {!isSmallScreen && <div style={styles.subtitleTxt}>Add filters below.</div>}
             </div>
+
+            {this._renderFlash()}
 
             {this._renderConfiguration()}
 

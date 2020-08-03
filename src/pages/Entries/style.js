@@ -24,6 +24,7 @@ export default {
   configContainer: (isSmallScreen) => {
     const controlWidth = isSmallScreen ? {width: '100%'} : {maxWidth: 480, minWidth: 340};
     return {
+      backgroundColor: isSmallScreen ? AppColors.white : AppColors.lilac,
       position: 'sticky',
       top: isSmallScreen ? 80 : 110,
       ...controlWidth,
@@ -53,7 +54,7 @@ export default {
   configContentContainer: (isSmallScreen) => {
     const contentContainer = isSmallScreen ? AppStyles.mobileContentContaner : AppStyles.typContentContainer;
     return {
-      marginTop: isSmallScreen ? 0 : 30,
+      marginTop: isSmallScreen ? 0 : 20,
       width: '100%',
       ...contentContainer,
       ...AppStyles.columnStart,
@@ -295,5 +296,19 @@ export default {
       ...AppStyles.typContentContainer,
       color: AppColors.blue
     }
+  },
+  flashMessage: (isSmallScreen, flashMessage, flashSuccess) => {
+    return {
+      width: isSmallScreen ? '90%' : '100%',
+      marginTop: 20,
+      marginBottom: isSmallScreen ? 10 : 0,
+      height: flashMessage ? 80 : 0,
+      borderRadius: 20,
+      backgroundColor: flashSuccess ? AppColors.flashGreen : AppColors.flashRed,
+      alignSelf: 'center',
+      ...AppStyles.center,
+      fontSize: isSmallScreen ? AppFonts.size.small : AppFonts.size.medium,
+      color: flashSuccess ? AppColors.flashGreenTxt : AppColors.flashRedTxt
+    };
   },
 }
