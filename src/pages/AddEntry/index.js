@@ -36,7 +36,7 @@ class AddEntry extends React.Component {
 
     this.state = {
       screenType: screenTypes.addPainLevels,
-      highDetail: true,
+      highDetail: false,
       bodyPartsIncluded: {},
       entryDate: 'Right Now',
       entryTime: undefined,
