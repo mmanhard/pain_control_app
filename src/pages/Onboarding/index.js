@@ -280,6 +280,8 @@ class Onboarding extends React.Component {
       this.props.updateUser(this.props.userInfo,
         { medical_history: this.state.medicalHistory },
         this._submitCallback);
+    } else {
+      this._switchScreen();
     }
   }
 
