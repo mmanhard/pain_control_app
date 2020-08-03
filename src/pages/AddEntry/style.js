@@ -192,6 +192,19 @@ export default {
         margin: 20,
       }
     },
+    painLegend: {
+      ...AppStyles.rowStart,
+      ...AppStyles.typContentContainer,
+      alignItems: 'center',
+      maxWidth: 600,
+      marginTop: 20,
+      marginBottom: 20,
+      width: '90%',
+      height: 100,
+      ...AppFonts.Raleway.bold,
+      fontSize: AppFonts.size.medLarge,
+      color: AppColors.blue,
+    },
     backBtn: {
       addStyles: {
         ...AppStyles.closeBtn,

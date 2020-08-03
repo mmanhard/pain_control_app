@@ -15,6 +15,7 @@ import Button from 'Components/Button';
 import HelpModal from 'Components/HelpModal';
 import LoadingSpinner from 'Components/LoadingSpinner';
 import Navbar from 'Components/Navbar';
+import PainLegend from 'Components/PainLegend';
 import styles from './style';
 import Utils from 'Utils';
 
@@ -46,12 +47,14 @@ class AddEntry extends React.Component {
       flashSuccess: false
     };
 
+    // Create a ref for the help modal.
     this.helpModalRef = React.createRef();
   }
 
   componentDidMount() {
     const { userInfo } = this.props;
 
+    // Create a flag to keep track of whether or not the component is mounted.
     this._isMounted = true;
 
     this.props.getUserData(userInfo);
@@ -59,6 +62,7 @@ class AddEntry extends React.Component {
   }
 
   componentWillUnmount() {
+    // The component is unmounting, so indicate that is no longer mounted.
     this._isMounted = false;
   }
 
@@ -70,8 +74,11 @@ class AddEntry extends React.Component {
   _handlePainLevelChange = (event) => {
     const { bodyParts } = this.props;
     const { bodyPartsIncluded } = this.state;
+
     const target = event.target;
 
+    // If the input is not empty, validate it and add the body part to the list.
+    // Otherwise, remove the body part from the list of included body parts.
     if (target.value.length > 0) {
       const value = Number(target.value);
       if (isNaN(value)) {
@@ -80,7 +87,7 @@ class AddEntry extends React.Component {
         this._setFlashMessage(false, 'Pain levels must be between 0 and 10. No decimal places allowed!');
       } else {
         bodyPartsIncluded[target.name] = {
-          pain_level: target.value.slice(0, 3),
+          pain_level: value,
           notes: '' };
         this.setState({ bodyPartsIncluded });
       }
@@ -92,15 +99,17 @@ class AddEntry extends React.Component {
 
   _handlePainNotesChange = (event) => {
     const { bodyPartsIncluded } = this.state;
+
     const target = event.target;
 
+    // Add the notes input to the target body part.
     bodyPartsIncluded[target.name].notes = target.value;
     this.setState({ bodyPartsIncluded });
   }
 
   _handleSubmitPainLevels = () => {
     const { bodyParts } = this.props;
-    const { bodyPartsIncluded, entryTime, entryDate, entryTimePeriod } = this.state;
+    const { bodyPartsIncluded, entryTime, entryDate, entryTimePeriod, highDetail } = this.state;
 
     // Convert current entry date/time to moment.
     if (entryDate == 'Right Now') {
@@ -115,6 +124,7 @@ class AddEntry extends React.Component {
       }
     }
 
+    // Get the name and location for all included body parts.
     let part;
     for (part of bodyParts) {
       if (bodyPartsIncluded[part.id]) {
@@ -122,12 +132,20 @@ class AddEntry extends React.Component {
         bodyPartsIncluded[part.id].location = part.location;
       }
     }
+
+    // Check that the user included at least one body part.
     if (Object.keys(bodyPartsIncluded).length === 0) {
       this._setFlashMessage(false, 'You must record at least one pain level!');
       return ;
     }
-    this.setState({ bodyPartsIncluded });
-    this._switchScreen();
+
+    this.setState({ bodyPartsIncluded }, () => {
+      if (highDetail) {
+        this._switchScreen();
+      } else {
+        this._handleSubmitEntry();
+      }
+    });
   }
 
   _handleSubmitPainNotes = () => {
@@ -139,7 +157,7 @@ class AddEntry extends React.Component {
     const { userInfo, bodyParts } = this.props;
     const { notes, bodyPartsIncluded, entryMoment } = this.state;
 
-    e.preventDefault();
+    if (e) e.preventDefault();
 
     let entry = {
       'date': entryMoment.toISOString(true),
@@ -150,6 +168,8 @@ class AddEntry extends React.Component {
       entry.notes = notes;
     }
 
+    // Add each body part and its details (i.e. pain level and optional notes)
+    // to the entry that will be submitted to the API.
     bodyParts.forEach((part) => {
       if (bodyPartsIncluded[part.id]) {
         const subentry = {
@@ -181,12 +201,13 @@ class AddEntry extends React.Component {
     this._setFlashMessage(false, '');
 
     switch (this.state.screenType) {
+
       case (screenTypes.addPainLevels):
         if (!backward) {
-          if (highDetail) this.setState({ screenType: screenTypes.addPainNotes});
-          else this.setState({ screenType: screenTypes.addNotes});
+          this.setState({ screenType: screenTypes.addPainNotes});
         }
         break;
+
       case (screenTypes.addPainNotes):
         if (backward) {
           this.setState({ screenType: screenTypes.addPainLevels});
@@ -194,10 +215,10 @@ class AddEntry extends React.Component {
           this.setState({ screenType: screenTypes.addNotes});
         }
         break;
+
       case (screenTypes.addNotes):
         if (backward) {
-          if (highDetail) this.setState({ screenType: screenTypes.addPainNotes});
-          else this.setState({ screenType: screenTypes.addPainLevels});
+          this.setState({ screenType: screenTypes.addPainNotes});
         } else {
           this.props.history.replace('/dashboard');
         }
@@ -230,7 +251,7 @@ class AddEntry extends React.Component {
 
   _renderAddPainLevels = () => {
     const { bodyParts, isMobile, isSmallScreen, isLargeScreen } = this.props;
-    const { bodyPartsIncluded } = this.state;
+    const { bodyPartsIncluded, highDetail } = this.state;
 
     let visualizerBodyParts = bodyParts.map(part => {
       const displayName = part.location ? `${part.location}_${part.name}` : part.name;
@@ -258,7 +279,7 @@ class AddEntry extends React.Component {
         <Button
           btnStyles={styles.continueBtn}
           onClick={this._handleSubmitPainLevels}>
-          Continue
+          {highDetail ? 'Continue' : 'Submit Entry'}
         </Button>
       </div>
     );
@@ -275,6 +296,7 @@ class AddEntry extends React.Component {
           {painBubbleList}
           {this._renderFlash()}
           {isLargeScreen && visualizer}
+          {!isMobile && <PainLegend contentContainerStyle={styles.painLegend} />}
           {continueBtn}
         </div>
         {!isLargeScreen && visualizer}
