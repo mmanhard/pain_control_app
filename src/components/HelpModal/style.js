@@ -15,33 +15,9 @@ export default {
     color: AppColors.lightGrey,
     ...AppStyles.typContentContainer
   },
-  formContainer: {
-    flex: 1,
-    padding: '20px 60px 50px 60px',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  txtInputContainer: {
-    height: 36,
-    marginBottom: 30,
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    borderBottom: `1px solid ${AppColors.blue}`
-  },
-  txtInput: {
-    ...AppFonts.Raleway.bold,
-    flex: 1,
-    width: 10,
-    paddingLeft: 10,
-    border: 'none',
-    backgroundColor: 'transparent',
-  },
   okBtn: {
     addStyles: {
+      alignSelf: 'center',
       ...AppStyles.largeBtn,
     },
     ...AppStyles.activeBtn

@@ -29,15 +29,15 @@ class Modal extends React.Component {
   render() {
     const { children, contentStyle } = this.props;
     const { modalIsOpen } = this.state;
-    let subtitle;
-
 
     return (
       <ReactModal
         isOpen={modalIsOpen}
         onRequestClose={this.close}
         style={{ overlay: {backgroundColor: 'rgba(0, 0, 0, 0.6)'}, content: contentStyle }}>
+
         <Button btnStyles={btnStyles} onClick={this.close}><img src={XIcon} style={{height: 20, margin: 'auto' }} /></Button>
+
         {children}
       </ReactModal>
     );
@@ -48,6 +48,7 @@ export default Modal;
 
 const btnStyles = {
   addStyles: {
+    alignSelf: 'flex-start',
     zIndex: 1,
     ...AppStyles.closeBtn
   },
