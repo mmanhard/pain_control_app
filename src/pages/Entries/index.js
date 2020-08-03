@@ -39,6 +39,8 @@ const sortOptions = {
 
 const rqdDetail = 'medium';
 
+const scrollReloadThreshold = 0.5;
+
 class Entries extends React.Component {
   constructor(props) {
     super(props);
@@ -58,6 +60,32 @@ class Entries extends React.Component {
 
   componentDidMount() {
     this._reloadEntries();
+
+    // Add handler for monitoring scrolling of entry list.
+    this.scrollListener = window.addEventListener("scroll", this._handleScroll);
+  }
+
+  // Handler for monitoring scrolling of entry list. Will reload entries when
+  // the user has scrolled halfway through the list.
+  _handleScroll = (e) => {
+    const { entries, numEntries } = this.props;
+
+    const lastLi = document.querySelector("ul > li:last-child");
+
+    // Calculate the bottom of the last li and the distance from the top of the
+    // page to the bottommost visible portion.
+    const lastLiBottom = lastLi.offsetTop + lastLi.clientHeight;
+    const pageBottomOffset = window.pageYOffset + window.innerHeight;
+
+    // Determine if user has passed the threshold of scrolling (i.e. scrolled
+    // past 50% of the current list).
+    const scrollRatio = pageBottomOffset / lastLiBottom;
+    const pastThreshold = scrollRatio > scrollReloadThreshold;
+
+    if (pastThreshold && !this.props.isFetching && (entries.length < numEntries)) {
+      this._reloadEntries();
+    }
+
   }
 
   _reloadEntries = () => {
@@ -86,7 +114,7 @@ class Entries extends React.Component {
     if (success) {
       // If entries were loaded properly, increase the page number to reload
       // the next set of entries next time _reloadEntries() is called.
-      this.setState({ page: this.state.page + 1 })
+      this.setState({ page: this.state.page + 1 });
     }
   }
 
@@ -228,7 +256,7 @@ class Entries extends React.Component {
       </div>
     );
 
-    return (<div key={entry.id} style={styles.entryContainer}>
+    return (<li key={entry.id} style={styles.entryContainer}>
       <div style={styles.entryDetailsContainer(isSmallScreen, isMediumScreen)}>
 
         <div style={styles.entryTitleContainer(isSmallScreen)}>
@@ -263,7 +291,7 @@ class Entries extends React.Component {
         {stats}
       </div>}
 
-    </div>);
+    </li>);
   }
 
   _renderEmptyState = () => {
@@ -407,18 +435,14 @@ class Entries extends React.Component {
 
           <div style={styles.entriesContainer(isSmallScreen, isMediumScreen)}>
 
-            {entries?.length > 0
-              ? entries.map(this._renderEntry)
-              : this._renderEmptyState()}
-
-            {(entries.length < numEntries) && !isFetching &&
-              <Button
-                btnStyles={styles.continueBtn}
-                onClick={this._reloadEntries}>
-                Load More
-              </Button>}
+            <ul style={{margin: 0, width: '90%'}}>
+              {entries?.length > 0
+                ? entries.map(this._renderEntry)
+                : this._renderEmptyState()}
+            </ul>
 
             {isFetching && <ScrollSpinner />}
+            
           </div>
 
 

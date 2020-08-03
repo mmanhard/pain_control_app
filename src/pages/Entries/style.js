@@ -165,7 +165,7 @@ export default {
     }
   },
   entryContainer: {
-    width: '90%',
+    width: '100%',
     marginTop: 10,
     marginBottom: 20,
     ...AppStyles.typContentContainer,
