@@ -71,6 +71,11 @@ const addEntry = (userInfo, data) => {
   return _post(path, data);
 };
 
+const deleteEntry = (userInfo, entryID) => {
+  const path = `${userPath}${userInfo.id}${entryPath}${entryID}/`;
+  return _delete(path);
+};
+
 const apiHandler = axios.create({
   baseURL: HOST,
   timeout: 10000,
@@ -129,6 +134,23 @@ const _patch = async (path, data) => {
     });
 }
 
+const _delete = async (path) => {
+  const token = localStorage.getItem('token');
+  let Authorization = `Bearer ${token}`;
+  return apiHandler.delete(path, {
+    headers: {
+      ...defaultHeaders,
+      Authorization,
+    }
+  })
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      return { ...error.response, fail: true};
+    });
+}
+
 export default {
   register,
   login,
@@ -142,5 +164,6 @@ export default {
   editBodyPart,
   getEntries,
   getEntry,
-  addEntry
+  addEntry,
+  deleteEntry
 }

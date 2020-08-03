@@ -72,6 +72,23 @@ export default (state = initialState, action) => {
         isAwaitingResp: false
       };
 
+    case actions.entryActions.DELETE_ENTRY_REQUEST:
+      return {
+        ...state,
+        isAwaitingResp: true
+      };
+    case actions.entryActions.DELETE_ENTRY_SUCCESS:
+      return {
+        ...state,
+        entryUpdate: true,
+        isAwaitingResp: false
+      };
+    case actions.entryActions.DELETE_ENTRY_FAIL:
+      return {
+        ...state,
+        isAwaitingResp: false
+      };
+
     default:
       return state;
   }

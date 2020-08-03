@@ -16,6 +16,10 @@ const entryActions = {
   ADD_ENTRY_REQUEST: 'ADD_' + ENTRY_PREFIX + '_REQUEST',
   ADD_ENTRY_SUCCESS: 'ADD_' + ENTRY_PREFIX + '_SUCCESS',
   ADD_ENTRY_FAIL: 'ADD_' + ENTRY_PREFIX + '_FAIL',
+
+  DELETE_ENTRY_REQUEST: 'ADD_' + ENTRY_PREFIX + '_REQUEST',
+  DELETE_ENTRY_SUCCESS: 'ADD_' + ENTRY_PREFIX + '_SUCCESS',
+  DELETE_ENTRY_FAIL: 'ADD_' + ENTRY_PREFIX + '_FAIL',
 };
 
 const getEntries = (userInfo, params, cb = () => {}) => {
@@ -98,9 +102,37 @@ const addEntry = (userInfo, data, cb = () => {}) => {
   };
 }
 
+const deleteEntry = (userInfo, entryID, cb = () => {}) => {
+  return async dispatch => {
+    dispatch({
+      type: entryActions.DELETE_ENTRY_REQUEST
+    });
+    try {
+      const response = await API.deleteEntry(userInfo, entryID);
+      if (!response.fail) {
+        dispatch({
+          type: entryActions.DELETE_ENTRY_SUCCESS,
+        });
+
+        cb(true, response.data.message);
+      } else {
+        dispatch({
+          type: entryActions.DELETE_ENTRY_FAIL,
+        });
+
+        cb(false, response.data.message);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+}
+
 export {
   entryActions,
   getEntries,
   getEntry,
-  addEntry
+  addEntry,
+  deleteEntry
 }
