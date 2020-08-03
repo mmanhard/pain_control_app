@@ -249,6 +249,16 @@ export default {
       color: AppColors.blue,
       fontSize: AppFonts.size.medSmall,
     },
+    noPartsText: {
+      ...AppStyles.center,
+      textAlign: 'center',
+      backgroundColor: AppColors.lilac,
+      height: 140,
+      width: 250,
+      padding: 10,
+      margin: 30,
+      borderRadius: 20,
+    },
     mainButtonContainer: (isMediumScreen) => {
       const contentContainer = isMediumScreen ? AppStyles.mobileContentContaner : AppStyles.typContentContainer;
       return {

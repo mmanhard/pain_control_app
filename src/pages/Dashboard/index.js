@@ -226,33 +226,43 @@ class Dashboard extends React.Component {
     const { isMobile } = this.props;
     const { statType } = this.state;
 
-    return (
-      <ul style={styles.generalStatsContainer}>
+    if (bodyParts?.length > 0) {
+      return (
+        <ul style={styles.generalStatsContainer}>
 
-        <div style={styles.subtitleContainer}>
-          <div>{statTypes[statType]}</div>
-          <div>Pain Level</div>
+          <div style={styles.subtitleContainer}>
+            <div>{statTypes[statType]}</div>
+            <div>Pain Level</div>
+          </div>
+
+          {bodyParts.map(part => {
+            return (
+              <li key={part.id} style={styles.statContainer}>
+
+                <Button
+                  onClick={() => {this.setState({ currentBodyPartID: part.id })}}
+                  btnStyles={styles.statTxtBtn(isMobile)}>
+                  {this._formatStat(part?.stats)}
+                </Button>
+
+                <div style={styles.statTitle}>
+                  {part.name.replace('_', ' ')}
+                </div>
+
+              </li>
+            );
+          })}
+        </ul>
+      )
+    } else {
+      return (
+        <div style={styles.noPartsText}>
+          <p>No pain points yet!</p>
+          <p>Click on the body visualizer to add more
+          or go to the settings page and add more there!</p>
         </div>
-
-        {bodyParts.map(part => {
-          return (
-            <li key={part.id} style={styles.statContainer}>
-
-              <Button
-                onClick={() => {this.setState({ currentBodyPartID: part.id })}}
-                btnStyles={styles.statTxtBtn(isMobile)}>
-                {this._formatStat(part?.stats)}
-              </Button>
-
-              <div style={styles.statTitle}>
-                {part.name.replace('_', ' ')}
-              </div>
-
-            </li>
-          );
-        })}
-      </ul>
-    )
+      )
+    }
   }
 
   // Renders basic stats (i.e. # of entries, date of oldest entry, date of most
@@ -529,7 +539,7 @@ class Dashboard extends React.Component {
               <div>Stats</div>
             </div>
 
-            {!isMobile && this._renderBasicStats(currentBodyPart)}
+            {!isMobile && bodyParts?.length > 0 && this._renderBasicStats(currentBodyPart)}
 
           </div>
 
