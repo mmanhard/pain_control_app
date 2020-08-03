@@ -238,6 +238,16 @@ class Entries extends React.Component {
     </div>);
   }
 
+  _renderEmptyState = () => {
+    const { isSmallScreen } = this.props;
+    return (
+      <div style={styles.emptyStateContainer(isSmallScreen)}>
+        <p>No entries for the criteria you entered.</p>
+        <p>Try updating the filters or adding more entries!</p>
+      </div>
+    );
+  }
+
   _renderConfiguration = () => {
     const { bodyParts, entries, numEntries, isSmallScreen, isMediumScreen } = this.props;
     const { sortBy } = this.state;
@@ -354,7 +364,9 @@ class Entries extends React.Component {
 
           <div style={styles.entriesContainer(isSmallScreen, isMediumScreen)}>
 
-            {entries && entries.map(this._renderEntry)}
+            {entries?.length > 0
+              ? entries.map(this._renderEntry)
+              : this._renderEmptyState()}
 
             {(entries.length < numEntries) && !isFetching &&
               <Button

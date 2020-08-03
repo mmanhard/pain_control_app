@@ -261,4 +261,15 @@ export default {
       margin: 20,
     }
   },
+  emptyStateContainer: (isSmallScreen) => {
+    return {
+      width: isSmallScreen ? '80%': '50%',
+      padding: 30,
+      marginTop: 10,
+      marginBottom: 20,
+      ...AppStyles.center,
+      ...AppStyles.typContentContainer,
+      color: AppColors.blue
+    }
+  },
 }
