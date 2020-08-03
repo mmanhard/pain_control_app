@@ -34,6 +34,7 @@ class Login extends React.Component {
       flashMessage: ''
     };
 
+    // Create a reference to the registration modal.
     this.modalRef = React.createRef();
   }
 
@@ -63,6 +64,7 @@ class Login extends React.Component {
 
     event.preventDefault();
 
+    // Validate all fields prior to registration.
     if (!first_name) {
       this.modalRef.current.setFlashMessage(false, 'Please enter your first name!');
     } else if (!last_name) {
@@ -84,6 +86,7 @@ class Login extends React.Component {
 
     event.preventDefault();
 
+    // Validate all fields prior to logging in.
     if (!validator.isEmail(email_login)) {
       this._setFlashMessage(false, 'Please enter a valid email address!');
     } else if (password_login.length <= 0) {
@@ -105,6 +108,7 @@ class Login extends React.Component {
     }
   }
 
+  // Opens the registration modal.
   _open = () => {
     this.modalRef.current.open();
   }
@@ -117,6 +121,7 @@ class Login extends React.Component {
   _renderFlash = () => {
     const { isSmallScreen } = this.props;
     const { flashMessage } = this.state;
+
     return (
       <div style={styles.flashMessage(isSmallScreen)}>
         <div style={{margin: 10}}>{flashMessage}</div>
@@ -137,12 +142,20 @@ class Login extends React.Component {
           </div>
 
           <div style={styles.formContainer(isMobile)}>
+
             <div style={styles.noLoginContainer}>
               <p style={{marginRight: 10 }}>Don't have an account?</p>
-              <Button btnStyles={styles.registerBtn} onClick={this._open}>Register</Button>
+              <Button
+                btnStyles={styles.registerBtn}
+                onClick={this._open}>
+                Register
+              </Button>
             </div>
+
             {flashMessage && this._renderFlash()}
+
             <div style={styles.loginContainer(windowHeight < shortScreenHt, flashMessage)}>
+
               <div style={styles.txtInputContainer}>
                 <img src={EmailIcon} style={{height: 24, margin: 'auto'}} />
                 <input
@@ -154,6 +167,7 @@ class Login extends React.Component {
                   onChange={this._handleInputChange}
                 />
               </div>
+
               <div style={styles.txtInputContainer}>
                 <img src={KeyIcon} style={{height: 24, margin: 'auto' }} />
                 <input
@@ -165,8 +179,13 @@ class Login extends React.Component {
                   onChange={this._handleInputChange}
                 />
               </div>
-              <Button btnStyles={styles.loginBtn} onClick={this._handleLogin}>Log In</Button>
-              <p style={{textDecoration: 'underline'}}>Forgot password?</p>
+
+              <Button
+                btnStyles={styles.loginBtn}
+                onClick={this._handleLogin}>
+                Log In
+              </Button>
+              
             </div>
 
           </div>
@@ -181,6 +200,7 @@ class Login extends React.Component {
           handleInputChange={this._handleInputChange}
           handleRegister={this._handleRegister}
         />
+
       </div>
     )
   }
