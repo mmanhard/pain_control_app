@@ -199,7 +199,7 @@ class Entries extends React.Component {
     let min = Number(entry.stats.low).toFixed(0);
     let max = Number(entry.stats.high).toFixed(0);
 
-    const date = moment(entry.date);
+    const date = moment(entry.date).utc();
 
     let entryContent = (
       <div style={styles.entryContent}>
@@ -442,7 +442,7 @@ class Entries extends React.Component {
             </ul>
 
             {isFetching && <ScrollSpinner />}
-            
+
           </div>
 
 
