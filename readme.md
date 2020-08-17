@@ -3,12 +3,12 @@
 Pain control is a web application that gives users the ability to track their
 pain levels over time and better understand how they feel on a regular basis.
 
-Please note: this is the source code for the front-end. The source code for the
-back end can be found [here!](https://github.com/mmanhard/pain_control_backend)
+Please note: this is the source code for the **front-end**. The source code for the
+**back-end** can be found [here!](https://github.com/mmanhard/pain_control_backend)
 
 ## Live Version
 
-[Live version found here!](http://www.mypaincontroller.com/)
+[Live version can be found here!](http://www.mypaincontroller.com/)
 
 ## Tech Stack
 
@@ -22,15 +22,15 @@ Development/Build Tools: Webpack
 
 ## Installation and Usage
 
-** Install **
+**Install**
 ```
 $ yarn
 ```
-** Development Buid **
+**Development Build**
 ```
 $ yarn dev-server
 ```
-** Production Build **
+**Production Build**
 ```
 $ yarn run build:prod
 $ yarn start
