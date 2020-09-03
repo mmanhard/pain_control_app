@@ -1,4 +1,5 @@
 import API from '../api';
+import { genericErrorMsg } from 'Common/AppConst';
 
 const ENTRY_PREFIX = 'ENTRY';
 
@@ -45,7 +46,13 @@ const getEntries = (userInfo, params, cb = () => {}) => {
         cb(false, response.data.message);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
+
+      dispatch({
+        type: entryActions.GET_ALL_ENTRIES_FAIL,
+      });
+
+      cb(false, genericErrorMsg);
     }
   };
 }
@@ -69,7 +76,11 @@ const getEntry = (userInfo, entryID, params) => {
         });
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
+
+      dispatch({
+        type: entryActions.GET_ENTRY_FAIL,
+      });
     }
   };
 }
@@ -97,7 +108,13 @@ const addEntry = (userInfo, data, cb = () => {}) => {
         cb(false, response.data.message);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
+
+      dispatch({
+        type: entryActions.ADD_ENTRY_FAIL,
+      });
+
+      cb(false, genericErrorMsg);
     }
   };
 }
@@ -123,7 +140,13 @@ const deleteEntry = (userInfo, entryID, cb = () => {}) => {
         cb(false, response.data.message);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
+      
+      dispatch({
+        type: entryActions.DELETE_ENTRY_FAIL,
+      });
+
+      cb(false, genericErrorMsg);
     }
   };
 

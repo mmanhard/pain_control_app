@@ -12,4 +12,6 @@ export const defaultHeaders = {
   'Content-Type': 'application/json'
 };
 
+export const genericErrorMsg = 'Oops! Something went wrong. Please try again.';
+
 export const flashDuration = 8000;

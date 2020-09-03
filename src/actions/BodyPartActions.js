@@ -1,4 +1,5 @@
 import API from '../api';
+import { genericErrorMsg } from 'Common/AppConst';
 
 const BP_PREFIX = 'BODY_PART';
 
@@ -41,7 +42,11 @@ const getBodyParts = (userInfo, params) => {
         });
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
+
+      dispatch({
+        type: bodyPartActions.GET_ALL_BODY_PARTS_FAIL,
+      });
     }
   };
 }
@@ -65,7 +70,11 @@ const getBodyPart = (userInfo, bodyPartID, params) => {
         });
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
+
+      dispatch({
+        type: bodyPartActions.GET_BODY_PART_FAIL,
+      });
     }
   };
 }
@@ -93,7 +102,13 @@ const addBodyPart = (userInfo, data, cb = () => {}) => {
         cb(false, response.data.message);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
+
+      dispatch({
+        type: bodyPartActions.ADD_BODY_PART_FAIL,
+      });
+
+      cb(false, genericErrorMsg);
     }
   };
 }
@@ -121,7 +136,13 @@ const editBodyPart = (userInfo, bodyPartID, data, cb = () => {}) => {
         cb(false, response.data.message);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
+
+      dispatch({
+        type: bodyPartActions.EDIT_BODY_PART_FAIL,
+      });
+
+      cb(false, genericErrorMsg);
     }
   };
 }

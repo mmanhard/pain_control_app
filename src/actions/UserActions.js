@@ -1,4 +1,5 @@
 import API from '../api';
+import { genericErrorMsg } from 'Common/AppConst';
 
 const USER_PREFIX = 'USER';
 
@@ -50,7 +51,13 @@ const register = (data, cb = () => {}) => {
         cb(false, response.data.message);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
+
+      dispatch({
+        type: userActions.USER_REGISTER_FAIL
+      });
+
+      cb(false, 'Registration failed! Please try again.');
     }
   };
 };
@@ -79,7 +86,13 @@ const login = (data, cb = () => {}) => {
         cb(false, response.data.message);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
+
+      dispatch({
+        type: userActions.USER_LOGIN_FAIL
+      });
+
+      cb(false, 'Login failed! Please try again.');
     }
   };
 };
@@ -107,7 +120,13 @@ const changePassword = (userInfo, data, cb = () => {}) => {
         cb(false, response.data.message);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
+
+      dispatch({
+        type: userActions.USER_PASSWORD_CHANGE_FAIL
+      });
+
+      cb(false, genericErrorMsg);
     }
   };
 }
@@ -131,7 +150,11 @@ const getUserData = (userInfo, params) => {
         });
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
+
+      dispatch({
+        type: userActions.GET_USER_FAIL,
+      });
     }
   };
 }
@@ -159,7 +182,13 @@ const updateUser = (userInfo, data, cb = () => {}) => {
         cb(false, response.data.message);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
+
+      dispatch({
+        type: userActions.UPDATE_USER_FAIL,
+      });
+
+      cb(false, genericErrorMsg);
     }
   };
 }

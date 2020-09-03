@@ -11,13 +11,13 @@ const logout = () => {
   return async dispatch => {
     try {
       const response = await API.logout();
-
-      dispatch({
-        type: logoutAction.LOGOUT
-      });
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
+
+    dispatch({
+      type: logoutAction.LOGOUT
+    });
   };
 };
 
