@@ -3,8 +3,11 @@ import AppStyles from 'Common/AppStyles';
 
 export default {
   container: {
-    ...AppStyles.fill,
-    bottom: 0,
+    top: 0,
+    left: 0,
+    position: 'absolute',
+    width: '100vw',
+    height: '100vh',
     ...AppStyles.columnStart,
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
