@@ -33,6 +33,7 @@ Tools: Webpack + Babel
 
 * `yarn` >= v1.22.4 or `npm` >= v6.14.4
 * `node` >= v12.13.1
+* `heroku CLI` >= 7.42.11 (if deploying)
 
 #### Install
 
