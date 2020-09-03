@@ -15,7 +15,7 @@ Please note: this is the source code for the **front-end**. [Back-end source cod
 
 ## Live Version
 
-[Live version can be found here!](http://www.mypaincontroller.com/)
+[Live version can be found here!](https://www.mypaincontroller.com/)
 
 ## Tech Stack
 
@@ -27,9 +27,14 @@ Tools: Webpack + Babel
 
 [Check here for the backend stack!](https://github.com/mmanhard/pain_control_backend#tech-stack)
 
-## Installation and Usage
+### Installation and Usage
 
-**Install**
+### Requirements
+
+* `yarn` >= v1.22.4 or `npm` >= v6.14.4
+* `node` >= v12.13.1
+
+### Install
 
 With yarn:
 ```
@@ -40,7 +45,7 @@ With npm:
 ```
 $ npm install
 ```
-**Build and Run - Development**
+### Build and Run - Development
 
 With yarn:
 ```
@@ -56,7 +61,7 @@ By default, webpack's development server will listen on port **8080**. If you ne
 to use a different one, append `--port PORT_NUM`, where `PORT_NUM` is the
 desired port number, to the commands above.
 
-**Build and Run - Production**
+### Build and Run - Production
 
 With yarn:
 ```
@@ -74,9 +79,9 @@ By default, express will start listening on port **3000**. If you need to use a
 different one, enter `export PORT=PORT_NUM`, where `PORT_NUM` is the
 desired port number, prior to starting up the server.
 
-**Deployment**
+### Deployment
 
-The [live version](http://www.mypaincontroller.com/) is hosted on Heroku.
+The [live version](https://www.mypaincontroller.com/) is hosted on Heroku.
 
 You can host your own forked version by following the steps below from the
 directory where your local repo is located:
@@ -102,12 +107,3 @@ the URL where you can visit your deployed version of the app.
 Note: If you ran `npm install` with the flag `--save` prior to deployment, you'll
 need to delete either `package-lock.json` or `yarn.lock` before the steps
 indicated above.
-
-## Application Overview
-
-Expect some demos and summaries to be added here shortly!
-
-## Future Improvements
-
-This app is a work-in-progress. Expect a list of potential improvements to be
-added here!
