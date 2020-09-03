@@ -93,7 +93,11 @@ class BodyVisualizer extends React.Component {
         ref={ (divContainer) => { this.divContainer = divContainer } }
         onClick={clickBackground}>
         <div style={{height: '100%'}}>
-          <svg width="100%" height='100%' viewBox='0 0 200 310' style={{overflow: 'visible'}}>
+          <svg
+            width={contentContainerStyle.width}
+            height={contentContainerStyle.height}
+            viewBox='0 0 200 310'
+            style={{overflow: 'visible'}}>
 
             {ellipseBlur}
 
