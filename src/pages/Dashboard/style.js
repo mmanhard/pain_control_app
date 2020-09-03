@@ -126,15 +126,15 @@ export default {
       },
       ...AppStyles.activeBtn
     },
-    visualizer: (isSmallScreen, isMediumScreen) => {
+    visualizer: (isSmallScreen, isMediumScreen, isShortScreen, isMidHeightScreen) => {
       return {
         backgroundColor: AppColors.white,
         border: `solid 8px ${AppColors.blue}`,
         boxShadow: AppStyles.typBoxShadow,
         borderRadius: 40,
-        height: isMediumScreen ? (isSmallScreen ? 250 : 350) : 400,
+        height: isMidHeightScreen ? (isShortScreen ? 250 : 300) : 400,
         width: isMediumScreen ? (isSmallScreen ? 150 : 225) : 300,
-        marginBottom: isSmallScreen ? 0 : 30,
+        marginBottom: isMidHeightScreen ? (isShortScreen ? 10 : 0) : 30,
       }
     },
     painLegend: {

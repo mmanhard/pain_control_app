@@ -8,7 +8,8 @@ const screenSizes = {
 }
 
 const screenHeights = {
-  small: 640
+  small: 640,
+  medium: 800
 }
 
 // Component wrapper that gives the wrapped component access to the current size
@@ -42,6 +43,7 @@ export default function withWindowDimensions(WrappedComponent) {
                     isMediumScreen={this.state.width < screenSizes.medium}
                     isLargeScreen={this.state.width < screenSizes.large}
                     isShortScreen={this.state.height < screenHeights.small}
+                    isMidHeightScreen={this.state.height < screenHeights.medium}
                     windowWidth={this.state.width}
                     windowHeight={this.state.height}
                 />

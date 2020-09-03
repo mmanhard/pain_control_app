@@ -448,12 +448,12 @@ class Dashboard extends React.Component {
   }
 
   _renderLeftContainer = (visualizerBodyParts) => {
-    const { isMobile, isSmallScreen, isMediumScreen } = this.props;
+    const { isMobile, isSmallScreen, isMediumScreen, isShortScreen, isMidHeightScreen } = this.props;
     const { customStartDate, customEndDate } = this.state;
 
     return (
       <div style={styles.leftContentContainer(isSmallScreen)}>
-        <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', marginTop: 20, marginBottom: 20}}>
+        <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', marginTop: 20, marginBottom: 0}}>
 
           <div style={styles.titleContainer(isSmallScreen)}>
             <div>My</div>
@@ -471,7 +471,7 @@ class Dashboard extends React.Component {
           {this._renderFilterContainer()}
 
           <BodyVisualizer
-            contentContainerStyle={styles.visualizer(isSmallScreen, isMediumScreen)}
+            contentContainerStyle={styles.visualizer(isSmallScreen, isMediumScreen, isShortScreen, isMidHeightScreen)}
             bodyParts={visualizerBodyParts}
             clickBackground={() => { this.setState({currentBodyPartID: undefined })}}
             clickBodyPartFound={(part) => { this.setState({currentBodyPartID: part.id})}}
