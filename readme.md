@@ -45,6 +45,24 @@ With npm:
 ```
 $ npm install
 ```
+
+#### Configure the Back-End
+
+To save and retrieve data, you'll need your app to connect to a version of the
+backend. You have (3) options:
+
+1. Use the live version of the back-end hosted on Heroku. Feel free to use this
+as the app is hosted for demonstration purposes only. The URL for this option is
+`https://api.mypaincontroller.com/`.
+2. Run the back-end locally with [these steps](https://github.com/mmanhard/pain_control_backend#installation-and-usage).
+If you used the default port, the URL will be `http://localhost:5000/`.
+3. Host your own version of the back-end on Heroku using [these steps](https://github.com/mmanhard/pain_control_backend#deployment).
+Heroku will let you know the URL of your back-end application.
+
+Next, change the variable `HOST` in `src/common/AppConst.js` to
+the URL of your back-end. This will let the front-end know where to make HTTP
+requests. NOTE: You won't need to change this if using option (1).
+
 #### Build and Run - Development
 
 With yarn:
