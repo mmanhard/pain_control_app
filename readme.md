@@ -27,14 +27,14 @@ Tools: Webpack + Babel
 
 [Check here for the backend stack!](https://github.com/mmanhard/pain_control_backend#tech-stack)
 
-### Installation and Usage
+## Installation and Usage
 
-### Requirements
+#### Requirements
 
 * `yarn` >= v1.22.4 or `npm` >= v6.14.4
 * `node` >= v12.13.1
 
-### Install
+#### Install
 
 With yarn:
 ```
@@ -45,7 +45,7 @@ With npm:
 ```
 $ npm install
 ```
-### Build and Run - Development
+#### Build and Run - Development
 
 With yarn:
 ```
@@ -61,7 +61,7 @@ By default, webpack's development server will listen on port **8080**. If you ne
 to use a different one, append `--port PORT_NUM`, where `PORT_NUM` is the
 desired port number, to the commands above.
 
-### Build and Run - Production
+#### Build and Run - Production
 
 With yarn:
 ```
@@ -79,7 +79,7 @@ By default, express will start listening on port **3000**. If you need to use a
 different one, enter `export PORT=PORT_NUM`, where `PORT_NUM` is the
 desired port number, prior to starting up the server.
 
-### Deployment
+#### Deployment
 
 The [live version](https://www.mypaincontroller.com/) is hosted on Heroku.
 
