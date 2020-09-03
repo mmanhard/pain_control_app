@@ -105,15 +105,25 @@ The [live version](https://www.mypaincontroller.com/) is hosted on Heroku.
 You can host your own forked version by following the steps below from the
 directory where your local repo is located:
 
-1) Login in to Heroku and create a new Heroku app using the Heroku CLI:
+##### 1. Login in to Heroku and create a new Heroku app using the Heroku CLI:
+
 ```
 $ heroku login
-$ heroku create
+$ heroku create <APP_NAME>
 ```
 
-2) Add all files, commit them, and push the commit to the Heroku git repo:
+Where `<APP_NAME>` is the name you have selected for your back-end application.
+
+##### 2. Configure the app for production:
 
 ```
+$ heroku config:set APP_SETTINGS=config.ProductionConfig
+```
+
+##### 3. Add all files, commit them, and push the commit to the Heroku git repo:
+
+```
+$ heroku git:remote -a <APP_NAME>
 $ git add .
 $ git commit -am "Enter a nice commit message here!"
 $ git push heroku master
