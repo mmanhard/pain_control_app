@@ -72,18 +72,21 @@ class Entries extends React.Component {
 
     const lastLi = document.querySelector("ul > li:last-child");
 
-    // Calculate the bottom of the last li and the distance from the top of the
-    // page to the bottommost visible portion.
-    const lastLiBottom = lastLi.offsetTop + lastLi.clientHeight;
-    const pageBottomOffset = window.pageYOffset + window.innerHeight;
+    // Check if the last li element exists. If so, monitor the scroll event.
+    if (lastLi) {
+      // Calculate the bottom of the last li and the distance from the top of the
+      // page to the bottommost visible portion.
+      const lastLiBottom = lastLi.offsetTop + lastLi.clientHeight;
+      const pageBottomOffset = window.pageYOffset + window.innerHeight;
 
-    // Determine if user has passed the threshold of scrolling (i.e. scrolled
-    // past 50% of the current list).
-    const scrollRatio = pageBottomOffset / lastLiBottom;
-    const pastThreshold = scrollRatio > scrollReloadThreshold;
+      // Determine if user has passed the threshold of scrolling (i.e. scrolled
+      // past 50% of the current list).
+      const scrollRatio = pageBottomOffset / lastLiBottom;
+      const pastThreshold = scrollRatio > scrollReloadThreshold;
 
-    if (pastThreshold && !this.props.isFetching && (entries.length < numEntries)) {
-      this._reloadEntries();
+      if (pastThreshold && !this.props.isFetching && (entries.length < numEntries)) {
+        this._reloadEntries();
+      }
     }
 
   }
