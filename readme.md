@@ -17,6 +17,15 @@ Please note: this is the source code for the **front-end**. [Back-end source cod
 
 [Live version can be found here!](https://www.mypaincontroller.com/)
 
+#### Test Account
+
+There is a test account that has already entered a number of entries. If you
+would like to use this account to play around with the app, feel free. The
+credentials are as follows:
+
+&nbsp;&nbsp;&nbsp;&nbsp;**Email:** paincontroltest@gmail.com
+&nbsp;&nbsp;&nbsp;&nbsp;**Password:** password1234
+
 ## Tech Stack
 
 Front-End: React.JS + Redux + React Router
