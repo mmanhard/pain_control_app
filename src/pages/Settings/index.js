@@ -299,10 +299,13 @@ class Settings extends React.Component {
       const selected = currentBodyPart && currentBodyPart.id == part.id;
       const displayName = part.location ? `${part.location} ${part.name}` : part.name;
 
+      const locDisplay = part.location ? part.location : '';
+      const typeDisplay = part.type ? part.type : '';
+
       return (
         <Button
           key={part.id}
-          onClick={() => { this.setState({ currentBodyPart: part, addMoreParts: false, part_name: part.name, part_location: part.location, part_type: part.type })}}
+          onClick={() => { this.setState({ currentBodyPart: part, addMoreParts: false, part_name: part.name, part_location: locDisplay, part_type: typeDisplay })}}
           btnStyles={styles.partContainer(isSmallScreen, selected)}>
           <div>{displayName}</div>
           <div style={styles.editTxt}>Edit</div>
