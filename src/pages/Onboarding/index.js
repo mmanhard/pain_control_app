@@ -218,7 +218,7 @@ class Onboarding extends React.Component {
 
       // Don't submit the body part if it's name is empty.
       if (name?.length > 0) {
-        const data = { name, type };
+        const data = { name };
         bodyPartData.push(data);
       }
     }
