@@ -184,7 +184,7 @@ class EntryDetail extends React.Component {
 
         <div style={styles.statsRow}>
           <div style={styles.notesContainer}>
-            {entryInfo.notes}
+            {entryInfo.notes ? entryInfo.notes : 'No general notes with this entry.'}
           </div>
         </div>
 
