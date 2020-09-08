@@ -121,15 +121,9 @@ $ heroku login
 $ heroku create <APP_NAME>
 ```
 
-Where `<APP_NAME>` is the name you have selected for your back-end application.
+Where `<APP_NAME>` is the name you have selected for your application.
 
-##### 2. Configure the app for production:
-
-```
-$ heroku config:set APP_SETTINGS=config.ProductionConfig
-```
-
-##### 3. Add all files, commit them, and push the commit to the Heroku git repo:
+##### 2. Add all files, commit them, and push the commit to the Heroku git repo:
 
 ```
 $ heroku git:remote -a <APP_NAME>
