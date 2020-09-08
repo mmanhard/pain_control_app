@@ -200,7 +200,9 @@ class EntryDetail extends React.Component {
 
         <div style={styles.titleContainer(isMediumScreen)}>
           <div>{currentBodyPart ?
-            `${currentBodyPart.location} ${currentBodyPart.name}`
+            (currentBodyPart.location ?
+              `${currentBodyPart.location} ${currentBodyPart.name}`
+              : currentBodyPart.name)
             : 'General'}</div>
         </div>
 
