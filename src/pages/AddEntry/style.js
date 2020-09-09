@@ -185,7 +185,7 @@ export default {
         ...AppStyles.rowSpace,
         alignItems: 'center',
         height: isSmallScreen ? 120 : 300,
-        width: isSmallScreen ? 180 : 300,
+        width: isSmallScreen ? 180 : 280,
         border: `solid 8px ${AppColors.blue}`,
         boxShadow: AppStyles.typBoxShadow,
         borderRadius: 40,

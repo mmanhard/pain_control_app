@@ -328,7 +328,7 @@ class AddEntry extends React.Component {
   }
 
   _renderAddPainLevels = () => {
-    const { bodyParts, isMobile, isSmallScreen, isLargeScreen } = this.props;
+    const { bodyParts, isMobile, isSmallScreen, isXLScreen } = this.props;
     const { bodyPartsIncluded, highDetail } = this.state;
 
     // Compile the list of parts to be used in the visualizer.
@@ -375,12 +375,12 @@ class AddEntry extends React.Component {
         <div style={{...AppStyles.columnStart, flex: 1}}>
           {painBubbleList}
           {this._renderFlash()}
-          {isLargeScreen && visualizer}
+          {isXLScreen && visualizer}
           {!isMobile && <PainLegend contentContainerStyle={styles.painLegend} />}
           {continueBtn}
         </div>
 
-        {!isLargeScreen && visualizer}
+        {!isXLScreen && visualizer}
 
       </div>
     );
