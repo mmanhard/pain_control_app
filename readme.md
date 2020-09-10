@@ -86,8 +86,9 @@ $ npm run dev-server
 ```
 
 By default, webpack's development server will listen on port **8080**. If you need
-to use a different one, append `--port PORT_NUM`, where `PORT_NUM` is the
-desired port number, to the commands above.
+to use a different one, append `--port PORT_NUM` to the yarn command or
+`-- --port=PORT_NUM` to the npm command, where `PORT_NUM` is the desired port
+number.
 
 #### Build and Run - Production
 
@@ -106,6 +107,12 @@ $ npm start
 By default, express will start listening on port **3000**. If you need to use a
 different one, enter `export PORT=PORT_NUM`, where `PORT_NUM` is the
 desired port number, prior to starting up the server.
+
+**NOTEE**: The production version of the app will automatically redirect HTTP
+requests to HTTPS. If you would like to test the production version of the app
+locally, you'll need to tell express that the environment is a development
+environment: `export NODE_ENV=development`. Do this prior to start up the
+server.
 
 #### Deployment
 
